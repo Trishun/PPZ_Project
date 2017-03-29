@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Pracownia programowania zespołowego 1
+Interaktywna gra miejska
+-->
+
+<issues>
+
+  <issue>
+	<id>0000</id>
+	<date>2017-03-29</date>
+	<description>
+		Project formation
+	</description>
+	<type>feature</type>
+	<finished>YES</finished>
+  </issue>
+  
+</issues>
