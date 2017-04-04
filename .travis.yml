@@ -1,0 +1,18 @@
+sudo: false
+language: java
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+env:
+  - TEST_DIR=Client
+  - TEST_DIR=Server
+script:
+  - jdk_switcher use oraclejdk8
+  - cd $TEST_DIR && ant test
+  - jdk_switcher use oraclejdk7
+  - cd $TEST_DIR && ant test
