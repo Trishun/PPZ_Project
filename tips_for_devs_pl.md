@@ -25,9 +25,11 @@ gdzie `%params%` to `-m`, Opis zmiany(typ, stan#1234)
 typ:
  - bugfix
  - feature
->>>>>>> Initial
+
 * stan:
  - involves
  - resolves
 
 # Plik issues
+
+/Przeniesione na GitHub/
