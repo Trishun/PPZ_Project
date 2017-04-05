@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
+ * PPZ
  * Created by PD on 05.04.2017.
  */
 public class TaskHandler extends Thread{

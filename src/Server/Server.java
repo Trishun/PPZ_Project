@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 /**
+ * PPZ
  * Created by PD on 05.04.2017.
  */
 public class Server {
@@ -21,6 +22,10 @@ public class Server {
     }
 
     void Run() {
+        new Thread(() -> mainTask()).start();
+    }
+
+    void mainTask() {
         try {
             ServerSocket serverSocket = new ServerSocket(80);
 
@@ -28,6 +33,7 @@ public class Server {
                 //Accept connection
                 System.out.println("Oczekiwanie na polaczenie...");
                 Socket socket = serverSocket.accept();
+                System.out.println("Połączono!");
 
                 //Create thread to handle connection
                 TaskHandler taskHandler = new TaskHandler(socket, databaseCommunicator);
@@ -35,6 +41,8 @@ public class Server {
                 taskHandler.start();
             }
         } catch (Exception e) {
+            System.out.println(e);
         }
     }
+
 }
