@@ -9,8 +9,8 @@ jdk:
   - oraclejdk8
   - oraclejdk7
 env:
-  - TEST_DIR=Client
-  - TEST_DIR=Server
+  - TEST_DIR=src/Client
+  - TEST_DIR=src/Server
 script:
   - jdk_switcher use oraclejdk8
   - cd $TEST_DIR && ant test
