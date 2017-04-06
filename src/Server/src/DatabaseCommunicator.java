@@ -1,9 +1,8 @@
-package Server;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 
 /**
+ * PPZ
  * Created by PD on 05.04.2017.
  */
 class DatabaseCommunicator {
