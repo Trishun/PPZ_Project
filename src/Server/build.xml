@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ppz_project" default="all">
+<project name="server" default="all">
   
   
-  <property file="ppz_project.properties"/>
+  <property file="build.properties"/>
   <!-- Uncomment the following property if no tests compilation is needed -->
   <!-- 
   <property name="skip.tests" value="true"/>
@@ -101,15 +101,15 @@
   
   <!-- Modules -->
   
-  <import file="${basedir}/module_ppz_project.xml"/>
+  <import file="${basedir}/module_server.xml"/>
   
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.ppz_project" description="cleanup all"/>
+  <target name="clean" depends="clean.module.server" description="cleanup all"/>
   
-  <target name="build.modules" depends="init, clean, compile.module.ppz_project" description="build all modules"/>
+  <target name="build.modules" depends="init, clean, compile.module.server" description="build all modules"/>
   
   <target name="all" depends="build.modules" description="build all"/>
 </project>

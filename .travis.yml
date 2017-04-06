@@ -7,12 +7,8 @@ addons:
 
 jdk:
   - oraclejdk8
-  - oraclejdk7
 env:
-  - TEST_DIR=src/Client
   - TEST_DIR=src/Server
 script:
   - jdk_switcher use oraclejdk8
-  - cd $TEST_DIR && ant test
-  - jdk_switcher use oraclejdk7
-  - cd $TEST_DIR && ant test
+  - cd $TEST_DIR && ant server
