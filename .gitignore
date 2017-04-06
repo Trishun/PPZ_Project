@@ -12,4 +12,4 @@
 hs_err_pid*
 
 #IntellijIDEA
-src/Server/.idea/
+src/Server/.idea/**
