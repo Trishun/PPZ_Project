@@ -11,4 +11,4 @@ env:
   - TEST_DIR=src/Server
 script:
   - jdk_switcher use oraclejdk8
-  - cd $TEST_DIR && ant serverMain
+  - cd $TEST_DIR && ant server
