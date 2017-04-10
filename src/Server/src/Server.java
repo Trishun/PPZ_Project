@@ -1,3 +1,5 @@
+import org.jetbrains.annotations.Nullable;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class Server {
 
     private void incoming() {
         try {
-            ServerSocket serverSocket = new ServerSocket(80);
+            ServerSocket serverSocket = new ServerSocket(9090);
 
             while (true) {
                 //Accept connection
@@ -44,13 +46,14 @@ public class Server {
         }
     }
 
-    public void createLobby(Player initiator) {
+    int createLobby(Player initiator) {
         Lobby lobby = new Lobby(lobbyList.size(), initiator);
         lobbyList.add(lobby);
         refreshViewData(lobby);
+        return lobby.getId();
     }
 
-    public void addToLobby(int enterCode, Player player) {
+    void addToLobby(int enterCode, Player player) {
         for (Lobby lobby : lobbyList) {
             if (enterCode == lobby.getEnterCode()) {
                 addToLobby(lobby, player);
@@ -59,21 +62,27 @@ public class Server {
         }
     }
 
-    public void addToLobby(Lobby lobby, Player player) {
+    void addToLobby(Lobby lobby, Player player) {
         lobby.addToLobby(player);
         player.setLobby(lobby.getId());
         refreshViewData(lobby);
     }
 
-    public void refreshViewData(Lobby lobby) {
-        for (Player player : lobby.getLobbyList()) {
+    void removeFromLobby(int lobbyId, Player player) {
+        Lobby lobby = getLobbyById(lobbyId);
+        lobby.removeFromLobby(player);
+    }
+
+    void refreshViewData(Lobby lobby) {
+        for (Player player : lobby.getPlayers()) {
             player.refreshViewData();
         }
     }
-    public ArrayList<Player> refreshViewData(Player player) {
-        return getLobbyById(player.getLobby()).getLobbyList();
+    ArrayList<Player> refreshViewData(Player player) {
+        return getLobbyById(player.getLobby()).getPlayers();
     }
 
+    @Nullable
     private Lobby getLobbyById(int id) {
         for (Lobby lobby : lobbyList) {
             if (lobby.getId() == id) {
@@ -88,14 +97,14 @@ public class Server {
 class Lobby {
     private int id;
     private Player initiator;
-    private ArrayList<Player> lobbyList = new ArrayList<Player>();
+    private ArrayList<Player> players = new ArrayList<Player>();
     private int enterCode;
 
     Lobby(int id, Player initiator) {
         this.id = id;
         this.initiator = initiator;
         enterCode = enterCodeGeneration();
-        lobbyList.add(initiator);
+        players.add(initiator);
     }
 
     private int enterCodeGeneration() {
@@ -111,14 +120,14 @@ class Lobby {
     }
 
     public void addToLobby(Player newPlayer) {
-        lobbyList.add(newPlayer);
+        players.add(newPlayer);
     }
 
     public void removeFromLobby(Player player) {
-        lobbyList.remove(player);
+        players.remove(player);
     }
 
-    public ArrayList<Player> getLobbyList() {
-        return lobbyList;
+    public ArrayList<Player> getPlayers() {
+        return players;
     }
 }
