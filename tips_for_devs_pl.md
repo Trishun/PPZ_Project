@@ -20,9 +20,9 @@ git commit %params%
 git push
 ```
 
-gdzie `%params%` to `-m`, Opis zmiany(typ, stan#1234)
+gdzie `%params%` to `-m`, Opis zmiany(typ, stan #1234), koniecznie ze spacją.
 
-typ:
+* typ:
  - bugfix
  - feature
 
@@ -33,3 +33,35 @@ typ:
 # Plik issues
 
 /Przeniesione na GitHub/
+
+
+
+## Schemat wiadomości Server-Client:
+`header&data0%data1%...
+1. Logowanie/rejestracja:
+	- logowanie:
+		* c:
+			h:login
+			d:string%string //uname%upass
+		* s:
+			h:login
+			d:bool
+2. Lobby:
+	- stworzenie:
+		* c:
+			h:lcreate
+			d:null
+		* s:
+			h:lcreate
+			d:int // enterCode
+	- dołączenie:
+		* c:
+			h:ljoin
+			d:int //enterCode
+		* s:
+			h:ljoin
+			d:bool
+	- lista graczy:
+		* s:
+			h:llist
+			d:string%string... // nazwy graczy 

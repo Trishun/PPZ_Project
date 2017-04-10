@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -13,9 +10,13 @@ import java.util.TimerTask;
  */
 public class Player extends Thread{
 
+    private boolean pollFlag = true;
     private DatabaseCommunicator databaseCommunicator;
     private Server up;
     private int lobby;
+    private MessageProvider messageProvider;
+    private int playerId = 0;
+    private String playerName = "not logged";
 
     /**
      * Class constructor
@@ -26,7 +27,7 @@ public class Player extends Thread{
     Player(Socket clientSocket, DatabaseCommunicator databaseCommunicator, Server up) throws IOException {
         this.databaseCommunicator = databaseCommunicator;
         this.up = up;
-        MessageProvider messageProvider = new MessageProvider(clientSocket);
+        messageProvider = new MessageProvider(clientSocket);
     }
 
     /** TODO
@@ -34,40 +35,73 @@ public class Player extends Thread{
      */
     public void run() {
         Timer timer = new Timer();
-        timer.schedule(new PollTask(this), 0, 15000);
-
-
+        timer.schedule(new PollTask(), 0, 30000);
+        while (true) {
+            Message message = messageProvider.getMessage();
+            if (message != null) {
+                String header = message.getHeader();
+                if (header.equalsIgnoreCase("endcon")) {
+                    disconnect();
+                    return;
+                } else if (header.equalsIgnoreCase("login")) {
+                    //do stuff
+                } else if (header.equalsIgnoreCase("register")) {
+                    //do stuff
+                } else if (header.equalsIgnoreCase("lcreate")) {
+                    // do stuff
+                } else if (header.equalsIgnoreCase("ljoin")) {
+                    // do stuff
+                } else if (header.equalsIgnoreCase("lleave")) {
+                    // do stuff
+                } else if (header.equalsIgnoreCase("poll")) {
+                    pollFlag = true;
+                }
+            }
+        }
     }
 
     /**
      * Poll management task
      */
     class PollTask extends TimerTask {
-        Player player;
-
-        PollTask(Player player) {
-            this.player = player;
-        }
-
         @Override
         public void run() {
-            player.poll();
+            if (!pollFlag)
+                disconnect();
+            pollFlag = false;
+            poll();
+        }
+
+        private void poll () {
+            messageProvider.sendPoll();
         }
     }
 
-    private void poll () {
-        if(!pollTest())
-            Thread.currentThread().interrupt();
+    // Player management
+
+
+    public int getPlayerId() {
+        return playerId;
     }
 
-//    TODO
-    private boolean pollTest() {
-        return true;
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
     }
 
+    public String getPlayerName() {
+        return playerName;
+    }
 
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
 
-    //Player management
+    private void disconnect() {
+        up.disconnectPlayer(this);
+        Thread.currentThread().interrupt();
+    }
+
+    //Lobby management
 
     void createLobby () {
         setLobby(up.createLobby(this));

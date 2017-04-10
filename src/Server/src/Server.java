@@ -40,15 +40,40 @@ public class Server {
                 Player player = new Player(socket, databaseCommunicator, this);
                 playerList.add(player);
                 player.start();
+                stats();
             }
         } catch (Exception e) {
             System.out.println(e);
         }
     }
 
+    private void stats() {
+        System.out.println("Players: "+String.valueOf(playerList.size()));
+        System.out.println("Lobbys: "+String.valueOf(lobbyList.size()));
+    }
+
+    void disconnectPlayer(Player playerToDisconnect) {
+        for (Player player:playerList) {
+            if (player == playerToDisconnect) {
+                playerList.remove(player);
+            }
+        }
+        for (Lobby lobby:lobbyList) {
+            for (Player player:lobby.getPlayers()) {
+                if (player == playerToDisconnect) {
+                    lobby.removeFromLobby(player);
+                    refreshViewData(lobby);
+                }
+            }
+        }
+        System.out.println("Player" + playerToDisconnect.getPlayerName() + " (" + playerToDisconnect.getPlayerId() + ") disconnected");
+
+    }
+
     int createLobby(Player initiator) {
         Lobby lobby = new Lobby(lobbyList.size(), initiator);
         lobbyList.add(lobby);
+        System.out.println("Lobby " + lobby.getId() + " created!");
         refreshViewData(lobby);
         return lobby.getId();
     }
@@ -65,12 +90,15 @@ public class Server {
     void addToLobby(Lobby lobby, Player player) {
         lobby.addToLobby(player);
         player.setLobby(lobby.getId());
+        System.out.println("Player" + player.getPlayerName() + " (" + player.getPlayerId() + ") joined lobby " + lobby.getId());
         refreshViewData(lobby);
     }
 
     void removeFromLobby(int lobbyId, Player player) {
         Lobby lobby = getLobbyById(lobbyId);
         lobby.removeFromLobby(player);
+        System.out.println("Player" + player.getPlayerName() + " (" + player.getPlayerId() + ") left lobby " + lobbyId);
+        refreshViewData(lobby);
     }
 
     void refreshViewData(Lobby lobby) {
@@ -79,6 +107,7 @@ public class Server {
         }
     }
     ArrayList<Player> refreshViewData(Player player) {
+        stats();
         return getLobbyById(player.getLobby()).getPlayers();
     }
 
@@ -111,23 +140,23 @@ class Lobby {
         return initiator.hashCode();
     }
 
-    public int getEnterCode() {
+    int getEnterCode() {
         return enterCode;
     }
 
-    public int getId() {
+    int getId() {
         return id;
     }
 
-    public void addToLobby(Player newPlayer) {
+    void addToLobby(Player newPlayer) {
         players.add(newPlayer);
     }
 
-    public void removeFromLobby(Player player) {
+    void removeFromLobby(Player player) {
         players.remove(player);
     }
 
-    public ArrayList<Player> getPlayers() {
+    ArrayList<Player> getPlayers() {
         return players;
     }
 }

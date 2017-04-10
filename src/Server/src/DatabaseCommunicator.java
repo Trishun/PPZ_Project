@@ -9,7 +9,7 @@ class DatabaseCommunicator {
 
     //Connection constants
     //TODO
-    private String HOST = "jdbc:mysql://host:3306/ppz?autoReconnect=true&useSSL=false";
+    private String HOST = "jdbc:mysql://localhost:3306/ppz?autoReconnect=true&useSSL=false";
     private String UNAME = "uname";
     private String UPASSWD = "upasswd";
     private Connection connection;
