@@ -19,7 +19,7 @@ public class MessageProvider implements MessageProviderInterface{
             this.socketReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             this.socketWriter = new PrintWriter(clientSocket.getOutputStream());
         } catch (IOException e) {
-            System.out.println(e);
+            System.out.println("Exception in MessageProvider/constructor: " + e);
         }
     }
 
@@ -29,7 +29,7 @@ public class MessageProvider implements MessageProviderInterface{
             String data = socketReader.readLine();
             return processMessage(data);
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("Exception in MessageProvider/getMessage: " + e);
         }
         return null;
     }

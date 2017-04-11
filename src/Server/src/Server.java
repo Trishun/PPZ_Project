@@ -1,6 +1,7 @@
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
 /**
  * PPZ
@@ -42,7 +43,8 @@ public class Server {
                 stats();
             }
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("Error in Server/incoming: "+e);
+            return;
         }
     }
 
@@ -52,21 +54,30 @@ public class Server {
     }
 
     void disconnectPlayer(Player playerToDisconnect) {
-        for (Player player : playerList) {
-            if (player == playerToDisconnect) {
-                playerList.remove(player);
-            }
-        }
-        for (Lobby lobby : lobbyList) {
-            for (Player player : lobby.getPlayers()) {
+        try {
+            for (Player player : playerList) {
                 if (player == playerToDisconnect) {
-                    lobby.removeFromLobby(player);
-                    refreshViewData(lobby);
+                    playerList.remove(player);
+                    break;
                 }
             }
+        } catch (ConcurrentModificationException ee) {
+            System.out.println("Exception 1 in Server/disconnectPlayer: " + ee);
         }
-        System.out.println("Player" + playerToDisconnect.getPlayerName() + " (" + playerToDisconnect.getPlayerId() + ") disconnected");
-
+        try {
+            for (Lobby lobby : lobbyList) {
+                for (Player player : lobby.getPlayers()) {
+                    if (player == playerToDisconnect) {
+                        lobby.removeFromLobby(player);
+                        refreshViewData(lobby);
+                        break;
+                    }
+                }
+            }
+        } catch (ConcurrentModificationException ee) {
+            System.out.println("Exception 2 in Server/disconnectPlayer: " + ee);
+        }
+        System.out.println("Player " + playerToDisconnect.getPlayerName() + " (" + playerToDisconnect.getPlayerId() + ") disconnected");
     }
 
     int createLobby(Player initiator) {
@@ -136,7 +147,7 @@ class Lobby {
     }
 
     private int enterCodeGeneration() {
-        return initiator.hashCode();
+        return initiator.hashCode()/10000;
     }
 
     int getEnterCode() {

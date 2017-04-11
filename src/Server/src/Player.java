@@ -11,6 +11,7 @@ import java.util.TimerTask;
  */
 public class Player extends Thread {
 
+    private Socket clientSocket;
     private boolean pollFlag = true;
     private DatabaseCommunicator databaseCommunicator;
     private Server up;
@@ -19,6 +20,7 @@ public class Player extends Thread {
     private EncryptionProvider encryptionProvider;
     private int playerId = 0;
     private String playerName = "not logged";
+    Timer timer;
 
     /**
      * Class constructor
@@ -32,6 +34,8 @@ public class Player extends Thread {
         this.up = up;
         messageProvider = new MessageProvider(clientSocket);
         encryptionProvider = new EncryptionProvider();
+        this.clientSocket = clientSocket;
+        this.timer = new Timer();
     }
 
     /**
@@ -39,7 +43,6 @@ public class Player extends Thread {
      * Main Player function.
      */
     public void run() {
-        Timer timer = new Timer();
         timer.schedule(new PollTask(), 0, 30000);
         while (true) {
             Message message = messageProvider.getMessage();
@@ -61,6 +64,10 @@ public class Player extends Thread {
                 } else if (header.equalsIgnoreCase("poll")) {
                     pollFlag = true;
                 }
+            }
+            else {
+                disconnect();
+                break;
             }
         }
     }
@@ -116,8 +123,15 @@ public class Player extends Thread {
      *
      */
     private void disconnect() {
-        up.disconnectPlayer(this);
-        Thread.currentThread().interrupt();
+            pollFlag = false;
+            timer.cancel();
+            up.disconnectPlayer(this);
+        try {
+            clientSocket.close();
+            Thread.currentThread().interrupt();
+        } catch (IOException e) {
+            System.out.println("Exception in Player/disconnect: " + e);
+        }
     }
 
     // DB management
@@ -175,7 +189,7 @@ public class Player extends Thread {
                 return;
             }
 
-            //Check for username availibility
+            //Check for username availability
             query = "SELECT * FROM accounts WHERE nickname = '" + uName + "'";
             resultSet = databaseCommunicator.executeQuery(query);
             if (resultSet.isBeforeFirst()) {
