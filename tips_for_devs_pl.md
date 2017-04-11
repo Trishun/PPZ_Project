@@ -50,31 +50,31 @@ typ:
 			d:bool //wyłącznie true
 	- rejestracja:
 		* c:
-			h:register
-			d:string%string%string%string // uname, upass, backup_code, email
-		*s:
-			Jeżeli pomyślnie:
-			h:register
-			d:(bool)true
-			Jeżeli błąd
-			h:alert
-			d:string // wiadomość
+			- h:register
+			- d:string%string%string%string // uname, upass, backup_code, email
+		* s:
+			- Jeżeli pomyślnie:
+				* h:register
+				* d:(bool)true
+			- Jeżeli błąd
+				* h:alert
+				* d:string // wiadomość
 2. Lobby:
 	- stworzenie:
 		* c:
-			h:lcreate
-			d:null
+			- h:lcreate
+			- d:null
 		* s:
-			h:lcreate
-			d:int // enterCode
+			- h:lcreate
+			- d:int // enterCode
 	- dołączenie:
 		* c:
-			h:ljoin
-			d:int //enterCode
+			- h:ljoin
+			- d:int //enterCode
 		* s:
-			h:ljoin
-			d:bool
+			- h:ljoin
+			- d:bool
 	- lista graczy:
 		* s:
-			h:llist
-			d:string%string... // nazwy graczy 
+			- h:llist
+			- d:string%string... // nazwy graczy 
