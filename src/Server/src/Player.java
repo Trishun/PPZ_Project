@@ -196,7 +196,7 @@ public class Player extends Thread {
             int userID = resultSet.getInt("user_id");
             userID++;
             query = "INSERT INTO users (user_id, nickname, password, backup_code, email) VALUES (" +
-                    userID + ",'" + uName + "','" + uPasswd + ",'" + backupPin + ",'" + email + "')";
+                    userID + ",'" + uName + "','" + uPasswd + "','" + backupPin + "','" + email + "')";
             databaseCommunicator.executeUpdate(query);
             messageProvider.sendMessage(new Message("register", true));
 
