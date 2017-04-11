@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.Nullable;
-
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -16,6 +14,7 @@ public class Server {
 
     /**
      * Class constructor.
+     *
      * @param databaseCommunicator DatabaseCommunicator to be used.
      */
     Server(DatabaseCommunicator databaseCommunicator) {
@@ -48,18 +47,18 @@ public class Server {
     }
 
     private void stats() {
-        System.out.println("Players: "+String.valueOf(playerList.size()));
-        System.out.println("Lobbys: "+String.valueOf(lobbyList.size()));
+        System.out.println("Players: " + String.valueOf(playerList.size()));
+        System.out.println("Lobbys: " + String.valueOf(lobbyList.size()));
     }
 
     void disconnectPlayer(Player playerToDisconnect) {
-        for (Player player:playerList) {
+        for (Player player : playerList) {
             if (player == playerToDisconnect) {
                 playerList.remove(player);
             }
         }
-        for (Lobby lobby:lobbyList) {
-            for (Player player:lobby.getPlayers()) {
+        for (Lobby lobby : lobbyList) {
+            for (Player player : lobby.getPlayers()) {
                 if (player == playerToDisconnect) {
                     lobby.removeFromLobby(player);
                     refreshViewData(lobby);
@@ -106,12 +105,12 @@ public class Server {
             player.refreshViewData();
         }
     }
+
     ArrayList<Player> refreshViewData(Player player) {
         stats();
         return getLobbyById(player.getLobby()).getPlayers();
     }
 
-    @Nullable
     private Lobby getLobbyById(int id) {
         for (Lobby lobby : lobbyList) {
             if (lobby.getId() == id) {

@@ -73,6 +73,9 @@ class Message {
         }
         return null;
     }
+    boolean checkMultipleContent() {
+        return (stringContent.split("%").length>1);
+    }
 
     String getHeader() {
         return header;
@@ -92,6 +95,10 @@ class Message {
 
     String getStringContent() {
         return stringContent;
+    }
+
+    String[] getStringMultipleContent() {
+        return stringContent.split("%");
     }
 
     void setStringContent(String stringContent) {
