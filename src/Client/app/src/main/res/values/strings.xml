@@ -7,4 +7,7 @@
     <string name="password">Password</string>
     <string name="log_in">Log in!</string>
     <string name="register">Register</string>
+    <string name="credentials_not_specified">Nie podałeś nazwy użytkownika lub hasła</string>
+    <string name="wrong_credentials">Niewłaściwy login lub hasło!</string>
+    <string name="name">Name</string>
 </resources>
