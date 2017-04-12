@@ -12,7 +12,6 @@ import java.util.TimerTask;
 public class Player extends Thread {
 
     private Socket clientSocket;
-    private boolean pollFlag = true;
     private DatabaseCommunicator databaseCommunicator;
     private Server up;
     private int lobby;
@@ -20,7 +19,6 @@ public class Player extends Thread {
     private EncryptionProvider encryptionProvider;
     private int playerId = 0;
     private String playerName = "not logged";
-    Timer timer;
 
     /**
      * Class constructor
@@ -35,7 +33,6 @@ public class Player extends Thread {
         messageProvider = new MessageProvider(clientSocket);
         encryptionProvider = new EncryptionProvider();
         this.clientSocket = clientSocket;
-        this.timer = new Timer();
     }
 
     /**
@@ -43,7 +40,6 @@ public class Player extends Thread {
      * Main Player function.
      */
     public void run() {
-        timer.schedule(new PollTask(), 0, 30000);
         while (true) {
             Message message = messageProvider.getMessage();
             if (message != null) {
@@ -61,31 +57,12 @@ public class Player extends Thread {
                     // do stuff
                 } else if (header.equalsIgnoreCase("lleave")) {
                     // do stuff
-                } else if (header.equalsIgnoreCase("poll")) {
-                    pollFlag = true;
                 }
             }
             else {
                 disconnect();
                 break;
             }
-        }
-    }
-
-    /**
-     * Poll management task
-     */
-    class PollTask extends TimerTask {
-        @Override
-        public void run() {
-            if (!pollFlag)
-                disconnect();
-            pollFlag = false;
-            poll();
-        }
-
-        private void poll() {
-            messageProvider.sendPoll();
         }
     }
 
@@ -123,8 +100,6 @@ public class Player extends Thread {
      *
      */
     private void disconnect() {
-            pollFlag = false;
-            timer.cancel();
             up.disconnectPlayer(this);
         try {
             clientSocket.close();
@@ -209,7 +184,7 @@ public class Player extends Thread {
             resultSet.next();
             int userID = resultSet.getInt("user_id");
             userID++;
-            query = "INSERT INTO users (user_id, nickname, password, backup_code, email) VALUES (" +
+            query = "INSERT INTO accounts (user_id, nickname, password, backup_code, email) VALUES (" +
                     userID + ",'" + uName + "','" + uPasswd + "','" + backupPin + "','" + email + "')";
             databaseCommunicator.executeUpdate(query);
             messageProvider.sendMessage(new Message("register", true));
