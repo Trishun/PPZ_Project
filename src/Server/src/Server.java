@@ -122,6 +122,11 @@ public class Server {
         return getLobbyById(player.getLobby()).getPlayers();
     }
 
+    int getLobbyEnterCode(int id) {
+        Lobby lobby = getLobbyById(id);
+        return lobby.getEnterCode();
+    }
+
     private Lobby getLobbyById(int id) {
         for (Lobby lobby : lobbyList) {
             if (lobby.getId() == id) {

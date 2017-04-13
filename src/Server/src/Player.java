@@ -14,7 +14,7 @@ public class Player extends Thread {
     private Socket clientSocket;
     private DatabaseCommunicator databaseCommunicator;
     private Server up;
-    private int lobby;
+    private Integer lobby;
     private MessageProvider messageProvider;
     private EncryptionProvider encryptionProvider;
     private int playerId = 0;
@@ -52,11 +52,11 @@ public class Player extends Thread {
                 } else if (header.equalsIgnoreCase("register")) {
                     handleRegister(message);
                 } else if (header.equalsIgnoreCase("lcreate")) {
-                    // do stuff
+                    handleLCreate();
                 } else if (header.equalsIgnoreCase("ljoin")) {
-                    // do stuff
+                    handleLJoin(message);
                 } else if (header.equalsIgnoreCase("lleave")) {
-                    // do stuff
+                    handleLLeave();
                 }
             }
             else {
@@ -194,6 +194,23 @@ public class Player extends Thread {
         }
     }
 
+    private void handleLCreate() {
+        createLobby();
+        int enterCode = up.getLobbyEnterCode(getLobby());
+        messageProvider.sendMessage(new Message("lcreate", enterCode));
+    }
+
+    private void handleLJoin(Message message) {
+        int enterCode = message.getNumberContent();
+        joinLobby(enterCode);
+        messageProvider.sendMessage(new Message("ljoin", true));
+    }
+
+    private void handleLLeave() {
+        leaveLobby();
+        messageProvider.sendMessage(new Message("lleave", true));
+    }
+
     //Lobby management
 
     void createLobby() {
@@ -204,16 +221,17 @@ public class Player extends Thread {
         up.addToLobby(enterCode, this);
     }
 
-    void setLobby(int lobby) {
+    void setLobby(Integer lobby) {
         this.lobby = lobby;
     }
 
-    int getLobby() {
+    Integer getLobby() {
         return lobby;
     }
 
     void leaveLobby() {
         up.removeFromLobby(lobby, this);
+        setLobby(null);
     }
 
     ArrayList<Player> refreshViewData() {

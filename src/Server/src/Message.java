@@ -8,7 +8,7 @@ class Message {
     private String header;
     private Boolean boolContent;
     private String stringContent;
-    private Double numberContent;
+    private Integer numberContent;
     private ArrayList<Float> coordinatesContent;
 
 
@@ -26,7 +26,7 @@ class Message {
         setStringContent(stringContent);
     }
 
-    Message(String header, Double numberContent) {
+    Message(String header, Integer numberContent) {
         setHeader(header);
         setNumberContent(numberContent);
     }
@@ -46,7 +46,7 @@ class Message {
         setStringContent(stringContent);
     }
 
-    Message(Double numberContent) {
+    Message(int numberContent) {
         setHeader("number");
         setNumberContent(numberContent);
     }
@@ -101,15 +101,22 @@ class Message {
         return stringContent.split("%");
     }
 
+    void addToStringContent(String stringContent) {
+        if (getStringContent() != null)
+            setStringContent(getStringContent()+"%"+stringContent);
+        else
+            setStringContent(stringContent);
+    }
+
     void setStringContent(String stringContent) {
         this.stringContent = stringContent;
     }
 
-    Double getNumberContent() {
+    Integer getNumberContent() {
         return numberContent;
     }
 
-    void setNumberContent(Double numberContent) {
+    void setNumberContent(Integer numberContent) {
         this.numberContent = numberContent;
     }
 
