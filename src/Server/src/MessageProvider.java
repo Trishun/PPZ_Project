@@ -64,7 +64,7 @@ public class MessageProvider implements MessageProviderInterface{
                 message.setBoolContent(Boolean.valueOf(splittedData[1]));
                 break;
             case "number":
-                message.setNumberContent(Double.valueOf(splittedData[1]));
+                message.setNumberContent(Integer.valueOf(splittedData[1]));
                 break;
             case "coordinates":
                 String values[] = splittedData[1].split("%");
