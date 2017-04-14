@@ -34,7 +34,7 @@ public class MainMenuActivity extends Activity {
         logoutButton.setOnClickListener(new RelativeLayout.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent backToLoginIntent = new Intent(MainMenuActivity.this, LoginActivity.class);
+                Intent backToLoginIntent = new Intent(MainMenuActivity.this, StartActivity.class);
                 finishAffinity();
                 startActivity(backToLoginIntent);
             }

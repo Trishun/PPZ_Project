@@ -6,6 +6,11 @@ import android.os.AsyncTask;
  * Created by Patryk Ligenza on 11-Apr-17.
  */
 
+interface AuthenticationResultListener {
+    void onAuthenticationSuccess();
+    void onAuthenticationFailure();
+}
+
 class Authenticator extends AsyncTask<String, Void, String> {
 
     private AuthenticationResultListener caller;
@@ -38,8 +43,7 @@ class Authenticator extends AsyncTask<String, Void, String> {
     }
 
     private String constructLoginMessage(String name, String password) {
-        String request = "login&" + name + "%" + password;
-        return request;
+        return  "login&" + name + "%" + password;
     }
 
     void setCaller(AuthenticationResultListener caller) {

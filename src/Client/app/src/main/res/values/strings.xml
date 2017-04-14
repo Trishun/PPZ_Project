@@ -10,4 +10,7 @@
     <string name="credentials_not_specified">Nie podałeś nazwy użytkownika lub hasła</string>
     <string name="wrong_credentials">Niewłaściwy login lub hasło!</string>
     <string name="name">Name</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
