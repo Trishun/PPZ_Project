@@ -4,8 +4,9 @@
  */
 public class serverMain {
     public static void main(String args[]) {
-        DatabaseCommunicator databaseCommunicator = new DatabaseCommunicator();
-        Server mainServer = new Server(databaseCommunicator);
+        SettingsProvider settingsProvider = new SettingsProvider();
+        DatabaseCommunicator databaseCommunicator = new DatabaseCommunicator(settingsProvider);
+        Server mainServer = new Server(databaseCommunicator, settingsProvider);
 
         mainServer.Run();
     }

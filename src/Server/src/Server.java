@@ -12,14 +12,16 @@ public class Server {
     private static ArrayList<Lobby> lobbyList = new ArrayList<Lobby>();
     private static ArrayList<Player> playerList = new ArrayList<Player>();
     private DatabaseCommunicator databaseCommunicator;
+    private SettingsProvider settingsProvider;
 
     /**
      * Class constructor.
      *
      * @param databaseCommunicator DatabaseCommunicator to be used.
      */
-    Server(DatabaseCommunicator databaseCommunicator) {
+    Server(DatabaseCommunicator databaseCommunicator, SettingsProvider settingsProvider) {
         this.databaseCommunicator = databaseCommunicator;
+        this.settingsProvider = settingsProvider;
     }
 
     void Run() {
@@ -28,7 +30,7 @@ public class Server {
 
     private void incoming() {
         try {
-            ServerSocket serverSocket = new ServerSocket(9090);
+            ServerSocket serverSocket = new ServerSocket(Integer.valueOf(settingsProvider.get("port")));
 
             while (true) {
                 //Accept connection

@@ -9,18 +9,20 @@ import java.sql.Statement;
  */
 class DatabaseCommunicator {
 
+    private SettingsProvider settingsProvider;
+
     //Connection constants
-    //TODO
-    private String HOST = "jdbc:mysql://localhost:3306/ppz?autoReconnect=true&useSSL=false";
-    private String UNAME = "uname";
-    private String UPASSWD = "upasswd";
+    private String HOST;
+    private String UNAME;
+    private String UPASSWD;
     private Connection connection;
-    //END
 
     /**
      * Class constructor
      */
-    DatabaseCommunicator() {
+    DatabaseCommunicator(SettingsProvider settingsProvider) {
+        this.settingsProvider = settingsProvider;
+        setParams();
         try {
             //Driver setup - JDBC MYSQL
             try {
@@ -34,6 +36,12 @@ class DatabaseCommunicator {
         } catch (Exception e) {
             System.out.println("error: " + e);
         }
+    }
+
+    private void setParams() {
+        HOST = "jdbc:mysql://localhost:3306/"+settingsProvider.get("dbname")+"?autoReconnect=true&useSSL=false";
+        UNAME = settingsProvider.get("username");
+        UPASSWD = settingsProvider.get("password");
     }
 
     /**
