@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<settings>
+  <server>
+    <setting type="port">9090</setting>
+  </server>
+  <database>
+    <setting type="dbname">ppz</setting>
+    <setting type="username">uname</setting>
+    <setting type="password">upass</setting>
+  </database>
+</settings>
