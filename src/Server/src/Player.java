@@ -103,6 +103,7 @@ public class Player extends Thread {
             up.disconnectPlayer(this);
         try {
             clientSocket.close();
+            System.out.println("User " + getPlayerName() + " (" + getPlayerId() + ") logged off");
             Thread.currentThread().interrupt();
         } catch (IOException e) {
             System.out.println("Exception in Player/disconnect: " + e);
@@ -132,11 +133,15 @@ public class Player extends Thread {
             resultSet.next();
             if (resultSet.getString("password").equals(uPasswd)) {
                 messageProvider.sendMessage(new Message("login", true));
+                System.out.println("User " + uName + " (" + resultSet.getInt("user_id") + ") logged in");
                 setPlayerName(uName);
                 setPlayerId(resultSet.getInt("user_id"));
             } else {
                 messageProvider.sendMessage(new Message("alert", "Wrong password!"));
+                System.out.println("User " + uName + " (" + resultSet.getInt("user_id") + ") failed to login \nReason: Wrong Password.");
             }
+        } catch (ArrayIndexOutOfBoundsException e){
+            messageProvider.sendMessage(new Message("alert", "Internal error"));
         } catch (Exception e) {
             messageProvider.sendMessage(new Message("alert", String.valueOf(e)));
         }
@@ -232,9 +237,5 @@ public class Player extends Thread {
     void leaveLobby() {
         up.removeFromLobby(lobby, this);
         setLobby(null);
-    }
-
-    ArrayList<Player> refreshViewData() {
-        return up.refreshViewData(this);
     }
 }

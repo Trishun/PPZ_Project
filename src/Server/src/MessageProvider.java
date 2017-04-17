@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 /**
@@ -28,6 +29,8 @@ public class MessageProvider implements MessageProviderInterface{
         try {
             String data = socketReader.readLine();
             return processMessage(data);
+        } catch (SocketException e) {
+            System.out.println("Connention Closed");
         } catch (Exception e) {
             System.out.println("Exception in MessageProvider/getMessage: " + e);
         }
@@ -56,6 +59,9 @@ public class MessageProvider implements MessageProviderInterface{
 
     @Override
     public Message processMessage(String data) {
+
+        //Diagnostics
+        System.out.println("Message received: " + data);
         Message message = new Message();
         String splittedData[] = data.split("&");
         message.setHeader(splittedData[0]);
@@ -74,7 +80,11 @@ public class MessageProvider implements MessageProviderInterface{
                 message.setCoordinatesContent(al);
                 break;
             default:
-                message.setStringContent(splittedData[1]);
+                try {
+                    message.setStringContent(splittedData[1]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    message.setStringContent(null);
+                }
         }
         return message;
     }

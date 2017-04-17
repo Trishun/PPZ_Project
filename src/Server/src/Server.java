@@ -44,7 +44,6 @@ public class Server {
             }
         } catch (Exception e) {
             System.out.println("Error in Server/incoming: "+e);
-            return;
         }
     }
 
@@ -69,7 +68,6 @@ public class Server {
                 for (Player player : lobby.getPlayers()) {
                     if (player == playerToDisconnect) {
                         lobby.removeFromLobby(player);
-                        refreshViewData(lobby);
                         break;
                     }
                 }
@@ -84,7 +82,6 @@ public class Server {
         Lobby lobby = new Lobby(lobbyList.size(), initiator);
         lobbyList.add(lobby);
         System.out.println("Lobby " + lobby.getId() + " created!");
-        refreshViewData(lobby);
         return lobby.getId();
     }
 
@@ -101,25 +98,12 @@ public class Server {
         lobby.addToLobby(player);
         player.setLobby(lobby.getId());
         System.out.println("Player" + player.getPlayerName() + " (" + player.getPlayerId() + ") joined lobby " + lobby.getId());
-        refreshViewData(lobby);
     }
 
     void removeFromLobby(int lobbyId, Player player) {
         Lobby lobby = getLobbyById(lobbyId);
         lobby.removeFromLobby(player);
         System.out.println("Player" + player.getPlayerName() + " (" + player.getPlayerId() + ") left lobby " + lobbyId);
-        refreshViewData(lobby);
-    }
-
-    void refreshViewData(Lobby lobby) {
-        for (Player player : lobby.getPlayers()) {
-            player.refreshViewData();
-        }
-    }
-
-    ArrayList<Player> refreshViewData(Player player) {
-        stats();
-        return getLobbyById(player.getLobby()).getPlayers();
     }
 
     int getLobbyEnterCode(int id) {
