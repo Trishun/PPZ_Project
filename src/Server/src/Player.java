@@ -1,9 +1,6 @@
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * PPZ
@@ -78,7 +75,7 @@ public class Player extends Thread {
     /**
      * @param playerId value got from DB
      */
-    public void setPlayerId(int playerId) {
+    private void setPlayerId(int playerId) {
         this.playerId = playerId;
     }
 
@@ -92,7 +89,7 @@ public class Player extends Thread {
     /**
      * @param playerName value got from DB
      */
-    public void setPlayerName(String playerName) {
+    private void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
 
@@ -218,7 +215,7 @@ public class Player extends Thread {
 
     //Lobby management
 
-    void createLobby() {
+    private void createLobby() {
         setLobby(up.createLobby(this));
     }
 
@@ -230,11 +227,11 @@ public class Player extends Thread {
         this.lobby = lobby;
     }
 
-    Integer getLobby() {
+    private Integer getLobby() {
         return lobby;
     }
 
-    void leaveLobby() {
+    private void leaveLobby() {
         up.removeFromLobby(lobby, this);
         setLobby(null);
     }

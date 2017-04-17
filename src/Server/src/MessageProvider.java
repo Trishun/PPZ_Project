@@ -60,8 +60,8 @@ public class MessageProvider implements MessageProviderInterface{
     @Override
     public Message processMessage(String data) {
 
-        //Diagnostics
-        System.out.println("Message received: " + data);
+//        Diagnostics
+//        System.out.println("Message received: " + data);
         Message message = new Message();
         String splittedData[] = data.split("&");
         message.setHeader(splittedData[0]);

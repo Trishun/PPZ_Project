@@ -55,7 +55,7 @@ class Message {
         setHeader("coordinates");
         setCoordinatesContent(coordinatesContent);
     }
-    public Object getContent() {
+    Object getContent() {
         if (getBoolContent() != null)
             return getBoolContent();
         else if (getStringContent() != null) {
@@ -85,7 +85,7 @@ class Message {
         this.header = header;
     }
 
-    Boolean getBoolContent() {
+    private Boolean getBoolContent() {
         return boolContent;
     }
 
@@ -93,7 +93,7 @@ class Message {
         this.boolContent = boolContent;
     }
 
-    String getStringContent() {
+    private String getStringContent() {
         return stringContent;
     }
 
@@ -120,7 +120,7 @@ class Message {
         this.numberContent = numberContent;
     }
 
-    ArrayList<Float> getCoordinatesContent() {
+    private ArrayList<Float> getCoordinatesContent() {
         return coordinatesContent;
     }
 

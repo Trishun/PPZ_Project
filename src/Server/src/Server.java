@@ -95,21 +95,25 @@ public class Server {
         }
     }
 
-    void addToLobby(Lobby lobby, Player player) {
+    private void addToLobby(Lobby lobby, Player player) {
         lobby.addToLobby(player);
         player.setLobby(lobby.getId());
-        System.out.println("Player" + player.getPlayerName() + " (" + player.getPlayerId() + ") joined lobby " + lobby.getId());
+        System.out.println("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") joined lobby " + lobby.getId());
     }
 
     void removeFromLobby(int lobbyId, Player player) {
         Lobby lobby = getLobbyById(lobbyId);
         lobby.removeFromLobby(player);
-        System.out.println("Player" + player.getPlayerName() + " (" + player.getPlayerId() + ") left lobby " + lobbyId);
+        System.out.println("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") left lobby " + lobbyId);
     }
 
-    int getLobbyEnterCode(int id) {
+    Integer getLobbyEnterCode(int id) {
         Lobby lobby = getLobbyById(id);
-        return lobby.getEnterCode();
+        try {
+            return lobby.getEnterCode();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     private Lobby getLobbyById(int id) {
