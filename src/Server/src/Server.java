@@ -82,6 +82,7 @@ public class Server {
         Lobby lobby = new Lobby(lobbyList.size(), initiator);
         lobbyList.add(lobby);
         System.out.println("Lobby " + lobby.getId() + " created!");
+        stats();
         return lobby.getId();
     }
 

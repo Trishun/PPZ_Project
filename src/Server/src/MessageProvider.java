@@ -72,6 +72,9 @@ public class MessageProvider implements MessageProviderInterface{
             case "number":
                 message.setNumberContent(Integer.valueOf(splittedData[1]));
                 break;
+            case "ljoin":
+                message.setNumberContent(Integer.valueOf(splittedData[1]));
+                break;
             case "coordinates":
                 String values[] = splittedData[1].split("%");
                 ArrayList<Float> al = new ArrayList<>();
