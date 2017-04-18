@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 
 /**
- * PPZ
+ * Players' shared content
  * Created by PD on 05.04.2017.
  */
 public class Server {
 
-    private static ArrayList<Lobby> lobbyList = new ArrayList<Lobby>();
-    private static ArrayList<Player> playerList = new ArrayList<Player>();
+    private static ArrayList<Lobby> lobbyList = new ArrayList<>();
+    private static ArrayList<Player> playerList = new ArrayList<>();
     private DatabaseCommunicator databaseCommunicator;
     private SettingsProvider settingsProvider;
 
@@ -78,6 +78,7 @@ public class Server {
             System.out.println("Exception 2 in Server/disconnectPlayer: " + ee);
         }
         System.out.println("Player " + playerToDisconnect.getPlayerName() + " (" + playerToDisconnect.getPlayerId() + ") disconnected");
+        stats();
     }
 
     int createLobby(Player initiator) {
@@ -132,7 +133,7 @@ public class Server {
 class Lobby {
     private int id;
     private Player initiator;
-    private ArrayList<Player> players = new ArrayList<Player>();
+    private ArrayList<Player> players = new ArrayList<>();
     private int enterCode;
 
     Lobby(int id, Player initiator) {

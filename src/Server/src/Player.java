@@ -3,7 +3,7 @@ import java.net.Socket;
 import java.sql.ResultSet;
 
 /**
- * PPZ
+ * Thread (player) handing class
  * Created by PD on 05.04.2017.
  */
 public class Player extends Thread {
@@ -48,6 +48,10 @@ public class Player extends Thread {
                     handleLogin(message);
                 } else if (header.equalsIgnoreCase("register")) {
                     handleRegister(message);
+                } else if (header.equalsIgnoreCase("newpass")){
+                    handleNewPass(message);
+                } else if (header.equalsIgnoreCase("changepass")){
+                    handleChangePass(message);
                 } else if (header.equalsIgnoreCase("lcreate")) {
                     handleLCreate();
                 } else if (header.equalsIgnoreCase("ljoin")) {
@@ -191,6 +195,56 @@ public class Player extends Thread {
             databaseCommunicator.executeUpdate(query);
             messageProvider.sendMessage(new Message("register", true));
 
+        } catch (Exception e) {
+            messageProvider.sendMessage(new Message("alert", String.valueOf(e)));
+        }
+    }
+
+    private void handleNewPass(Message message) {
+        try {
+            String splitted[] = message.getStringMultipleContent();
+            String email = splitted[0];
+            String uPasswd = encryptionProvider.encrypt(splitted[1]);
+            String backupPin = splitted[2];
+
+            String query = "SELECT * FROM accounts WHERE email = '" + email + "'";
+            ResultSet resultSet = databaseCommunicator.executeQuery(query);
+            if (!resultSet.isBeforeFirst()) {
+                messageProvider.sendMessage(new Message("alert", "e-mail not found!"));
+                return;
+            }
+            if (resultSet.getString("backup_code").equals(backupPin)) {
+                query = "UPDATE accounts SET password='"+uPasswd+"' WHERE email='"+email+"'";
+                databaseCommunicator.executeUpdate(query);
+                messageProvider.sendMessage(new Message("newpass", true));
+            } else {
+                messageProvider.sendMessage(new Message("alert", "Wrong code!"));
+            }
+        } catch (Exception e) {
+            messageProvider.sendMessage(new Message("alert", String.valueOf(e)));
+        }
+    }
+
+    private void handleChangePass(Message message) {
+        try {
+            String splitted[] = message.getStringMultipleContent();
+            String email = splitted[0];
+            String oldPassword = encryptionProvider.encrypt(splitted[1]);
+            String newPassword = encryptionProvider.encrypt(splitted[2]);
+
+            String query = "SELECT * FROM accounts WHERE email = '" + email + "'";
+            ResultSet resultSet = databaseCommunicator.executeQuery(query);
+            if (!resultSet.isBeforeFirst()) {
+                messageProvider.sendMessage(new Message("alert", "e-mail not found!"));
+                return;
+            }
+            if (resultSet.getString("password").equals(oldPassword)) {
+                query = "UPDATE accounts SET password='"+newPassword+"' WHERE email='"+email+"'";
+                databaseCommunicator.executeUpdate(query);
+                messageProvider.sendMessage(new Message("changepass", true));
+            } else {
+                messageProvider.sendMessage(new Message("alert", "Wrong password!"));
+            }
         } catch (Exception e) {
             messageProvider.sendMessage(new Message("alert", String.valueOf(e)));
         }
