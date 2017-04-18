@@ -36,7 +36,7 @@ public class Server {
                 //Accept connection
                 System.out.println("Oczekiwanie na polaczenie...");
                 Socket socket = serverSocket.accept();
-                System.out.println("Połączono!");
+                System.out.println("Połączono z " + socket.getRemoteSocketAddress().toString());
 
                 //Create thread to handle connection
                 Player player = new Player(socket, databaseCommunicator, this);
