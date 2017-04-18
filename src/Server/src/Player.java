@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  * Thread (player) handing class
@@ -288,5 +289,14 @@ public class Player extends Thread {
     private void leaveLobby() {
         up.removeFromLobby(lobby, this);
         setLobby(null);
+    }
+
+    void updatePlayers(ArrayList<Player> players) {
+        Message message = new Message();
+        message.setHeader("players");
+        for (Player player : players) {
+            message.addToStringContent(player.getPlayerName());
+        }
+        messageProvider.sendMessage(message);
     }
 }

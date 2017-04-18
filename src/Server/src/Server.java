@@ -157,10 +157,16 @@ class Lobby {
 
     void addToLobby(Player newPlayer) {
         players.add(newPlayer);
+        for (Player player: players) {
+            player.updatePlayers(players);
+        }
     }
 
     void removeFromLobby(Player player) {
         players.remove(player);
+        for (Player player1: players) {
+            player1.updatePlayers(players);
+        }
     }
 
     ArrayList<Player> getPlayers() {
