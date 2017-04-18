@@ -1,5 +1,6 @@
 package pl.locationbasedgame;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,8 +11,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    ViewPagerAdapter(FragmentManager fragmentManager) {
+    private Context context;
+
+    ViewPagerAdapter(FragmentManager fragmentManager, Context context) {
         super(fragmentManager);
+        this.context = context;
     }
 
     @Override
@@ -28,8 +32,8 @@ class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        if (position == 0) return "Logowanie";
-        else if (position == 1) return "Rejestracja";
+        if (position == 0) return context.getString(R.string.logon);
+        else if (position == 1) return context.getString(R.string.registration);
         return super.getPageTitle(position);
     }
 }
