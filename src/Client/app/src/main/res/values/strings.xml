@@ -18,4 +18,6 @@
     <string name="registration_success">Rejestracja przebiegła pomyślnie!</string>
     <string name="fill_form">Wypełnij wszystkie pola formularza rejestracji</string>
     <string name="registration_error">Wystąpił błąd przy rejestracji</string>
+    <string name="password_repeat">Repeat password</string>
+    <string name="passwords_dont_match">Wpisane hasła nie są identyczne!</string>
 </resources>

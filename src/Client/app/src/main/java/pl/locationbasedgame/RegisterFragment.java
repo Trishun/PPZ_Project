@@ -13,6 +13,11 @@ import android.widget.Toast;
 // TODO: 15-Apr-17 RESOLVE CODE CODE DUPLICATION SOMEHOW
 public class RegisterFragment extends Fragment implements RegistrationResultListener {
 
+    private EditText nameEditText;
+    private EditText passwordEditText;
+    private EditText repeatedPasswordEditText;
+    private EditText mailEditText;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_register, container, false);
@@ -21,7 +26,15 @@ public class RegisterFragment extends Fragment implements RegistrationResultList
     @Override
     public void onStart() {
         super.onStart();
+        getEditTexts();
         assignListeners();
+    }
+
+    private void getEditTexts() {
+        repeatedPasswordEditText = (EditText) getView().findViewById(R.id.et_repeated_password);
+        nameEditText = (EditText) getView().findViewById(R.id.et_name);
+        mailEditText = (EditText) getView().findViewById(R.id.et_mail);
+        passwordEditText = (EditText) getView().findViewById(R.id.et_password);
     }
 
     private void assignListeners() {
@@ -34,20 +47,24 @@ public class RegisterFragment extends Fragment implements RegistrationResultList
         });
     }
 
-    private void register() {
-        EditText nameEditText = (EditText) getView().findViewById(R.id.et_name);
-        EditText passwordEditText = (EditText) getView().findViewById(R.id.et_password);
-        EditText mailEditText = (EditText) getView().findViewById(R.id.et_mail);
+    private boolean areBothPasswordsNotEqual(String password, String repeatedPassword) {
+        return !password.equals(repeatedPassword);
+    }
 
+    private void register() {
         String name = nameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
+        String repeatedPassword = repeatedPasswordEditText.getText().toString();
         String mail = mailEditText.getText().toString();
 
-        if (areSpecified(name, password, mail)) {
-            sendLoginRequestToServer(name, password, mail);
-        }
-        else {
-            Toast.makeText(getActivity(), R.string.fill_form, Toast.LENGTH_SHORT).show();
+        if (areSpecified(name, password, repeatedPassword, mail)) {
+            if (areBothPasswordsNotEqual(password, repeatedPassword)) {
+                Toast.makeText(getContext(), R.string.passwords_dont_match, Toast.LENGTH_SHORT).show();
+            } else {
+                sendLoginRequestToServer(name, password, mail);
+            }
+        } else {
+            Toast.makeText(getContext(), R.string.fill_form, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -57,10 +74,9 @@ public class RegisterFragment extends Fragment implements RegistrationResultList
         registrator.execute(name, password, mail);
     }
 
-    private boolean areSpecified(String name, String password, String mail) {
-        return !name.isEmpty() && !password.isEmpty() && !mail.isEmpty();
+    private boolean areSpecified(String name, String password, String repeated, String mail) {
+        return !name.isEmpty() && !password.isEmpty() && !repeated.isEmpty() && !mail.isEmpty();
     }
-
 
     @Override
     public void onRegistrationSuccess() {
