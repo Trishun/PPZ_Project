@@ -128,49 +128,4 @@ public class Server {
         }
         return null;
     }
-
-}
-
-class Lobby {
-    private int id;
-    private Player initiator;
-    private ArrayList<Player> players = new ArrayList<>();
-    private int enterCode;
-
-    Lobby(int id, Player initiator) {
-        this.id = id;
-        this.initiator = initiator;
-        enterCode = enterCodeGeneration();
-        players.add(initiator);
-    }
-
-    private int enterCodeGeneration() {
-        return initiator.hashCode()/10000;
-    }
-
-    int getEnterCode() {
-        return enterCode;
-    }
-
-    int getId() {
-        return id;
-    }
-
-    void addToLobby(Player newPlayer) {
-        players.add(newPlayer);
-        for (Player player: players) {
-            player.updatePlayers(players);
-        }
-    }
-
-    void removeFromLobby(Player player) {
-        players.remove(player);
-        for (Player player1: players) {
-            player1.updatePlayers(players);
-        }
-    }
-
-    ArrayList<Player> getPlayers() {
-        return players;
-    }
 }
