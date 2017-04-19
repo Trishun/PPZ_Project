@@ -16,7 +16,7 @@ public class StartActivity extends AppCompatActivity {
 
     private void setupTabNavigation() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.vp_start_screen_pager);
-        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
+        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),getApplicationContext()));
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tl_start_screen_tabs);
         tabLayout.setupWithViewPager(viewPager);
