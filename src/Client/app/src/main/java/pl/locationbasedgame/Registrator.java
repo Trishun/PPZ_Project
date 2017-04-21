@@ -14,6 +14,7 @@ interface RegistrationResultListener {
 class Registrator extends AsyncTask<String, Void, String> {
 
     private RegistrationResultListener caller;
+    private SocketHandler handler;
 
     @Override
     protected String doInBackground(String... params) {
@@ -21,11 +22,8 @@ class Registrator extends AsyncTask<String, Void, String> {
         String password = params[1];
         String mail = params[2];
 
-        ServerHandler serverHandler = new ServerHandler();
         String message = constructRegistrationMessage(name, password, mail);
-        String response = serverHandler.sendMessageAndGetResponse(message);
-        serverHandler.closeSocket();
-        return response;
+        return handler.sendMessageAndGetResponse(message);
     }
 
     @Override
@@ -49,5 +47,9 @@ class Registrator extends AsyncTask<String, Void, String> {
 
     void setCaller(RegistrationResultListener caller) {
         this.caller = caller;
+    }
+
+    void setHandler(SocketHandler handler) {
+        this.handler = handler;
     }
 }

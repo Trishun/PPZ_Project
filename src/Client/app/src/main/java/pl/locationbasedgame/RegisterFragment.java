@@ -47,10 +47,6 @@ public class RegisterFragment extends Fragment implements RegistrationResultList
         });
     }
 
-    private boolean areBothPasswordsNotEqual(String password, String repeatedPassword) {
-        return !password.equals(repeatedPassword);
-    }
-
     private void register() {
         String name = nameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
@@ -61,21 +57,19 @@ public class RegisterFragment extends Fragment implements RegistrationResultList
             if (areBothPasswordsNotEqual(password, repeatedPassword)) {
                 Toast.makeText(getContext(), R.string.passwords_dont_match, Toast.LENGTH_SHORT).show();
             } else {
-                sendLoginRequestToServer(name, password, mail);
+                StartActivity.getService().sendRegisterRequestToServer(name, password, mail, this);
             }
         } else {
             Toast.makeText(getContext(), R.string.fill_form, Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void sendLoginRequestToServer(String name, String password, String mail) {
-        Registrator registrator = new Registrator();
-        registrator.setCaller(this);
-        registrator.execute(name, password, mail);
-    }
-
     private boolean areSpecified(String name, String password, String repeated, String mail) {
         return !name.isEmpty() && !password.isEmpty() && !repeated.isEmpty() && !mail.isEmpty();
+    }
+
+    private boolean areBothPasswordsNotEqual(String password, String repeatedPassword) {
+        return !password.equals(repeatedPassword);
     }
 
     @Override
