@@ -2,7 +2,6 @@ package pl.locationbasedgame;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,10 +47,10 @@ public class LoginFragment extends Fragment implements AuthenticationResultListe
         String password = passwordEditText.getText().toString();
 
         if (areSpecified(name, password)) {
-            sendLoginRequestToServer(name, password);
+            StartActivity.getService().sendLoginRequestToServer(name, password, this);
         }
         else {
-            Toast.makeText(getActivity(), R.string.credentials_not_specified, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.credentials_not_specified, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -62,12 +61,6 @@ public class LoginFragment extends Fragment implements AuthenticationResultListe
         return !name.isEmpty() && !password.isEmpty();
     }
 
-    private void sendLoginRequestToServer(String name, String password) {
-        Authenticator authenticator = new Authenticator();
-        authenticator.setCaller(this);
-        authenticator.execute(name, password);
-    }
-
     @Override
     public void onAuthenticationSuccess() {
         Log.i(TAG, "OK");
@@ -76,13 +69,12 @@ public class LoginFragment extends Fragment implements AuthenticationResultListe
 
     @Override
     public void onAuthenticationFailure() {
-        Toast.makeText(getActivity(), R.string.wrong_credentials, Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), R.string.wrong_credentials, Toast.LENGTH_LONG).show();
         Log.i(TAG, "FAIL");
     }
 
     private void goToMainMenu() {
         Intent mainMenuIntent = new Intent(getActivity(), MainMenuActivity.class);
-        getActivity().finish();
         startActivity(mainMenuIntent);
     }
 }

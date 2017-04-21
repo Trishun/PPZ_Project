@@ -12,14 +12,15 @@ import java.net.Socket;
  * Created by Patryk Ligenza on 11-Apr-17.
  */
 
-class ServerHandler {
+class SocketHandler {
 
     private String TAG = "SOCKET";
     private Socket socket;
 
-    ServerHandler() {
+    SocketHandler() {
         try {
             socket = new Socket(ConnectionConfig.IP, ConnectionConfig.PORT);
+            Log.i(TAG, "SOCKET CONNECTED");
         } catch (IOException e) {
             e.printStackTrace();
             Log.i(TAG, "CONNECTING FAILURE");
@@ -58,16 +59,13 @@ class ServerHandler {
         BufferedReader reader = new BufferedReader(inputStream);
         String response = reader.readLine();
         Log.i("RESPONSE", response);
-
-        reader.close();
-        inputStream.close();
-
         return response;
     }
 
     void closeSocket() {
         try {
             socket.close();
+            Log.i(TAG, "SOCKET CLOSED");
         } catch (IOException e) {
             e.printStackTrace();
             Log.i(TAG, "CLOSURE ERROR");

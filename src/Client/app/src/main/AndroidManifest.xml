@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainMenuActivity" />
-        <activity android:name=".StartActivity"
+        <activity
+            android:name=".StartActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,6 +23,11 @@
         </activity>
         <activity android:name=".GameActivity" />
         <activity android:name=".SettingsActivity" />
+
+        <service
+            android:name=".CommunicationService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

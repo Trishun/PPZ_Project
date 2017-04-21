@@ -14,17 +14,15 @@ interface AuthenticationResultListener {
 class Authenticator extends AsyncTask<String, Void, String> {
 
     private AuthenticationResultListener caller;
+    private SocketHandler handler;
 
     @Override
     protected String doInBackground(String... params) {
         String name = params[0];
         String password = params[1];
 
-        ServerHandler serverHandler = new ServerHandler();
         String message = constructLoginMessage(name, password);
-        String response = serverHandler.sendMessageAndGetResponse(message);
-        serverHandler.closeSocket();
-        return response;
+        return handler.sendMessageAndGetResponse(message);
     }
 
     @Override
@@ -48,5 +46,9 @@ class Authenticator extends AsyncTask<String, Void, String> {
 
     void setCaller(AuthenticationResultListener caller) {
         this.caller = caller;
+    }
+
+    void setHandler(SocketHandler handler) {
+        this.handler = handler;
     }
 }
