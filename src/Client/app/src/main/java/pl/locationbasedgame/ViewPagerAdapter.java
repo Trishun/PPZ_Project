@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 /**
  * Created by Patryk Ligenza on 14-Apr-17.
@@ -12,16 +13,21 @@ import android.support.v4.app.FragmentPagerAdapter;
 class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private Context context;
+    private LoginFragment loginFragment;
+    private RegisterFragment registerFragment;
 
-    ViewPagerAdapter(FragmentManager fragmentManager, Context context) {
+    ViewPagerAdapter(FragmentManager fragmentManager, Context context, LoginFragment loginFragment,
+                     RegisterFragment registerFragment) {
         super(fragmentManager);
         this.context = context;
+        this.loginFragment = loginFragment;
+        this.registerFragment = registerFragment;
     }
 
     @Override
     public Fragment getItem(int position) {
-        if (position == 0) return new LoginFragment();
-        else if (position == 1) return new RegisterFragment();
+        if (position == 0) return loginFragment;
+        else if (position == 1) return registerFragment;
         return null;
     }
 

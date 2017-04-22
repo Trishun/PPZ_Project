@@ -13,12 +13,18 @@ public class CommunicationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        new Thread(new Runnable() {
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 socketHandler = new SocketHandler();
             }
-        }).start();
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

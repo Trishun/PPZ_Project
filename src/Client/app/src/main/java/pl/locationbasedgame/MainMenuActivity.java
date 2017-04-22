@@ -2,7 +2,9 @@ package pl.locationbasedgame;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -35,10 +37,24 @@ public class MainMenuActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent backToLoginIntent = new Intent(MainMenuActivity.this, StartActivity.class);
+                deleteStoredUser();
                 finishAffinity();
                 startActivity(backToLoginIntent);
             }
         });
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishAffinity();
+    }
+
+    private void deleteStoredUser() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("name");
+        editor.remove("password");
+        editor.apply();
     }
 }

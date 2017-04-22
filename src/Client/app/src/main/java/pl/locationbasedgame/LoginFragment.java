@@ -1,7 +1,10 @@
 package pl.locationbasedgame;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +28,7 @@ public class LoginFragment extends Fragment implements AuthenticationResultListe
         super.onStart();
         assignListeners();
     }
+
 
     private void assignListeners() {
         Button loginButton = (Button) getView().findViewById(R.id.btn_login);
@@ -62,10 +66,12 @@ public class LoginFragment extends Fragment implements AuthenticationResultListe
     }
 
     @Override
-    public void onAuthenticationSuccess() {
+    public void onAuthenticationSuccess(String name, String password) {
         Log.i(TAG, "OK");
+        storeUser(name, password);
         goToMainMenu();
     }
+
 
     @Override
     public void onAuthenticationFailure() {
@@ -76,5 +82,34 @@ public class LoginFragment extends Fragment implements AuthenticationResultListe
     private void goToMainMenu() {
         Intent mainMenuIntent = new Intent(getActivity(), MainMenuActivity.class);
         startActivity(mainMenuIntent);
+    }
+
+    // Preferences involving methods
+
+    /**
+     * Tries to log with previously logged player's credentials.
+     *
+     * @return true if automatic login request was dispatched to perform, false otherwise
+     */
+    boolean autoLogin(Context context) {
+        // TODO: 21-Apr-17 Consider safer way of storing passwords locally
+        Log.i(TAG, "AUTO LOGIN");
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String name = preferences.getString("name", "");
+        String password = preferences.getString("password", "");
+        if (!name.equals("") && !password.equals("")) {
+            StartActivity.getService().sendLoginRequestToServer(name, password, this);
+            return true;
+        }
+        return false;
+    }
+
+    private void storeUser(String name, String password) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity()
+                .getApplicationContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("name", name);
+        editor.putString("password", password);
+        editor.apply();
     }
 }
