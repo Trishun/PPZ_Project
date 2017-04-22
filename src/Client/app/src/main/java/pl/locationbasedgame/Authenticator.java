@@ -7,7 +7,7 @@ import android.os.AsyncTask;
  */
 
 interface AuthenticationResultListener {
-    void onAuthenticationSuccess();
+    void onAuthenticationSuccess(String name, String password);
     void onAuthenticationFailure();
 }
 
@@ -15,11 +15,13 @@ class Authenticator extends AsyncTask<String, Void, String> {
 
     private AuthenticationResultListener caller;
     private SocketHandler handler;
+    private String name;
+    private String password;
 
     @Override
     protected String doInBackground(String... params) {
-        String name = params[0];
-        String password = params[1];
+        name = params[0];
+        password = params[1];
 
         String message = constructLoginMessage(name, password);
         return handler.sendMessageAndGetResponse(message);
@@ -32,8 +34,9 @@ class Authenticator extends AsyncTask<String, Void, String> {
     }
 
     private void processResponse(String response) {
+        if (response == null) return;
         if (response.contains("true")) {
-            caller.onAuthenticationSuccess();
+            caller.onAuthenticationSuccess(name, password);
         }
         else {
             caller.onAuthenticationFailure();
