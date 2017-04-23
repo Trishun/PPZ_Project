@@ -78,24 +78,20 @@ gdzie `%params%` to `-m`, Opis zmiany(typ, stan #1234), koniecznie ze spacją.
 		```
 		* Serwer:
 		```javascript
-		{ "lobbyId" : 303 }
+		{ "enterCode" : 303 }
 		```
 		
 	- dołączenie:
 		* Klient:
 		```javascript
-		{ "header" : "ljoin", "lobbyId" : 102 }
+		{ "header" : "ljoin", "enterCode" : 102 }
 		```
 		* Serwer:
 		```javascript
 		{ "ljoin" : "true"/"false" }
 		```
 		
-	- lista graczy:
-		* Klient:
-		```javascript
-		{ "header" : "llist" }
-		```
+	- lista graczy: (odświeżana automatycznie przez serwer)
 		* Serwer:
 		```javascript
 		{ "llist" : [{ "name" : "PlayerTaki" }, { "name", "PlayerŚmaki" }, ...] } 

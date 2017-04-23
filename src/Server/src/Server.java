@@ -89,13 +89,14 @@ public class Server {
         return lobby.getId();
     }
 
-    void addToLobby(int enterCode, Player player) {
+    boolean addToLobby(int enterCode, Player player) {
         for (Lobby lobby : lobbyList) {
             if (enterCode == lobby.getEnterCode()) {
                 addToLobby(lobby, player);
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     private void addToLobby(Lobby lobby, Player player) {

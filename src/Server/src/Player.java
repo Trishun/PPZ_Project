@@ -1,3 +1,5 @@
+import org.json.simple.JSONObject;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.ResultSet;
@@ -39,9 +41,9 @@ public class Player extends Thread {
      */
     public void run() {
         while (true) {
-            Message message = messageProvider.getMessage();
+            JSONObject message = messageProvider.getMessage();
             if (message != null) {
-                String header = message.getHeader();
+                String header = String.valueOf(message.get("header"));
                 if (header.equalsIgnoreCase("endcon")) {
                     disconnect();
                     return;
@@ -120,32 +122,41 @@ public class Player extends Thread {
      *
      * @param message String message which method uses
      */
-    private void handleLogin(Message message) {
+    private void handleLogin(JSONObject message) {
+        JSONObject response = new JSONObject();
         try {
-            String splitted[] = message.getStringMultipleContent();
-            String uName = splitted[0];
-            String uPasswd = encryptionProvider.encrypt(splitted[1]);
+            String uName = String.valueOf(message.get("uname"));
+            String uPasswd = encryptionProvider.encrypt(String.valueOf(message.get("upass")));
 
             String query = "SELECT * FROM accounts WHERE nickname = '" + uName + "'";
             ResultSet resultSet = databaseCommunicator.executeQuery(query);
             if (!resultSet.isBeforeFirst()) {
-                messageProvider.sendMessage(new Message("alert", "Wrong username!"));
+                response.put("login", false);
+                response.put("alert", "Wrong username!");
+                messageProvider.sendMessage(response);
                 return;
             }
             resultSet.next();
             if (resultSet.getString("password").equals(uPasswd)) {
-                messageProvider.sendMessage(new Message("login", true));
+                response.put("login", true);
+                messageProvider.sendMessage(response);
                 System.out.println("User " + uName + " (" + resultSet.getInt("user_id") + ") logged in");
                 setPlayerName(uName);
                 setPlayerId(resultSet.getInt("user_id"));
             } else {
-                messageProvider.sendMessage(new Message("alert", "Wrong password!"));
+                response.put("login", false);
+                response.put("alert", "Wrong password!");
+                messageProvider.sendMessage(response);
                 System.out.println("User " + uName + " (" + resultSet.getInt("user_id") + ") failed to login \nReason: Wrong Password.");
             }
         } catch (ArrayIndexOutOfBoundsException e){
-            messageProvider.sendMessage(new Message("alert", "Internal error"));
+            response.put("login", false);
+            response.put("alert", "Internal error");
+            messageProvider.sendMessage(response);
         } catch (Exception e) {
-            messageProvider.sendMessage(new Message("alert", String.valueOf(e)));
+            response.put("login", false);
+            response.put("alert", String.valueOf(e));
+            messageProvider.sendMessage(response);
         }
     }
 
@@ -155,19 +166,21 @@ public class Player extends Thread {
      *
      * @param message String message which method uses
      */
-    private void handleRegister(Message message) {
+    private void handleRegister(JSONObject message) {
+        JSONObject response = new JSONObject();
         try {
-            String splitted[] = message.getStringMultipleContent();
-            String uName = splitted[0];
-            String uPasswd = encryptionProvider.encrypt(splitted[1]);
-            String backupPin = splitted[2];
-            String email = splitted[3];
+            String uName = String.valueOf(message.get("uname"));
+            String uPasswd = encryptionProvider.encrypt(String.valueOf(message.get("upass")));
+            String backupPin = String.valueOf(message.get("backupPin"));
+            String email = String.valueOf(message.get("email"));
 
             //Check if email already registered
             String query = "SELECT * FROM accounts WHERE email = '" + email + "'";
             ResultSet resultSet = databaseCommunicator.executeQuery(query);
             if (resultSet.isBeforeFirst()) {
-                messageProvider.sendMessage(new Message("alert", "e-mail already registered!"));
+                response.put("register", false);
+                response.put("alert", "e-mail already registered!");
+                messageProvider.sendMessage(response);
                 return;
             }
 
@@ -175,7 +188,9 @@ public class Player extends Thread {
             query = "SELECT * FROM accounts WHERE nickname = '" + uName + "'";
             resultSet = databaseCommunicator.executeQuery(query);
             if (resultSet.isBeforeFirst()) {
-                messageProvider.sendMessage(new Message("alert", "Username taken!"));
+                response.put("register", false);
+                response.put("alert", "Username taken");
+                messageProvider.sendMessage(response);
                 return;
             }
 
@@ -184,7 +199,9 @@ public class Player extends Thread {
             query = "SELECT user_id FROM accounts WHERE user_id = (SELECT max(user_id) FROM accounts)";
             resultSet = databaseCommunicator.executeQuery(query);
             if (!resultSet.isBeforeFirst()) {
-                messageProvider.sendMessage(new Message("alert", "Internal database error"));
+                response.put("register", false);
+                response.put("alert", "Internal database error");
+                messageProvider.sendMessage(response);
                 return;
             }
             //Insert user info into table
@@ -194,78 +211,105 @@ public class Player extends Thread {
             query = "INSERT INTO accounts (user_id, nickname, password, backup_code, email) VALUES (" +
                     userID + ",'" + uName + "','" + uPasswd + "','" + backupPin + "','" + email + "')";
             databaseCommunicator.executeUpdate(query);
-            messageProvider.sendMessage(new Message("register", true));
+            response.put("register", true);
+            messageProvider.sendMessage(response);
 
         } catch (Exception e) {
-            messageProvider.sendMessage(new Message("alert", String.valueOf(e)));
+            response.put("register", false);
+            response.put("alert", String.valueOf(e));
+            messageProvider.sendMessage(response);
         }
     }
 
-    private void handleNewPass(Message message) {
+    private void handleNewPass(JSONObject message) {
+        JSONObject response = new JSONObject();
         try {
-            String splitted[] = message.getStringMultipleContent();
-            String email = splitted[0];
-            String uPasswd = encryptionProvider.encrypt(splitted[1]);
-            String backupPin = splitted[2];
+            String uPasswd = encryptionProvider.encrypt(String.valueOf(message.get("upass")));
+            String backupPin = String.valueOf(message.get("backupPin"));
+            String email = String.valueOf(message.get("email"));
 
             String query = "SELECT * FROM accounts WHERE email = '" + email + "'";
             ResultSet resultSet = databaseCommunicator.executeQuery(query);
             if (!resultSet.isBeforeFirst()) {
-                messageProvider.sendMessage(new Message("alert", "e-mail not found!"));
+                response.put("newPass", false);
+                response.put("alert", "e-mail not found!");
+                messageProvider.sendMessage(response);
                 return;
             }
             if (resultSet.getString("backup_code").equals(backupPin)) {
                 query = "UPDATE accounts SET password='"+uPasswd+"' WHERE email='"+email+"'";
                 databaseCommunicator.executeUpdate(query);
-                messageProvider.sendMessage(new Message("newpass", true));
+                response.put("newPass", true);
+                response.put("alert", "e-mail not found!");
+                messageProvider.sendMessage(response);
             } else {
-                messageProvider.sendMessage(new Message("alert", "Wrong code!"));
+                response.put("newPass", false);
+                response.put("alert", "Wrong code!");
+                messageProvider.sendMessage(response);
             }
         } catch (Exception e) {
-            messageProvider.sendMessage(new Message("alert", String.valueOf(e)));
+            response.put("newPass", false);
+            response.put("alert", String.valueOf(e));
+            messageProvider.sendMessage(response);
         }
     }
 
-    private void handleChangePass(Message message) {
+    private void handleChangePass(JSONObject message) {
+        JSONObject response = new JSONObject();
         try {
-            String splitted[] = message.getStringMultipleContent();
-            String email = splitted[0];
-            String oldPassword = encryptionProvider.encrypt(splitted[1]);
-            String newPassword = encryptionProvider.encrypt(splitted[2]);
+            String oldPassword = encryptionProvider.encrypt(String.valueOf(message.get("oldpass")));
+            String newPassword = encryptionProvider.encrypt(String.valueOf(message.get("newpass")));
+            String email = String.valueOf(message.get("email"));
 
             String query = "SELECT * FROM accounts WHERE email = '" + email + "'";
             ResultSet resultSet = databaseCommunicator.executeQuery(query);
             if (!resultSet.isBeforeFirst()) {
-                messageProvider.sendMessage(new Message("alert", "e-mail not found!"));
+                response.put("changepass", false);
+                response.put("alert", "e-mail not found!");
+                messageProvider.sendMessage(response);
                 return;
             }
             if (resultSet.getString("password").equals(oldPassword)) {
                 query = "UPDATE accounts SET password='"+newPassword+"' WHERE email='"+email+"'";
                 databaseCommunicator.executeUpdate(query);
-                messageProvider.sendMessage(new Message("changepass", true));
+                response.put("changepass", true);
+                messageProvider.sendMessage(response);
             } else {
-                messageProvider.sendMessage(new Message("alert", "Wrong password!"));
+                response.put("changepass", false);
+                response.put("alert", "Wrong password!");
+                messageProvider.sendMessage(response);
             }
         } catch (Exception e) {
-            messageProvider.sendMessage(new Message("alert", String.valueOf(e)));
+            response.put("changepass", false);
+            response.put("alert", String.valueOf(e));
+            messageProvider.sendMessage(response);
         }
     }
 
     private void handleLCreate() {
+        JSONObject response = new JSONObject();
         createLobby();
-        int enterCode = up.getLobbyEnterCode(getLobby());
-        messageProvider.sendMessage(new Message("lcreate", enterCode));
+        response.put("lcreate", up.getLobbyEnterCode(getLobby()));
+        messageProvider.sendMessage(response);
     }
 
-    private void handleLJoin(Message message) {
-        int enterCode = message.getNumberContent();
-        joinLobby(enterCode);
-        messageProvider.sendMessage(new Message("ljoin", true));
+    private void handleLJoin(JSONObject message) {
+        JSONObject response = new JSONObject();
+        int enterCode = (Integer) message.get("enterCode");
+        if (joinLobby(enterCode)) {
+            response.put("ljoin", true);
+        } else {
+            response.put("ljoin", false);
+            response.put("alert", "Wrong code!");
+        }
+        messageProvider.sendMessage(response);
     }
 
     private void handleLLeave() {
+        JSONObject response = new JSONObject();
         leaveLobby();
-        messageProvider.sendMessage(new Message("lleave", true));
+        response.put("lleave", true);
+        messageProvider.sendMessage(response);
     }
 
     //Lobby management
@@ -274,8 +318,8 @@ public class Player extends Thread {
         setLobby(up.createLobby(this));
     }
 
-    private void joinLobby(int enterCode) {
-        up.addToLobby(enterCode, this);
+    private boolean joinLobby(int enterCode) {
+         return up.addToLobby(enterCode, this);
     }
 
     void setLobby(Integer lobby) {
@@ -291,12 +335,15 @@ public class Player extends Thread {
         setLobby(null);
     }
 
+    // TODO
     void updatePlayers(ArrayList<Player> players) {
-        Message message = new Message();
-        message.setHeader("players");
-        for (Player player : players) {
-            message.addToStringContent(player.getPlayerName());
-        }
+        JSONObject message = new JSONObject();
+
+//        for (Player player : players) {
+//            message.(player.getPlayerName());
+//        }
+//        message.put("llist");
+        message.put("alert", "Not implemented yet!");
         messageProvider.sendMessage(message);
     }
 }

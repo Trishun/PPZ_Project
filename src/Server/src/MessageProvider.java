@@ -1,16 +1,20 @@
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
+
+//import org.json.JSONObject;
 
 /**
  * Message provider
  * Created by PD on 10.04.2017.
  */
-public class MessageProvider implements MessageProviderInterface{
+public class MessageProvider {
 
     private BufferedReader socketReader;
     private PrintWriter socketWriter;
@@ -24,8 +28,7 @@ public class MessageProvider implements MessageProviderInterface{
         }
     }
 
-    @Override
-    public Message getMessage() {
+    JSONObject getMessage() {
         try {
             String data = socketReader.readLine();
             return processMessage(data);
@@ -37,58 +40,24 @@ public class MessageProvider implements MessageProviderInterface{
         return null;
     }
 
-    @Override
-    public boolean sendPoll() {
-        sendMessage(new Message("poll","poll"));
-        return true;
+    void sendMessage(JSONObject message) {
+        try {
+            message.writeJSONString(socketWriter);
+        } catch (IOException e) {
+            System.out.println("Exception in MessageProvider/sendMessage: " + e);
+        }
     }
 
-    @Override
-    public boolean replyPoll() {
-        sendMessage(new Message("poll", true));
-        return true;
-    }
-
-    @Override
-    public boolean sendMessage(Message message) {
-        String data = String.valueOf(message.getContent());
-        socketWriter.println(message.getHeader()+'&'+data);
-        socketWriter.flush();
-        return true;
-    }
-
-    @Override
-    public Message processMessage(String data) {
+    private JSONObject processMessage(String data) {
 
 //        Diagnostics
 //        System.out.println("Message received: " + data);
-        Message message = new Message();
-        String splittedData[] = data.split("&");
-        message.setHeader(splittedData[0]);
-        switch (message.getHeader()){
-            case "boolean":
-                message.setBoolContent(Boolean.valueOf(splittedData[1]));
-                break;
-            case "number":
-                message.setNumberContent(Integer.valueOf(splittedData[1]));
-                break;
-            case "ljoin":
-                message.setNumberContent(Integer.valueOf(splittedData[1]));
-                break;
-            case "coordinates":
-                String values[] = splittedData[1].split("%");
-                ArrayList<Float> al = new ArrayList<>();
-                al.add(Float.valueOf(values[0]));
-                al.add(Float.valueOf(values[1]));
-                message.setCoordinatesContent(al);
-                break;
-            default:
-                try {
-                    message.setStringContent(splittedData[1]);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    message.setStringContent(null);
-                }
+        JSONParser parser = new JSONParser();
+        try {
+            return (JSONObject)parser.parse(data);
+        } catch (Exception e) {
+            System.out.println("Exception in MessageProvider/processMessage: " + e);
         }
-        return message;
+        return null;
     }
 }
