@@ -2,6 +2,9 @@ package pl.locationbasedgame;
 
 import android.os.AsyncTask;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by Patryk Ligenza on 11-Apr-17.
  */
@@ -29,22 +32,37 @@ class Authenticator extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String response) {
-        processResponse(response);
+        try {
+            processResponse(response);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         super.onPostExecute(response);
     }
 
-    private void processResponse(String response) {
+    private void processResponse(String response) throws JSONException {
         if (response == null) return;
-        if (response.contains("true")) {
+        JSONObject jsonResponse = new JSONObject(response);
+        if (jsonResponse.getBoolean("login")) {
             caller.onAuthenticationSuccess(name, password);
-        }
-        else {
+        } else {
             caller.onAuthenticationFailure();
         }
     }
 
     private String constructLoginMessage(String name, String password) {
-        return  "login&" + name + "%" + password;
+        //return  "login&" + name + "%" + password;
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("header", "login");
+            json.put("uname", name);
+            json.put("upass", password);
+            return json.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     void setCaller(AuthenticationResultListener caller) {
