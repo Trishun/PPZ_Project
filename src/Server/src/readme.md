@@ -20,9 +20,11 @@
  
 # Database structure outline:
 - Accounts:
-	* userId
-	* e-mail
+	* user_id
+	* nickname
+	* email
 	* password
+	* backup_code
 	(Google integration to check)
 - Location:
 	* userId

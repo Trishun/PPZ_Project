@@ -20,9 +20,9 @@ git commit %params%
 git push
 ```
 
-gdzie `%params%` to `-m`, Opis zmiany(typ, stan#1234)
+gdzie `%params%` to `-m`, Opis zmiany(typ, stan #1234), koniecznie ze spacją.
 
-typ:
+* typ:
  - bugfix
  - feature
 
@@ -35,46 +35,62 @@ typ:
 /Przeniesione na GitHub/
 
 ## Schemat wiadomości Server-Client:
-`header&data0%data1%...
+```javascript
+{ "header": <nagłówek>, "data1": "value1", "data2": "value2", ... }
+```
+
 1. Logowanie/rejestracja:
 	- logowanie:
-		* c:
-			h:login
-			d:string%string //uname%upass
-		* s:
-			Jeżeli błąd
-			h:alert
-			d:string // wiadomość
-			Jeżeli pomyślnie
-			h:login
-			d:bool //wyłącznie true
+		* Klient:
+		```javascript
+		{ "header" : "login", "uname" : "admin", "upass": "123" }
+		```
+		* Serwer:
+			* W przypadku sukcesu:
+			```javascript
+			{ "login" : "true" }
+			```
+			* Natomiast w przypadku niepowodzenia np tak:
+			```javascript
+			{ "login" : "false", "alert" : "Wrong password!" }		
+			```
 	- rejestracja:
-		* c:
-			- h:register
-			- d:string%string%string%string // uname, upass, backup_code, email
-		* s:
-			- Jeżeli pomyślnie:
-				* h:register
-				* d:(bool)true
-			- Jeżeli błąd
-				* h:alert
-				* d:string // wiadomość
+		* Klient:
+		```javascript
+		{ "header" : "register", "uname" : "admin", "upass": "123", "backup_code" : "1234", "email" : "janusz@hackers.pl" }
+		```
+		* Serwer:
+			* W przypadku sukcesu:
+			```javascript
+			{ "register" : "true" }
+			```
+			* Natomiast w przypadku niepowodzenia np tak:
+			```javascript
+			{ "register" : "false", "alert" : "E-mail is already in use" }		
+			```
 2. Lobby:
-	- stworzenie:
-		* c:
-			- h:lcreate
-			- d:null
-		* s:
-			- h:lcreate
-			- d:int // enterCode
+	- stworzenie:	
+		* Klient:
+		```javascript
+		{ "header" : "lcreate" }
+		```
+		* Serwer:
+		```javascript
+		{ "enterCode" : 303 }
+		```
+		
 	- dołączenie:
-		* c:
-			- h:ljoin
-			- d:int //enterCode
-		* s:
-			- h:ljoin
-			- d:bool
-	- lista graczy:
-		* s:
-			- h:llist
-			- d:string%string... // nazwy graczy 
+		* Klient:
+		```javascript
+		{ "header" : "ljoin", "enterCode" : 102 }
+		```
+		* Serwer:
+		```javascript
+		{ "ljoin" : "true"/"false" }
+		```
+		
+	- lista graczy: (odświeżana automatycznie przez serwer)
+		* Serwer:
+		```javascript
+		{ "llist" : [{ "name" : "PlayerTaki" }, { "name", "PlayerŚmaki" }, ...] } 
+		```

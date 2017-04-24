@@ -1,27 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_login"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--Placeholder for app logo-->
-    <ImageView
-        android:id="@+id/iv_main_screen_logo"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="5dp"
-        tools:ignore="ContentDescription" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/email"/>
+        android:text="@string/name"/>
     <EditText
-        android:id="@+id/et_mail"
+        android:id="@+id/et_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
@@ -47,11 +35,5 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
         android:text="@string/log_in"/>
-    <Button
-        android:id="@+id/btn_register"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/register"/>
 
 </LinearLayout>
