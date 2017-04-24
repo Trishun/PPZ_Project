@@ -346,4 +346,17 @@ public class Player extends Thread {
         message.put("llist", arrayList.toArray());
         messageProvider.sendMessage(new JSONObject(message));
     }
+
+    // Team management
+    private void joinTeam(int team) {
+
+    }
+
+    private void leaveTeam() {
+
+    }
+
+    private void updateTeamPlayers() {
+
+    }
 }

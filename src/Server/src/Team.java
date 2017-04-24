@@ -9,6 +9,10 @@ class Team {
     private int role;
     private ArrayList<Player> players = new ArrayList<>();
 
+    Team (int role) {
+        this.role = role;
+    }
+
     void addPlayer(Player player) {
 
     }

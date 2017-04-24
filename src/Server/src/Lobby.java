@@ -12,6 +12,7 @@ class Lobby {
     private ArrayList<Player> players = new ArrayList<>();
     private int enterCode;
     private Random generator;
+    private TeamManager teamManager = new TeamManager();
 
     Lobby(int id, Player initiator) {
         generator = new Random();
@@ -49,5 +50,9 @@ class Lobby {
 
     ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    TeamManager getTeamManager() {
+        return teamManager;
     }
 }
