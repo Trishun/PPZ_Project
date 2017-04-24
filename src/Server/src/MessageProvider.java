@@ -42,8 +42,9 @@ class MessageProvider {
 
     void sendMessage(JSONObject message) {
         try {
-            message.writeJSONString(socketWriter);
-        } catch (IOException e) {
+            socketWriter.println(message.toJSONString());
+            socketWriter.flush();
+        } catch (Exception e) {
             System.out.println("Exception in MessageProvider/sendMessage: " + e);
         }
     }
