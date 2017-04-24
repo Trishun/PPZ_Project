@@ -14,7 +14,7 @@ import java.net.SocketException;
  * Message provider
  * Created by PD on 10.04.2017.
  */
-public class MessageProvider {
+class MessageProvider {
 
     private BufferedReader socketReader;
     private PrintWriter socketWriter;

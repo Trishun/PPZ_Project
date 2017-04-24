@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Thread (player) handing class
@@ -123,7 +124,7 @@ public class Player extends Thread {
      * @param message String message which method uses
      */
     private void handleLogin(JSONObject message) {
-        JSONObject response = new JSONObject();
+        HashMap<String, Object> response = new HashMap<>();
         try {
             String uName = String.valueOf(message.get("uname"));
             String uPasswd = encryptionProvider.encrypt(String.valueOf(message.get("upass")));
@@ -133,30 +134,30 @@ public class Player extends Thread {
             if (!resultSet.isBeforeFirst()) {
                 response.put("login", false);
                 response.put("alert", "Wrong username!");
-                messageProvider.sendMessage(response);
+                messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
             resultSet.next();
             if (resultSet.getString("password").equals(uPasswd)) {
                 response.put("login", true);
-                messageProvider.sendMessage(response);
+                messageProvider.sendMessage(new JSONObject(response));
                 System.out.println("User " + uName + " (" + resultSet.getInt("user_id") + ") logged in");
                 setPlayerName(uName);
                 setPlayerId(resultSet.getInt("user_id"));
             } else {
                 response.put("login", false);
                 response.put("alert", "Wrong password!");
-                messageProvider.sendMessage(response);
+                messageProvider.sendMessage(new JSONObject(response));
                 System.out.println("User " + uName + " (" + resultSet.getInt("user_id") + ") failed to login \nReason: Wrong Password.");
             }
         } catch (ArrayIndexOutOfBoundsException e){
             response.put("login", false);
             response.put("alert", "Internal error");
-            messageProvider.sendMessage(response);
+            messageProvider.sendMessage(new JSONObject(response));
         } catch (Exception e) {
             response.put("login", false);
             response.put("alert", String.valueOf(e));
-            messageProvider.sendMessage(response);
+            messageProvider.sendMessage(new JSONObject(response));
         }
     }
 
@@ -167,7 +168,8 @@ public class Player extends Thread {
      * @param message String message which method uses
      */
     private void handleRegister(JSONObject message) {
-        JSONObject response = new JSONObject();
+        HashMap<String, Object> response = new HashMap<>();
+
         try {
             String uName = String.valueOf(message.get("uname"));
             String uPasswd = encryptionProvider.encrypt(String.valueOf(message.get("upass")));
@@ -180,7 +182,7 @@ public class Player extends Thread {
             if (resultSet.isBeforeFirst()) {
                 response.put("register", false);
                 response.put("alert", "e-mail already registered!");
-                messageProvider.sendMessage(response);
+                messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
 
@@ -190,7 +192,7 @@ public class Player extends Thread {
             if (resultSet.isBeforeFirst()) {
                 response.put("register", false);
                 response.put("alert", "Username taken");
-                messageProvider.sendMessage(response);
+                messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
 
@@ -201,7 +203,7 @@ public class Player extends Thread {
             if (!resultSet.isBeforeFirst()) {
                 response.put("register", false);
                 response.put("alert", "Internal database error");
-                messageProvider.sendMessage(response);
+                messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
             //Insert user info into table
@@ -212,17 +214,17 @@ public class Player extends Thread {
                     userID + ",'" + uName + "','" + uPasswd + "','" + backupPin + "','" + email + "')";
             databaseCommunicator.executeUpdate(query);
             response.put("register", true);
-            messageProvider.sendMessage(response);
+            messageProvider.sendMessage(new JSONObject(response));
 
         } catch (Exception e) {
             response.put("register", false);
             response.put("alert", String.valueOf(e));
-            messageProvider.sendMessage(response);
+            messageProvider.sendMessage(new JSONObject(response));
         }
     }
 
     private void handleNewPass(JSONObject message) {
-        JSONObject response = new JSONObject();
+        HashMap<String, Object> response = new HashMap<>();
         try {
             String uPasswd = encryptionProvider.encrypt(String.valueOf(message.get("upass")));
             String backupPin = String.valueOf(message.get("backupPin"));
@@ -233,7 +235,7 @@ public class Player extends Thread {
             if (!resultSet.isBeforeFirst()) {
                 response.put("newPass", false);
                 response.put("alert", "e-mail not found!");
-                messageProvider.sendMessage(response);
+                messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
             if (resultSet.getString("backup_code").equals(backupPin)) {
@@ -241,21 +243,21 @@ public class Player extends Thread {
                 databaseCommunicator.executeUpdate(query);
                 response.put("newPass", true);
                 response.put("alert", "e-mail not found!");
-                messageProvider.sendMessage(response);
+                messageProvider.sendMessage(new JSONObject(response));
             } else {
                 response.put("newPass", false);
                 response.put("alert", "Wrong code!");
-                messageProvider.sendMessage(response);
+                messageProvider.sendMessage(new JSONObject(response));
             }
         } catch (Exception e) {
             response.put("newPass", false);
             response.put("alert", String.valueOf(e));
-            messageProvider.sendMessage(response);
+            messageProvider.sendMessage(new JSONObject(response));
         }
     }
 
     private void handleChangePass(JSONObject message) {
-        JSONObject response = new JSONObject();
+        HashMap<String, Object> response = new HashMap<>();
         try {
             String oldPassword = encryptionProvider.encrypt(String.valueOf(message.get("oldpass")));
             String newPassword = encryptionProvider.encrypt(String.valueOf(message.get("newpass")));
@@ -266,35 +268,35 @@ public class Player extends Thread {
             if (!resultSet.isBeforeFirst()) {
                 response.put("changepass", false);
                 response.put("alert", "e-mail not found!");
-                messageProvider.sendMessage(response);
+                messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
             if (resultSet.getString("password").equals(oldPassword)) {
                 query = "UPDATE accounts SET password='"+newPassword+"' WHERE email='"+email+"'";
                 databaseCommunicator.executeUpdate(query);
                 response.put("changepass", true);
-                messageProvider.sendMessage(response);
+                messageProvider.sendMessage(new JSONObject(response));
             } else {
                 response.put("changepass", false);
                 response.put("alert", "Wrong password!");
-                messageProvider.sendMessage(response);
+                messageProvider.sendMessage(new JSONObject(response));
             }
         } catch (Exception e) {
             response.put("changepass", false);
             response.put("alert", String.valueOf(e));
-            messageProvider.sendMessage(response);
+            messageProvider.sendMessage(new JSONObject(response));
         }
     }
 
     private void handleLCreate() {
-        JSONObject response = new JSONObject();
+        HashMap<String, Integer> response = new HashMap<>();
         createLobby();
         response.put("lcreate", up.getLobbyEnterCode(getLobby()));
-        messageProvider.sendMessage(response);
+        messageProvider.sendMessage(new JSONObject(response));
     }
 
     private void handleLJoin(JSONObject message) {
-        JSONObject response = new JSONObject();
+        HashMap<String, Object> response = new HashMap<>();
         int enterCode = (Integer) message.get("enterCode");
         if (joinLobby(enterCode)) {
             response.put("ljoin", true);
@@ -302,14 +304,14 @@ public class Player extends Thread {
             response.put("ljoin", false);
             response.put("alert", "Wrong code!");
         }
-        messageProvider.sendMessage(response);
+        messageProvider.sendMessage(new JSONObject(response));
     }
 
     private void handleLLeave() {
-        JSONObject response = new JSONObject();
+        HashMap<String, Object> response = new HashMap<>();
         leaveLobby();
         response.put("lleave", true);
-        messageProvider.sendMessage(response);
+        messageProvider.sendMessage(new JSONObject(response));
     }
 
     //Lobby management
@@ -335,15 +337,13 @@ public class Player extends Thread {
         setLobby(null);
     }
 
-    // TODO
     void updatePlayers(ArrayList<Player> players) {
-        JSONObject message = new JSONObject();
-
-//        for (Player player : players) {
-//            message.(player.getPlayerName());
-//        }
-//        message.put("llist");
-        message.put("alert", "Not implemented yet!");
-        messageProvider.sendMessage(message);
+        HashMap<String, Object> message = new HashMap<>();
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (Player player : players) {
+            arrayList.add(player.getPlayerName());
+        }
+        message.put("llist", arrayList.toArray());
+        messageProvider.sendMessage(new JSONObject(message));
     }
 }
