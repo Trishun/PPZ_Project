@@ -37,31 +37,63 @@ gdzie `%params%` to `-m`, Opis zmiany(typ, stan #1234), koniecznie ze spacją.
 
 
 ## Schemat wiadomości Server-Client:
-`header&data0%data1%...
+```javascript
+{ "header": <nagłówek>, "data1": "value1", "data2": "value2", ... }
+```
+
 1. Logowanie/rejestracja:
 	- logowanie:
-		* c:
-			h:login
-			d:string%string //uname%upass
-		* s:
-			h:login
-			d:bool
+		* Klient:
+		```javascript
+		{ "header" : "login", "uname" : "admin", "upass": "123" }
+		```
+		* Serwer:
+			* W przypadku sukcesu:
+			```javascript
+			{ "login" : "true" }
+			```
+			* Natomiast w przypadku niepowodzenia np tak:
+			```javascript
+			{ "login" : "false", "alert" : "Wrong password!" }		
+			```
+	- rejestracja:
+		* Klient:
+		```javascript
+		{ "header" : "register", "uname" : "admin", "upass": "123", "backup_code" : "1234", "email" : "janusz@hackers.pl" }
+		```
+		* Serwer:
+			* W przypadku sukcesu:
+			```javascript
+			{ "register" : "true" }
+			```
+			* Natomiast w przypadku niepowodzenia np tak:
+			```javascript
+			{ "register" : "false", "alert" : "E-mail is already in use" }		
+			```
 2. Lobby:
-	- stworzenie:
-		* c:
-			h:lcreate
-			d:null
-		* s:
-			h:lcreate
-			d:int // enterCode
+	- stworzenie:	
+		* Klient:
+		```javascript
+		{ "header" : "lcreate" }
+		```
+		* Serwer:
+		```javascript
+		{ "enterCode" : 303 }
+		```
+		
 	- dołączenie:
-		* c:
-			h:ljoin
-			d:int //enterCode
-		* s:
-			h:ljoin
-			d:bool
-	- lista graczy:
-		* s:
-			h:llist
-			d:string%string... // nazwy graczy 
+		* Klient:
+		```javascript
+		{ "header" : "ljoin", "enterCode" : 102 }
+		```
+		* Serwer:
+		```javascript
+		{ "ljoin" : "true"/"false" }
+		```
+		
+	- lista graczy: (odświeżana automatycznie przez serwer)
+		* Serwer:
+		```javascript
+		{ "llist" : [{ "name" : "PlayerTaki" }, { "name", "PlayerŚmaki" }, ...] } 
+		```			
+			

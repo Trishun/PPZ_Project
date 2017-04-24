@@ -28,7 +28,7 @@ public class StartActivity extends AppCompatActivity {
             isCommunicatorBound = true;
             if (!loginFragment.autoLogin(getApplicationContext())) {
                 findViewById(R.id.ll_start_screen).setVisibility(View.VISIBLE);
-            };
+            }
             Log.i(TAG, "Service connected");
         }
 
@@ -51,11 +51,6 @@ public class StartActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         setupTabNavigation();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Override
