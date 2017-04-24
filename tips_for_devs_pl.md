@@ -34,8 +34,6 @@ gdzie `%params%` to `-m`, Opis zmiany(typ, stan #1234), koniecznie ze spacją.
 
 /Przeniesione na GitHub/
 
-
-
 ## Schemat wiadomości Server-Client:
 ```javascript
 { "header": <nagłówek>, "data1": "value1", "data2": "value2", ... }
@@ -95,5 +93,4 @@ gdzie `%params%` to `-m`, Opis zmiany(typ, stan #1234), koniecznie ze spacją.
 		* Serwer:
 		```javascript
 		{ "llist" : [{ "name" : "PlayerTaki" }, { "name", "PlayerŚmaki" }, ...] } 
-		```			
-			
+		```
