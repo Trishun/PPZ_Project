@@ -67,4 +67,5 @@ class Lobby {
         if (teamManager.teamsReady(getPlayers()))
             gameManager.begin();
     }
+
 }
