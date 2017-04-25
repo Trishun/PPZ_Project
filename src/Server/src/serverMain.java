@@ -6,7 +6,9 @@ public class serverMain {
     public static void main(String args[]) {
         SettingsProvider settingsProvider = new SettingsProvider();
         DatabaseCommunicator databaseCommunicator = new DatabaseCommunicator(settingsProvider);
-        Server mainServer = new Server(databaseCommunicator, settingsProvider);
+        LobbyManager lobbyManager = new LobbyManager();
+        PlayerManager playerManager = new PlayerManager(lobbyManager, databaseCommunicator);
+        Server mainServer = new Server(settingsProvider, playerManager);
 
         mainServer.Run();
     }

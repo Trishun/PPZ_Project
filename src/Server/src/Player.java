@@ -14,26 +14,21 @@ public class Player extends Thread {
 
     private Socket clientSocket;
     private DatabaseCommunicator databaseCommunicator;
-    private Server up;
+    private PlayerManager playerManager;
+    private LobbyManager lobbyManager;
     private Integer lobby;
     private MessageProvider messageProvider;
     private EncryptionProvider encryptionProvider;
     private int playerId = 0;
     private String playerName = "not logged";
 
-    /**
-     * Class constructor
-     *
-     * @param clientSocket         Socket to be handled.
-     * @param databaseCommunicator DatabaseCommunicator to be used.
-     * @throws IOException when there's no data incomming.
-     */
-    Player(Socket clientSocket, DatabaseCommunicator databaseCommunicator, Server up) throws IOException {
+    Player(Socket socket, PlayerManager playerManager, LobbyManager lobbyManager, DatabaseCommunicator databaseCommunicator) {
+        this.clientSocket = socket;
+        this.playerManager = playerManager;
+        this.lobbyManager = lobbyManager;
         this.databaseCommunicator = databaseCommunicator;
-        this.up = up;
-        messageProvider = new MessageProvider(clientSocket);
-        encryptionProvider = new EncryptionProvider();
-        this.clientSocket = clientSocket;
+        this.messageProvider = new MessageProvider(socket);
+        this.encryptionProvider = new EncryptionProvider();
     }
 
     /**
@@ -52,9 +47,9 @@ public class Player extends Thread {
                     handleLogin(message);
                 } else if (header.equalsIgnoreCase("register")) {
                     handleRegister(message);
-                } else if (header.equalsIgnoreCase("newpass")){
+                } else if (header.equalsIgnoreCase("newpass")) {
                     handleNewPass(message);
-                } else if (header.equalsIgnoreCase("changepass")){
+                } else if (header.equalsIgnoreCase("changepass")) {
                     handleChangePass(message);
                 } else if (header.equalsIgnoreCase("lcreate")) {
                     handleLCreate();
@@ -63,8 +58,7 @@ public class Player extends Thread {
                 } else if (header.equalsIgnoreCase("lleave")) {
                     handleLLeave();
                 }
-            }
-            else {
+            } else {
                 disconnect();
                 break;
             }
@@ -102,10 +96,10 @@ public class Player extends Thread {
     }
 
     /**
-     *
+     * Disconnect management
      */
     private void disconnect() {
-            up.disconnectPlayer(this);
+        playerManager.disconnectPlayer(this);
         try {
             clientSocket.close();
             System.out.println("User " + getPlayerName() + " (" + getPlayerId() + ") logged off");
@@ -150,7 +144,7 @@ public class Player extends Thread {
                 messageProvider.sendMessage(new JSONObject(response));
                 System.out.println("User " + uName + " (" + resultSet.getInt("user_id") + ") failed to login \nReason: Wrong Password.");
             }
-        } catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e) {
             response.put("login", false);
             response.put("alert", "Internal error");
             messageProvider.sendMessage(new JSONObject(response));
@@ -239,7 +233,7 @@ public class Player extends Thread {
                 return;
             }
             if (resultSet.getString("backup_code").equals(backupPin)) {
-                query = "UPDATE accounts SET password='"+uPasswd+"' WHERE email='"+email+"'";
+                query = "UPDATE accounts SET password='" + uPasswd + "' WHERE email='" + email + "'";
                 databaseCommunicator.executeUpdate(query);
                 response.put("newPass", true);
                 response.put("alert", "e-mail not found!");
@@ -272,7 +266,7 @@ public class Player extends Thread {
                 return;
             }
             if (resultSet.getString("password").equals(oldPassword)) {
-                query = "UPDATE accounts SET password='"+newPassword+"' WHERE email='"+email+"'";
+                query = "UPDATE accounts SET password='" + newPassword + "' WHERE email='" + email + "'";
                 databaseCommunicator.executeUpdate(query);
                 response.put("changepass", true);
                 messageProvider.sendMessage(new JSONObject(response));
@@ -290,15 +284,15 @@ public class Player extends Thread {
 
     private void handleLCreate() {
         HashMap<String, Integer> response = new HashMap<>();
-        createLobby();
-        response.put("lcreate", up.getLobbyEnterCode(getLobby()));
+        setLobby(lobbyManager.createLobby(this));
+        response.put("lcreate", lobbyManager.getLobbyEnterCode(getLobby()));
         messageProvider.sendMessage(new JSONObject(response));
     }
 
     private void handleLJoin(JSONObject message) {
         HashMap<String, Object> response = new HashMap<>();
         int enterCode = (Integer) message.get("enterCode");
-        if (joinLobby(enterCode)) {
+        if (lobbyManager.addToLobby(enterCode, this)) {
             response.put("ljoin", true);
         } else {
             response.put("ljoin", false);
@@ -309,20 +303,13 @@ public class Player extends Thread {
 
     private void handleLLeave() {
         HashMap<String, Object> response = new HashMap<>();
-        leaveLobby();
+        lobbyManager.removeFromLobby(lobby, this);
+        setLobby(null);
         response.put("lleave", true);
         messageProvider.sendMessage(new JSONObject(response));
     }
 
     //Lobby management
-
-    private void createLobby() {
-        setLobby(up.createLobby(this));
-    }
-
-    private boolean joinLobby(int enterCode) {
-         return up.addToLobby(enterCode, this);
-    }
 
     void setLobby(Integer lobby) {
         this.lobby = lobby;
@@ -330,11 +317,6 @@ public class Player extends Thread {
 
     private Integer getLobby() {
         return lobby;
-    }
-
-    private void leaveLobby() {
-        up.removeFromLobby(lobby, this);
-        setLobby(null);
     }
 
     void updatePlayers(ArrayList<Player> players) {

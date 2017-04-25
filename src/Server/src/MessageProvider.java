@@ -8,8 +8,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 
-//import org.json.JSONObject;
-
 /**
  * Message provider
  * Created by PD on 10.04.2017.
@@ -50,9 +48,6 @@ class MessageProvider {
     }
 
     private JSONObject processMessage(String data) {
-
-//        Diagnostics
-//        System.out.println("Message received: " + data);
         JSONParser parser = new JSONParser();
         try {
             return (JSONObject)parser.parse(data);
