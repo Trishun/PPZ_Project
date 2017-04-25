@@ -10,10 +10,11 @@ public class Server {
     private PlayerManager playerManager;
     private SettingsProvider settingsProvider;
 
+
     /**
-     * Main socket I/O task.
-     *
-     * @param
+     * Main I/O server class
+     * @param settingsProvider Import global settings
+     * @param playerManager Player global thread manager
      */
     Server(SettingsProvider settingsProvider, PlayerManager playerManager) {
         this.settingsProvider = settingsProvider;

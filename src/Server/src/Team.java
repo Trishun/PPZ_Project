@@ -6,19 +6,22 @@ import java.util.ArrayList;
  */
 class Team {
 
-    private int role;
     private ArrayList<Player> players = new ArrayList<>();
 
-    Team (int role) {
-        this.role = role;
-    }
-
     void addPlayer(Player player) {
-
+        players.add(player);
     }
 
-    void removePlayer(Player player) {
+    Boolean hasPlayer(Player player) {
+        return players.contains(player);
+    }
 
+    Boolean removePlayer(Player player) {
+        if (hasPlayer(player)){
+            players.remove(player);
+            return true;
+        }
+        return false;
     }
 
     int numberOfPlayers() {

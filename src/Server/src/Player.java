@@ -1,3 +1,4 @@
+import org.jetbrains.annotations.Contract;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -315,6 +316,7 @@ public class Player extends Thread {
         this.lobby = lobby;
     }
 
+    @Contract(pure = true)
     private Integer getLobby() {
         return lobby;
     }
@@ -331,14 +333,20 @@ public class Player extends Thread {
 
     // Team management
     private void joinTeam(int team) {
-
+        lobbyManager.getLobbyById(lobby).getTeamManager().addPlayerToTeam(this, team);
     }
 
     private void leaveTeam() {
-
+        lobbyManager.getLobbyById(lobby).getTeamManager().removePlayer(this);
     }
 
     private void updateTeamPlayers() {
 
+    }
+
+    private void beginGame() {
+        Lobby lobbyInstance = lobbyManager.getLobbyById(lobby);
+        if (lobbyInstance.getInitiator() == this)
+            lobbyInstance.beginGame();
     }
 }

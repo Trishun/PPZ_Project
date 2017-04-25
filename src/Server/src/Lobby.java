@@ -10,6 +10,8 @@ class Lobby {
     private Player initiator;
     private ArrayList<Player> players = new ArrayList<>();
     private int enterCode;
+    private TeamManager teamManager = new TeamManager();
+    private GameManager gameManager = new GameManager(teamManager);
 
     Lobby(int id, Player initiator) {
         this.id = id;
@@ -45,7 +47,24 @@ class Lobby {
         return false;
     }
 
+    Player getInitiator() {
+        return initiator;
+    }
+
     ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    TeamManager getTeamManager() {
+        return teamManager;
+    }
+
+    GameManager getGameManager() {
+        return gameManager;
+    }
+
+    void beginGame() {
+        if (teamManager.teamsReady(getPlayers()))
+            gameManager.begin();
     }
 }
