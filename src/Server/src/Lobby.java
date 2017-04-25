@@ -1,9 +1,8 @@
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Lobby class
- * Created by PD on 19.04.2017.
+ * Created by PD on 24.04.2017.
  */
 
 class Lobby {
@@ -11,11 +10,8 @@ class Lobby {
     private Player initiator;
     private ArrayList<Player> players = new ArrayList<>();
     private int enterCode;
-    private Random generator;
-    private TeamManager teamManager = new TeamManager();
 
     Lobby(int id, Player initiator) {
-        generator = new Random();
         this.id = id;
         this.initiator = initiator;
         enterCode = enterCodeGeneration();
@@ -23,7 +19,7 @@ class Lobby {
     }
 
     private int enterCodeGeneration() {
-        return (int) (generator.nextDouble()*initiator.hashCode())/1000;
+        return initiator.hashCode() / 10000;
     }
 
     int getEnterCode() {
@@ -36,23 +32,20 @@ class Lobby {
 
     void addToLobby(Player newPlayer) {
         players.add(newPlayer);
-        for (Player player: players) {
+        for (Player player : players) {
             player.updatePlayers(players);
         }
     }
 
-    void removeFromLobby(Player player) {
-        players.remove(player);
-        for (Player player1: players) {
-            player1.updatePlayers(players);
+    Boolean removeFromLobby(Player player) {
+        if (players.contains(player)) {
+            players.remove(player);
+            return true;
         }
+        return false;
     }
 
     ArrayList<Player> getPlayers() {
         return players;
-    }
-
-    TeamManager getTeamManager() {
-        return teamManager;
     }
 }

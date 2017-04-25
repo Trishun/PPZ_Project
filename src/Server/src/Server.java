@@ -1,7 +1,5 @@
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 
 /**
  * Players' shared content
@@ -9,19 +7,17 @@ import java.util.ConcurrentModificationException;
  */
 public class Server {
 
-    private static ArrayList<Lobby> lobbyList = new ArrayList<>();
-    private static ArrayList<Player> playerList = new ArrayList<>();
-    private DatabaseCommunicator databaseCommunicator;
+    private PlayerManager playerManager;
     private SettingsProvider settingsProvider;
 
     /**
-     * Class constructor.
+     * Main socket I/O task.
      *
-     * @param databaseCommunicator DatabaseCommunicator to be used.
+     * @param
      */
-    Server(DatabaseCommunicator databaseCommunicator, SettingsProvider settingsProvider) {
-        this.databaseCommunicator = databaseCommunicator;
+    Server(SettingsProvider settingsProvider, PlayerManager playerManager) {
         this.settingsProvider = settingsProvider;
+        this.playerManager = playerManager;
     }
 
     void Run() {
@@ -39,93 +35,10 @@ public class Server {
                 System.out.println("Połączono z " + socket.getRemoteSocketAddress().toString());
 
                 //Create thread to handle connection
-                Player player = new Player(socket, databaseCommunicator, this);
-                playerList.add(player);
-                player.start();
-                stats();
+                playerManager.createPlayer(socket);
             }
         } catch (Exception e) {
-            System.out.println("Error in Server/incoming: "+e);
+            System.out.println("Error in Server/incoming: " + e);
         }
-    }
-
-    private void stats() {
-        System.out.println("Players: " + String.valueOf(playerList.size()));
-        System.out.println("Lobbys: " + String.valueOf(lobbyList.size()));
-    }
-
-    void disconnectPlayer(Player playerToDisconnect) {
-        try {
-            for (Player player : playerList) {
-                if (player == playerToDisconnect) {
-                    playerList.remove(player);
-                    break;
-                }
-            }
-        } catch (ConcurrentModificationException ee) {
-            System.out.println("Exception 1 in Server/disconnectPlayer: " + ee);
-        }
-        try {
-            for (Lobby lobby : lobbyList) {
-                for (Player player : lobby.getPlayers()) {
-                    if (player == playerToDisconnect) {
-                        lobby.removeFromLobby(player);
-                        break;
-                    }
-                }
-            }
-        } catch (ConcurrentModificationException ee) {
-            System.out.println("Exception 2 in Server/disconnectPlayer: " + ee);
-        }
-        System.out.println("Player " + playerToDisconnect.getPlayerName() + " (" + playerToDisconnect.getPlayerId() + ") disconnected");
-        stats();
-    }
-
-    int createLobby(Player initiator) {
-        Lobby lobby = new Lobby(lobbyList.size(), initiator);
-        lobbyList.add(lobby);
-        System.out.println("Lobby " + lobby.getId() + " created!");
-        stats();
-        return lobby.getId();
-    }
-
-    boolean addToLobby(int enterCode, Player player) {
-        for (Lobby lobby : lobbyList) {
-            if (enterCode == lobby.getEnterCode()) {
-                addToLobby(lobby, player);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void addToLobby(Lobby lobby, Player player) {
-        lobby.addToLobby(player);
-        player.setLobby(lobby.getId());
-        System.out.println("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") joined lobby " + lobby.getId());
-    }
-
-    void removeFromLobby(int lobbyId, Player player) {
-        Lobby lobby = getLobbyById(lobbyId);
-        lobby.removeFromLobby(player);
-        System.out.println("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") left lobby " + lobbyId);
-    }
-
-    Integer getLobbyEnterCode(int id) {
-        Lobby lobby = getLobbyById(id);
-        try {
-            return lobby.getEnterCode();
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
-
-    private Lobby getLobbyById(int id) {
-        for (Lobby lobby : lobbyList) {
-            if (lobby.getId() == id) {
-                return lobby;
-            }
-        }
-        return null;
     }
 }

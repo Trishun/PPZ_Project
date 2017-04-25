@@ -1,16 +1,18 @@
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
 
 /**
  * Message provider
  * Created by PD on 10.04.2017.
  */
-class MessageProvider{
+class MessageProvider {
 
     private BufferedReader socketReader;
     private PrintWriter socketWriter;
@@ -24,7 +26,7 @@ class MessageProvider{
         }
     }
 
-    Message getMessage() {
+    JSONObject getMessage() {
         try {
             String data = socketReader.readLine();
             return processMessage(data);
@@ -36,43 +38,22 @@ class MessageProvider{
         return null;
     }
 
-    void sendMessage(Message message) {
-        String data = String.valueOf(message.getContent());
-        socketWriter.println(message.getHeader()+'&'+data);
-        socketWriter.flush();
+    void sendMessage(JSONObject message) {
+        try {
+            socketWriter.println(message.toJSONString());
+            socketWriter.flush();
+        } catch (Exception e) {
+            System.out.println("Exception in MessageProvider/sendMessage: " + e);
+        }
     }
 
-    Message processMessage(String data) {
-
-//        Diagnostics
-//        System.out.println("Message received: " + data);
-        Message message = new Message();
-        String splittedData[] = data.split("&");
-        message.setHeader(splittedData[0]);
-        switch (message.getHeader()){
-            case "boolean":
-                message.setBoolContent(Boolean.valueOf(splittedData[1]));
-                break;
-            case "number":
-                message.setNumberContent(Integer.valueOf(splittedData[1]));
-                break;
-            case "ljoin":
-                message.setNumberContent(Integer.valueOf(splittedData[1]));
-                break;
-            case "coordinates":
-                String values[] = splittedData[1].split("%");
-                ArrayList<Float> al = new ArrayList<>();
-                al.add(Float.valueOf(values[0]));
-                al.add(Float.valueOf(values[1]));
-                message.setCoordinatesContent(al);
-                break;
-            default:
-                try {
-                    message.setStringContent(splittedData[1]);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    message.setStringContent(null);
-                }
+    private JSONObject processMessage(String data) {
+        JSONParser parser = new JSONParser();
+        try {
+            return (JSONObject)parser.parse(data);
+        } catch (Exception e) {
+            System.out.println("Exception in MessageProvider/processMessage: " + e);
         }
-        return message;
+        return null;
     }
 }
