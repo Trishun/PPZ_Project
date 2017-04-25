@@ -35,12 +35,12 @@
 	* games won
 	* favourite gamemode
 
-TODO:
-	Mantaining lobbys and waypoints
-	Hierarchy:
-		- Lobby
-			* Players within teams
-			* Gamemode
-			* Waypoints
-				- Location
-				- Tasks
+TODO:\
+Mantaining lobbys and waypoints.\
+Hierarchy:
+- Lobby
+    * Players within teams
+    * Gamemode
+    * Waypoints
+        - Location
+        - Tasks

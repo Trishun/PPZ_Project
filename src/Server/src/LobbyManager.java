@@ -54,7 +54,7 @@ class LobbyManager {
         }
     }
 
-    private Lobby getLobbyById(int id) {
+    Lobby getLobbyById(int id) {
         for (Lobby lobby : lobbyList) {
             if (lobby.getId() == id) {
                 return lobby;
