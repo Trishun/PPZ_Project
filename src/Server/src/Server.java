@@ -27,6 +27,7 @@ public class Server {
     }
 
     private void incoming() {
+        System.out.println("JVM started");
         try {
             ServerSocket serverSocket = new ServerSocket(Integer.valueOf(settingsProvider.get("port")));
             Debug.Log("Init");

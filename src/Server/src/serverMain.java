@@ -12,5 +12,6 @@ public class serverMain {
         Server mainServer = new Server(settingsProvider, playerManager);
 
         mainServer.Run();
+        new HTTPPart(settingsProvider).Run();
     }
 }

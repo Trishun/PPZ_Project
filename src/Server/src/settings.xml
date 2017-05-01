@@ -3,6 +3,9 @@
   <server>
     <setting type="port">9090</setting>
   </server>
+  <httpserver>
+    <setting type="httpport">8080</setting>
+  </httpserver>
   <database>
     <setting type="dbname">ppz</setting>
     <setting type="username">uname</setting>
