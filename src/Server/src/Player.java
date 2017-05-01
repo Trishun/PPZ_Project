@@ -103,10 +103,10 @@ public class Player extends Thread {
         playerManager.disconnectPlayer(this);
         try {
             clientSocket.close();
-            System.out.println("User " + getPlayerName() + " (" + getPlayerId() + ") logged off");
+            Debug.Log("User " + getPlayerName() + " (" + getPlayerId() + ") logged off");
             Thread.currentThread().interrupt();
         } catch (IOException e) {
-            System.out.println("Exception in Player/disconnect: " + e);
+            Debug.Log("Exception in Player/disconnect: " + e);
         }
     }
 
@@ -136,14 +136,14 @@ public class Player extends Thread {
             if (resultSet.getString("password").equals(uPasswd)) {
                 response.put("login", true);
                 messageProvider.sendMessage(new JSONObject(response));
-                System.out.println("User " + uName + " (" + resultSet.getInt("user_id") + ") logged in");
+                Debug.Log("User " + uName + " (" + resultSet.getInt("user_id") + ") logged in");
                 setPlayerName(uName);
                 setPlayerId(resultSet.getInt("user_id"));
             } else {
                 response.put("login", false);
                 response.put("alert", "Wrong password!");
                 messageProvider.sendMessage(new JSONObject(response));
-                System.out.println("User " + uName + " (" + resultSet.getInt("user_id") + ") failed to login \nReason: Wrong Password.");
+                Debug.Log("User " + uName + " (" + resultSet.getInt("user_id") + ") failed to login \nReason: Wrong Password.");
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             response.put("login", false);

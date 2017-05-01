@@ -4,6 +4,7 @@
  */
 public class serverMain {
     public static void main(String args[]) {
+        Debug.initLog();
         SettingsProvider settingsProvider = new SettingsProvider();
         DatabaseCommunicator databaseCommunicator = new DatabaseCommunicator(settingsProvider);
         LobbyManager lobbyManager = new LobbyManager();

@@ -29,18 +29,17 @@ public class Server {
     private void incoming() {
         try {
             ServerSocket serverSocket = new ServerSocket(Integer.valueOf(settingsProvider.get("port")));
-
+            Debug.Log("Init");
             while (true) {
                 //Accept connection
-                System.out.println("Oczekiwanie na polaczenie...");
                 Socket socket = serverSocket.accept();
-                System.out.println("Połączono z " + socket.getRemoteSocketAddress().toString());
+                Debug.Log("Connected: " + socket.getRemoteSocketAddress().toString());
 
                 //Create thread to handle connection
                 playerManager.createPlayer(socket);
             }
         } catch (Exception e) {
-            System.out.println("Error in Server/incoming: " + e);
+            Debug.Log("Error in Server/incoming: " + e);
         }
     }
 }
