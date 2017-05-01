@@ -68,7 +68,7 @@ class TeamManager {
     }
 
     /**
-     * Auto division of reamaining players
+     * Auto division of remaining players
      * @param players Player instance list
      * @return true after auto division
      */
