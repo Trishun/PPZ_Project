@@ -124,6 +124,8 @@ public class Player extends Thread {
             String uName = String.valueOf(message.get("uname"));
             String uPasswd = encryptionProvider.encrypt(String.valueOf(message.get("upass")));
 
+
+
             String query = "SELECT * FROM accounts WHERE nickname = '" + uName + "'";
             ResultSet resultSet = databaseCommunicator.executeQuery(query);
             if (!resultSet.isBeforeFirst()) {
@@ -131,6 +133,13 @@ public class Player extends Thread {
                 response.put("alert", "Wrong username!");
                 messageProvider.sendMessage(new JSONObject(response));
                 return;
+            }
+            for (Player player: playerManager.getPlayerList()) {
+                if (player.getName().equals(uName)) {
+                    response.put("login", false);
+                    response.put("alert", "Already logged in!");
+                    messageProvider.sendMessage(new JSONObject(response));
+                }
             }
             resultSet.next();
             if (resultSet.getString("password").equals(uPasswd)) {
