@@ -36,18 +36,18 @@ public class CommunicationService extends Service {
         socketHandler.closeSocket();
     }
 
-    void sendLoginRequestToServer(String name, String password, LoginFragment fragment) {
+    void sendLoginRequestToServer(String name, String password, String locale, LoginFragment fragment) {
         Authenticator authenticator = new Authenticator();
         authenticator.setCaller(fragment);
         authenticator.setHandler(socketHandler);
-        authenticator.execute(name, password);
+        authenticator.execute(name, password, locale);
     }
 
-    void sendRegisterRequestToServer(String name, String password, String mail, RegisterFragment fragment) {
+    void sendRegisterRequestToServer(String name, String password, String mail, String locale, RegisterFragment fragment) {
         Registrator registrator = new Registrator();
         registrator.setCaller(fragment);
         registrator.setHandler(socketHandler);
-        registrator.execute(name, password, mail);
+        registrator.execute(name, password, mail, locale);
     }
 
     void createNewLobby(LobbyTask manager, LobbyTaskCallback context) {

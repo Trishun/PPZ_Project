@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.Locale;
+
 // TODO: 15-Apr-17 RESOLVE CODE CODE DUPLICATION SOMEHOW
 public class RegisterFragment extends Fragment implements RegistrationResultListener {
 
@@ -52,12 +54,13 @@ public class RegisterFragment extends Fragment implements RegistrationResultList
         String password = passwordEditText.getText().toString();
         String repeatedPassword = repeatedPasswordEditText.getText().toString();
         String mail = mailEditText.getText().toString();
+        String locale = Locale.getDefault().toString();
 
         if (areSpecified(name, password, repeatedPassword, mail)) {
             if (areBothPasswordsNotEqual(password, repeatedPassword)) {
                 Toast.makeText(getContext(), R.string.passwords_dont_match, Toast.LENGTH_SHORT).show();
             } else {
-                StartActivity.getService().sendRegisterRequestToServer(name, password, mail, this);
+                StartActivity.getService().sendRegisterRequestToServer(name, password, mail, locale, this);
             }
         } else {
             Toast.makeText(getContext(), R.string.fill_form, Toast.LENGTH_SHORT).show();
@@ -79,7 +82,7 @@ public class RegisterFragment extends Fragment implements RegistrationResultList
 
     @Override
     public void onRegistrationFailure(String error) {
-        Toast.makeText(getContext(), R.string.registration_error, Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
         Log.i("ERROR", error);
     }
 }

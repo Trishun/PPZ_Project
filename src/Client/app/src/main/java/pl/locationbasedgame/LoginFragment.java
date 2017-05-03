@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.Locale;
+
 import static pl.locationbasedgame.PreferencesHelper.*;
 
 public class LoginFragment extends Fragment implements AuthenticationResultListener {
@@ -51,9 +53,10 @@ public class LoginFragment extends Fragment implements AuthenticationResultListe
 
         String name = nameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
+        String locale = Locale.getDefault().toString();
 
         if (areSpecified(name, password)) {
-            StartActivity.getService().sendLoginRequestToServer(name, password, this);
+            StartActivity.getService().sendLoginRequestToServer(name, password, locale, this);
         }
         else {
             Toast.makeText(getContext(), R.string.credentials_not_specified, Toast.LENGTH_SHORT).show();
@@ -76,8 +79,8 @@ public class LoginFragment extends Fragment implements AuthenticationResultListe
 
 
     @Override
-    public void onAuthenticationFailure() {
-        Toast.makeText(getContext(), R.string.wrong_credentials, Toast.LENGTH_LONG).show();
+    public void onAuthenticationFailure(String alertMessage) {
+        Toast.makeText(getContext(), alertMessage, Toast.LENGTH_LONG).show();
         Log.i(TAG, "FAIL");
     }
 

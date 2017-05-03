@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.Locale;
+
 /**
  * Created by Patryk Ligenza on 03-May-17.
  */
@@ -38,8 +40,10 @@ class PreferencesHelper {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String name = preferences.getString("name", "");
         String password = preferences.getString("password", "");
+        String locale = Locale.getDefault().toString();
+
         if (!name.equals("") && !password.equals("")) {
-            StartActivity.getService().sendLoginRequestToServer(name, password, fragment);
+            StartActivity.getService().sendLoginRequestToServer(name, password, locale, fragment);
             return true;
         }
         return false;

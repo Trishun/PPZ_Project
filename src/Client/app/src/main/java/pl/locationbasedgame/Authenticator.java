@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 interface AuthenticationResultListener {
     void onAuthenticationSuccess(String name, String password);
-    void onAuthenticationFailure();
+    void onAuthenticationFailure(String alertMessage);
 }
 
 class Authenticator extends AsyncTask<String, Void, String> {
@@ -25,8 +25,10 @@ class Authenticator extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         name = params[0];
         password = params[1];
+        String locale = params[2];
 
-        String message = constructLoginMessage(name, password);
+        String message = constructLoginMessage(name, password, locale);
+
         return handler.sendMessageAndGetResponse(message);
     }
 
@@ -46,11 +48,12 @@ class Authenticator extends AsyncTask<String, Void, String> {
         if (jsonResponse.getBoolean("login")) {
             caller.onAuthenticationSuccess(name, password);
         } else {
-            caller.onAuthenticationFailure();
+            String alertMessage = jsonResponse.getString("alert");
+            caller.onAuthenticationFailure(alertMessage);
         }
     }
 
-    private String constructLoginMessage(String name, String password) {
+    private String constructLoginMessage(String name, String password, String locale) {
         //return  "login&" + name + "%" + password;
 
         JSONObject json = new JSONObject();
@@ -58,6 +61,7 @@ class Authenticator extends AsyncTask<String, Void, String> {
             json.put("header", "login");
             json.put("uname", name);
             json.put("upass", password);
+            json.put("locale", locale);
             return json.toString();
         } catch (JSONException e) {
             e.printStackTrace();
