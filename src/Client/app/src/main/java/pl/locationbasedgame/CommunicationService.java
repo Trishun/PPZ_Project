@@ -50,6 +50,16 @@ public class CommunicationService extends Service {
         registrator.execute(name, password, mail);
     }
 
+    void createNewLobby(LobbyTask manager, LobbyTaskCallback context) {
+        manager.set(socketHandler, context, -1);
+        manager.execute('C');
+    }
+
+    void joinExistingLobby(LobbyTask manager, LobbyTaskCallback context, int id) {
+        manager.set(socketHandler, context, id);
+        manager.execute('J');
+    }
+
     class ServerBinder extends Binder {
         CommunicationService getService() {
             return CommunicationService.this;

@@ -22,4 +22,8 @@
     <string name="registration_error">Wystąpił błąd przy rejestracji</string>
     <string name="password_repeat">Powtórz hasło</string>
     <string name="passwords_dont_match">Wpisane hasła nie są identyczne!</string>
+    <string name="create_lobby">Stwórz nową grę</string>
+    <string name="join_existing_game">Dołącz do istniejącej gry</string>
+    <string name="creating_new_game">Tworzę nową grę...</string>
+    <string name="joining_existing_game">Dołączam do istniejącej gry...</string>
 </resources>

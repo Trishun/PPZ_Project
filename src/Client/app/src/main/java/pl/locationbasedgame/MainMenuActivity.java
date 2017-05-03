@@ -22,7 +22,7 @@ public class MainMenuActivity extends Activity {
         gameButton.setOnClickListener(new RelativeLayout.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainMenuActivity.this, GameActivity.class));
+                startActivity(new Intent(MainMenuActivity.this, LobbyActivity.class));
             }
         });
 

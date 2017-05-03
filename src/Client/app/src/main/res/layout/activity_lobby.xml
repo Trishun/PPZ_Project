@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/btn_create_lobby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/create_lobby"/>
+
+    <EditText
+        android:id="@+id/et_lobby_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_create_lobby"
+        android:inputType="number"/>
+    <Button
+        android:id="@+id/btn_join_lobby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_lobby_id"
+        android:layout_centerHorizontal="true"
+        android:text="@string/join_existing_game"/>
+
+    <!-- Connection progress indicator -->
+
+    <!--<ProgressBar-->
+        <!--android:id="@+id/pb_getting_lobbies"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:visibility="invisible"-->
+        <!--android:indeterminate="true" />-->
+    <!--<TextView-->
+        <!--android:id="@+id/tv_getting_lobbies_progress_message"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:padding="15dp"/>-->
+</RelativeLayout>
