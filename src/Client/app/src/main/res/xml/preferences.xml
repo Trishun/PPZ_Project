@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/prefs_header_network">
+
+        <CheckBoxPreference
+            android:title="@string/prefs_title_use_wifi_only"
+            android:defaultValue="false"
+            android:key="@string/prefs_only_wifi">
+        </CheckBoxPreference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/prefs_header_ux">
+
+        <CheckBoxPreference
+            android:title="@string/prefs_title_use_vibration_only"
+            android:summaryOn="@string/prefs_summary_vibration_only_on"
+            android:summaryOff="@string/prefs_summary_vibration_only_off"
+            android:defaultValue="false"
+            android:key="@string/prefs_vibrations_only">
+        </CheckBoxPreference>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
