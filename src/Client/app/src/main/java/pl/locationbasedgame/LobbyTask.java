@@ -36,9 +36,9 @@ class LobbyTask extends AsyncTask<Character, Void, Void> {
         JSONObject message = new JSONObject();
         try {
             message.put("header", "ljoin");
-            message.put("enterCode", id);
+            message.put("enterCode", String.valueOf(id));
             JSONObject responseJSON = new JSONObject(handler.sendMessageAndGetResponse(message.toString()));
-            return responseJSON.getBoolean("ljoin");
+            return responseJSON.has("llist");
 
         } catch (JSONException e) {
             e.printStackTrace();
