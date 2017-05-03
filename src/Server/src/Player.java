@@ -292,7 +292,7 @@ public class Player extends Thread {
 
     private void handleLJoin(JSONObject message) {
         HashMap<String, Object> response = new HashMap<>();
-        int enterCode = (Integer) message.get("enterCode");
+        Integer enterCode = Integer.valueOf((String) message.get("enterCode"));
         if (lobbyManager.addToLobby(enterCode, this)) {
             response.put("ljoin", true);
         } else {
@@ -327,7 +327,7 @@ public class Player extends Thread {
         for (Player player : players) {
             arrayList.add(player.getPlayerName());
         }
-        message.put("llist", arrayList.toArray());
+        message.put("llist", arrayList);
         messageProvider.sendMessage(new JSONObject(message));
     }
 
