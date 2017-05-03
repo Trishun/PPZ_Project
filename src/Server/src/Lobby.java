@@ -59,6 +59,10 @@ class Lobby {
         return players;
     }
 
+    Integer getPlayerCount() {
+        return players.size();
+    }
+
     TeamManager getTeamManager() {
         return teamManager;
     }
