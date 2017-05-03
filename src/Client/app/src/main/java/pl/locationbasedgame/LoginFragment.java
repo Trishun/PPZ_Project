@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import static pl.locationbasedgame.PreferencesHelper.*;
+
 public class LoginFragment extends Fragment implements AuthenticationResultListener {
 
     private String TAG = "LOGIN";
@@ -68,7 +70,7 @@ public class LoginFragment extends Fragment implements AuthenticationResultListe
     @Override
     public void onAuthenticationSuccess(String name, String password) {
         Log.i(TAG, "OK");
-        storeUser(name, password);
+        storeUser(getActivity().getApplicationContext(), name, password);
         goToMainMenu();
     }
 
@@ -82,34 +84,5 @@ public class LoginFragment extends Fragment implements AuthenticationResultListe
     private void goToMainMenu() {
         Intent mainMenuIntent = new Intent(getActivity(), MainMenuActivity.class);
         startActivity(mainMenuIntent);
-    }
-
-    // Preferences involving methods
-
-    /**
-     * Tries to log with previously logged player's credentials.
-     *
-     * @return true if automatic login request was dispatched to perform, false otherwise
-     */
-    boolean autoLogin(Context context) {
-        // TODO: 21-Apr-17 Consider safer way of storing passwords locally
-        Log.i(TAG, "AUTO LOGIN");
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String name = preferences.getString("name", "");
-        String password = preferences.getString("password", "");
-        if (!name.equals("") && !password.equals("")) {
-            StartActivity.getService().sendLoginRequestToServer(name, password, this);
-            return true;
-        }
-        return false;
-    }
-
-    private void storeUser(String name, String password) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity()
-                .getApplicationContext());
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("name", name);
-        editor.putString("password", password);
-        editor.apply();
     }
 }

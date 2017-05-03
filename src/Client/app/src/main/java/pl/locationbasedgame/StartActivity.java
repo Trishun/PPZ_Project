@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import static pl.locationbasedgame.PreferencesHelper.*;
+
 public class StartActivity extends AppCompatActivity {
 
     private static CommunicationService service;
@@ -26,7 +28,7 @@ public class StartActivity extends AppCompatActivity {
             CommunicationService.ServerBinder binder = (CommunicationService.ServerBinder) service;
             StartActivity.service = binder.getService();
             isCommunicatorBound = true;
-            if (!loginFragment.autoLogin(getApplicationContext())) {
+            if (!autoLogin(getApplicationContext(), loginFragment)) {
                 findViewById(R.id.ll_start_screen).setVisibility(View.VISIBLE);
             }
             Log.i(TAG, "Service connected");
