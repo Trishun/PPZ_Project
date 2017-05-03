@@ -36,9 +36,12 @@ class HTTPClientManager extends Thread {
 
                 //response body
                 dataOutputStream.writeBytes("<html>\r\n");
+                dataOutputStream.writeBytes("<head><meta charset=\"utf-8\" /></head>\r\n");
+                dataOutputStream.writeBytes("<body>\r\n");
                 dataOutputStream.writeBytes("<H1>Strona testowa</H1>\r\n");
                 dataOutputStream.writeBytes("<H2>Ping:" + data + "</H2>\r\n");
                 log(dataOutputStream);
+                dataOutputStream.writeBytes("</body>\r\n");
                 dataOutputStream.writeBytes("</html>\r\n");
             } else {
                 dataOutputStream.writeBytes("HTTP/1.1 501 Not supported.\r\n");
