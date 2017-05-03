@@ -15,17 +15,14 @@ class Checkpoint {
     private boolean completed = false;
     private boolean correct = false;
 
-    Checkpoint(double[] location) {
+    Checkpoint(double[] location, String description) {
         this.location = location;
+        task = new Task(description);
         time_created = Instant.now();
     }
 
     double[] getLocation() {
         return location;
-    }
-
-    void setTask(String description) {
-        task = new Task(description);
     }
 
     Task getTask() {

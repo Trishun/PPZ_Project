@@ -28,5 +28,8 @@ class Team {
         return players.size();
     }
 
+    void sendMessageToPlayers(String message) {
+
+    }
 
 }

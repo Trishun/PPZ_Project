@@ -14,6 +14,7 @@ class TeamManager {
 
     /**
      * Checks bigger team
+     *
      * @param team Team code
      * @return True desired team has less or equal num of players, otherwise false.
      */
@@ -23,8 +24,9 @@ class TeamManager {
 
     /**
      * Add player to team
+     *
      * @param player Player instance
-     * @param team Team code
+     * @param team   Team code
      */
     void addPlayerToTeam(Player player, int team) {
         if (checkPossibility(team)) {
@@ -34,8 +36,9 @@ class TeamManager {
 
     /**
      * Add player to team
+     *
      * @param player Player instance
-     * @param team Team instance
+     * @param team   Team instance
      */
     private void addPlayerToTeam(Player player, Team team) {
         team.addPlayer(player);
@@ -43,6 +46,7 @@ class TeamManager {
 
     /**
      * Remove player from team
+     *
      * @param player Player instance
      */
     void removePlayer(Player player) {
@@ -52,12 +56,13 @@ class TeamManager {
 
     /**
      * Get team instance basen on team code
+     *
      * @param team Team code
      * @return Team instance
      */
     @Nullable
     @Contract(pure = true)
-    private Team getTeam(int team) {
+    Team getTeam(int team) {
         switch (team) {
             case 0:
                 return escapeTeam;
@@ -69,6 +74,7 @@ class TeamManager {
 
     /**
      * Auto division of remaining players
+     *
      * @param players Player instance list
      * @return true after auto division
      */
@@ -83,6 +89,15 @@ class TeamManager {
             }
         }
         return true;
+    }
+
+    void broadcastToTeam(int team, String message) {
+        getTeam(team).sendMessageToPlayers(message);
+    }
+
+    void broadcastToAll(String message) {
+        broadcastToTeam(0, message);
+        broadcastToTeam(1, message);
     }
 
 }
