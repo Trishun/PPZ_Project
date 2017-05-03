@@ -51,6 +51,10 @@ class Lobby {
         return initiator;
     }
 
+    void close() {
+        Thread.currentThread().interrupt();
+    }
+
     ArrayList<Player> getPlayers() {
         return players;
     }
