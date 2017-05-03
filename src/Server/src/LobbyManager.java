@@ -41,7 +41,7 @@ class LobbyManager {
     void removeFromLobby(Player player) {
         for (Lobby lobby : lobbyList) {
             if (lobby.removeFromLobby(player)) {
-                if (lobby.getInitiator() == player) {
+                if (lobby.getPlayerCount() == 0) {
                     lobbyList.remove(lobby);
                     lobby.close();
                 }
