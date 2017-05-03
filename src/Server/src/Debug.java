@@ -1,4 +1,6 @@
 import java.io.*;
+import java.time.Instant;
+import java.util.ArrayList;
 
 /**
  * Logging class
@@ -20,6 +22,15 @@ class Debug {
 
     static void initLog() {
         try {
+            boolean file = new File("log.txt").isFile();
+            if (file) {
+                ArrayList<String> commands = new ArrayList<>();
+                commands.add("mv");
+                commands.add("log.txt");
+                commands.add("log." + Instant.now() + "txt");
+                ProcessBuilder processbuilder = new ProcessBuilder(commands);
+                processbuilder.start();
+            }
             OutputStream os = new FileOutputStream("log.txt");
             os.close();
         } catch (IOException e) {
