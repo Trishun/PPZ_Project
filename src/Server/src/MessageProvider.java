@@ -41,7 +41,9 @@ class MessageProvider {
 
     void sendMessage(JSONObject message) {
         try {
-            socketWriter.println(message.toJSONString());
+            String jsonString = message.toJSONString();
+            Debug.Log("Message sent: " + jsonString);
+            socketWriter.println(jsonString);
             socketWriter.flush();
         } catch (Exception e) {
             Debug.Log("Exception in MessageProvider/sendMessage: " + e);
