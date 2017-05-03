@@ -51,11 +51,10 @@ class DatabaseCommunicator {
      * @return ResultSet of results in case of success, null otherwise
      */
 
-    public ResultSet executeQuery(String query) {
+    ResultSet executeQuery(String query) {
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            return resultSet;
+            return statement.executeQuery(query);
         } catch (Exception e) {
             Debug.Log("Exception in DatabaseCommunicator/executeQuery: " + e);
             return null;
@@ -67,12 +66,16 @@ class DatabaseCommunicator {
      *
      * @param query String query to be executed on the database
      */
-    public void executeUpdate(String query) {
+    void executeUpdate(String query) {
         try {
             Statement statement = connection.createStatement();
             System.out.println(statement.executeUpdate(query));
         } catch (Exception e) {
             Debug.Log("Exception in DatabaseCommunicator/executeUpdate: " + e);
         }
+    }
+
+    SettingsProvider getSettingsProvider() {
+        return settingsProvider;
     }
 }
