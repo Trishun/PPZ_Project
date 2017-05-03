@@ -22,18 +22,19 @@ class MessageProvider {
             this.socketReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             this.socketWriter = new PrintWriter(clientSocket.getOutputStream());
         } catch (IOException e) {
-            System.out.println("Exception in MessageProvider/constructor: " + e);
+            Debug.Log("Exception in MessageProvider/constructor: " + e);
         }
     }
 
     JSONObject getMessage() {
         try {
             String data = socketReader.readLine();
+            Debug.Log("Message got: " + data);
             return processMessage(data);
         } catch (SocketException e) {
-            System.out.println("Connention Closed");
+            Debug.Log("Connention Closed");
         } catch (Exception e) {
-            System.out.println("Exception in MessageProvider/getMessage: " + e);
+            Debug.Log("Exception in MessageProvider/getMessage: " + e);
         }
         return null;
     }
@@ -43,7 +44,7 @@ class MessageProvider {
             socketWriter.println(message.toJSONString());
             socketWriter.flush();
         } catch (Exception e) {
-            System.out.println("Exception in MessageProvider/sendMessage: " + e);
+            Debug.Log("Exception in MessageProvider/sendMessage: " + e);
         }
     }
 
@@ -52,7 +53,7 @@ class MessageProvider {
         try {
             return (JSONObject)parser.parse(data);
         } catch (Exception e) {
-            System.out.println("Exception in MessageProvider/processMessage: " + e);
+            Debug.Log("Exception in MessageProvider/processMessage: " + e);
         }
         return null;
     }

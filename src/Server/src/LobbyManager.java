@@ -12,7 +12,7 @@ class LobbyManager {
     int createLobby(Player initiator) {
         Lobby lobby = new Lobby(lobbyList.size(), initiator);
         lobbyList.add(lobby);
-        System.out.println("Lobby " + lobby.getId() + " created!");
+        Debug.Log("Lobby " + lobby.getId() + " created!");
         return lobby.getId();
     }
 
@@ -29,13 +29,13 @@ class LobbyManager {
     private void addToLobby(Lobby lobby, Player player) {
         lobby.addToLobby(player);
         player.setLobby(lobby.getId());
-        System.out.println("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") joined lobby " + lobby.getId());
+        Debug.Log("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") joined lobby " + lobby.getId());
     }
 
     void removeFromLobby(int lobbyId, Player player) {
         Lobby lobby = getLobbyById(lobbyId);
         lobby.removeFromLobby(player);
-        System.out.println("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") left lobby " + lobbyId);
+        Debug.Log("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") left lobby " + lobbyId);
     }
 
     void removeFromLobby(Player player) {

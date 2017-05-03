@@ -28,13 +28,13 @@ class DatabaseCommunicator {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
             } catch (Exception e) {
-                System.out.println(e);
+                Debug.Log("Exception 1 in DatabaseCommunicator/DatabaseCommunicator:" + e);
             }
 
             //Connection
             this.connection = DriverManager.getConnection(HOST, UNAME, UPASSWD);
         } catch (Exception e) {
-            System.out.println("error: " + e);
+            Debug.Log("Exception 2 in DatabaseCommunicator/DatabaseCommunicator: " + e);
         }
     }
 
@@ -57,7 +57,7 @@ class DatabaseCommunicator {
             ResultSet resultSet = statement.executeQuery(query);
             return resultSet;
         } catch (Exception e) {
-            System.out.println(e);
+            Debug.Log("Exception in DatabaseCommunicator/executeQuery: " + e);
             return null;
         }
     }
@@ -71,10 +71,8 @@ class DatabaseCommunicator {
         try {
             Statement statement = connection.createStatement();
             System.out.println(statement.executeUpdate(query));
-            return;
         } catch (Exception e) {
-            System.out.println(e);
-            return;
+            Debug.Log("Exception in DatabaseCommunicator/executeUpdate: " + e);
         }
     }
 }

@@ -1,8 +1,8 @@
-import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+
 import javax.xml.parsers.DocumentBuilder;
-
-import org.w3c.dom.*;
-
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +40,7 @@ class SettingsProvider {
             doc.getDocumentElement().normalize();
             return doc;
         } catch (Exception e) {
-            System.out.println("Exception in SettingsProvider/prepareDocument: " + e);
+            Debug.Log("Exception in SettingsProvider/prepareDocument: " + e);
         }
         return null;
     }
@@ -53,7 +53,7 @@ class SettingsProvider {
                         settingsList.item(i).getTextContent());
             }
         } catch (Exception e) {
-            System.out.println("Exception in SettingsProvider/makeDictionary: " + e);
+            Debug.Log("Exception in SettingsProvider/makeDictionary: " + e);
         }
     }
 

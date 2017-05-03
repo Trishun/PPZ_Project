@@ -27,14 +27,14 @@ class PlayerManager {
         try {
             playerList.remove(playerToDisconnect);
         } catch (ConcurrentModificationException ee) {
-            System.out.println("Exception 1 in PlayerManager/disconnectPlayer: " + ee);
+            Debug.Log("Exception 1 in PlayerManager/disconnectPlayer: " + ee);
         }
         try {
             lobbyManager.removeFromLobby(playerToDisconnect);
         } catch (ConcurrentModificationException ee) {
-            System.out.println("Exception 2 in PlayerManager/disconnectPlayer: " + ee);
+            Debug.Log("Exception 2 in PlayerManager/disconnectPlayer: " + ee);
         }
-        System.out.println("Player " + playerToDisconnect.getPlayerName() + " (" + playerToDisconnect.getPlayerId() + ") disconnected");
+        Debug.Log("Player " + playerToDisconnect.getPlayerName() + " (" + playerToDisconnect.getPlayerId() + ") disconnected");
     }
 
     ArrayList<Player> getPlayerList() {
