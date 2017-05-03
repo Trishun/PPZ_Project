@@ -96,6 +96,10 @@ public class Player extends Thread {
         this.playerName = playerName;
     }
 
+    MessageProvider getMessageProvider() {
+        return messageProvider;
+    }
+
     /**
      * Disconnect management
      */

@@ -1,3 +1,5 @@
+import org.json.simple.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -28,8 +30,10 @@ class Team {
         return players.size();
     }
 
-    void sendMessageToPlayers(String message) {
-
+    void sendMessageToPlayers(JSONObject message) {
+        for (Player player : players) {
+            player.getMessageProvider().sendMessage(message);
+        }
     }
 
 }

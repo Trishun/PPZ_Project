@@ -1,5 +1,6 @@
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
@@ -91,11 +92,11 @@ class TeamManager {
         return true;
     }
 
-    void broadcastToTeam(int team, String message) {
+    void broadcastToTeam(int team, JSONObject message) {
         getTeam(team).sendMessageToPlayers(message);
     }
 
-    void broadcastToAll(String message) {
+    void broadcastToAll(JSONObject message) {
         broadcastToTeam(0, message);
         broadcastToTeam(1, message);
     }
