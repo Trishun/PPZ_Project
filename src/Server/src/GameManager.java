@@ -1,10 +1,10 @@
 /**
  * Game management class
- * Created by piotr on 25.04.2017.
+ * Created by PD on 25.04.2017.
  */
 class GameManager {
 
-    TeamManager teamManager;
+    private TeamManager teamManager;
 
     GameManager(TeamManager teamManager) {
         this.teamManager = teamManager;
