@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 interface RegistrationResultListener {
     void onRegistrationSuccess();
-    void onRegistrationFailure(String error);
+    void onRegistrationFailure(String alertMessage);
 }
 
 class Registrator extends AsyncTask<String, Void, String> {
@@ -24,8 +24,9 @@ class Registrator extends AsyncTask<String, Void, String> {
         String name = params[0];
         String password = params[1];
         String mail = params[2];
+        String locale = params[3];
 
-        String message = constructRegistrationMessage(name, password, mail);
+        String message = constructRegistrationMessage(name, password, mail, locale);
         return handler.sendMessageAndGetResponse(message);
     }
 
@@ -48,7 +49,7 @@ class Registrator extends AsyncTask<String, Void, String> {
         }
     }
 
-    private String constructRegistrationMessage(String name, String password, String mail) {
+    private String constructRegistrationMessage(String name, String password, String mail, String locale) {
 
         JSONObject json = new JSONObject();
         try {
@@ -57,6 +58,7 @@ class Registrator extends AsyncTask<String, Void, String> {
             json.put("upass", password);
             json.put("backup_code", "1234");
             json.put("email", mail);
+            json.put("locale", locale);
             return json.toString();
         } catch (JSONException e) {
             e.printStackTrace();
