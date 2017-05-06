@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class CommunicationService extends Service {
 
     private SocketHandler socketHandler;
@@ -36,11 +39,9 @@ public class CommunicationService extends Service {
         socketHandler.closeSocket();
     }
 
-    void sendLoginRequestToServer(String name, String password, String locale, LoginFragment fragment) {
+    boolean sendLoginRequestToServer(String name, String password, String locale) {
         Authenticator authenticator = new Authenticator();
-        authenticator.setCaller(fragment);
-        authenticator.setHandler(socketHandler);
-        authenticator.execute(name, password, locale);
+        return authenticator.authenticate(socketHandler, name, password, locale);
     }
 
     void sendRegisterRequestToServer(String name, String password, String mail, String locale, RegisterFragment fragment) {

@@ -12,6 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 import static pl.locationbasedgame.PreferencesHelper.*;
 
 public class StartActivity extends AppCompatActivity {
@@ -28,9 +36,7 @@ public class StartActivity extends AppCompatActivity {
             CommunicationService.ServerBinder binder = (CommunicationService.ServerBinder) service;
             StartActivity.service = binder.getService();
             isCommunicatorBound = true;
-            if (!autoLogin(getApplicationContext(), loginFragment)) {
-                findViewById(R.id.ll_start_screen).setVisibility(View.VISIBLE);
-            }
+            performAutoLogin();
             Log.i(TAG, "Service connected");
         }
 
@@ -40,6 +46,39 @@ public class StartActivity extends AppCompatActivity {
             Log.i(TAG, "Service connection lost");
         }
     };
+
+    private void performAutoLogin() {
+        Single<Boolean> autoLoginTask = Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return !autoLogin(getApplicationContext());
+            }
+        });
+
+        autoLoginTask
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) { }
+
+                    @Override
+                    public void onSuccess(Boolean success) {
+                        if (success) {
+                            // Show login page if auto login failed
+                            findViewById(R.id.ll_start_screen).setVisibility(View.VISIBLE);
+                        } else {
+                            loginFragment.goToMainMenu();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "Error");
+                        e.printStackTrace();
+                    }
+                });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
