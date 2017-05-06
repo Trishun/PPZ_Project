@@ -1,7 +1,5 @@
 package pl.locationbasedgame;
 
-import android.os.AsyncTask;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,44 +7,23 @@ import org.json.JSONObject;
  * Created by Patryk Ligenza on 15-Apr-17.
  */
 
-interface RegistrationResultListener {
-    void onRegistrationSuccess();
-    void onRegistrationFailure(String alertMessage);
-}
+class Registrator {
 
-class Registrator extends AsyncTask<String, Void, String> {
-
-    private RegistrationResultListener caller;
-    private SocketHandler handler;
-
-    @Override
-    protected String doInBackground(String... params) {
-        String name = params[0];
-        String password = params[1];
-        String mail = params[2];
-        String locale = params[3];
-
+    boolean registerUser(SocketHandler socketHandler, String name, String password, String mail, String locale) {
         String message = constructRegistrationMessage(name, password, mail, locale);
-        return handler.sendMessageAndGetResponse(message);
-    }
+        String response = socketHandler.sendMessageAndGetResponse(message);
 
-    @Override
-    protected void onPostExecute(String response) {
         try {
-            processResponse(response);
+            JSONObject json = new JSONObject(response);
+            if (json.getBoolean("register")) {
+                return true;
+            } else {
+                throw new RuntimeException(json.getString("alert"));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        super.onPostExecute(response);
-    }
-
-    private void processResponse(String response) throws JSONException {
-        JSONObject jsonResponse = new JSONObject(response);
-        if (jsonResponse.getBoolean("register")) {
-            caller.onRegistrationSuccess();
-        } else {
-            caller.onRegistrationFailure(jsonResponse.getString("alert"));
-        }
+        return false;
     }
 
     private String constructRegistrationMessage(String name, String password, String mail, String locale) {
@@ -64,13 +41,5 @@ class Registrator extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
         return null;
-    }
-
-    void setCaller(RegistrationResultListener caller) {
-        this.caller = caller;
-    }
-
-    void setHandler(SocketHandler handler) {
-        this.handler = handler;
     }
 }

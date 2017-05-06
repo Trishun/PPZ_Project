@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class CommunicationService extends Service {
 
@@ -44,21 +47,17 @@ public class CommunicationService extends Service {
         return authenticator.authenticate(socketHandler, name, password, locale);
     }
 
-    void sendRegisterRequestToServer(String name, String password, String mail, String locale, RegisterFragment fragment) {
+    boolean sendRegisterRequestToServer(String name, String password, String mail, String locale) {
         Registrator registrator = new Registrator();
-        registrator.setCaller(fragment);
-        registrator.setHandler(socketHandler);
-        registrator.execute(name, password, mail, locale);
+        return registrator.registerUser(socketHandler, name, password, mail, locale);
     }
 
-    void createNewLobby(LobbyTask manager, LobbyTaskCallback context) {
-        manager.set(socketHandler, context, -1);
-        manager.execute('C');
+    int createNewLobby(LobbyManager manager) {
+        return manager.createLobbyAndGetCode(socketHandler);
     }
 
-    void joinExistingLobby(LobbyTask manager, LobbyTaskCallback context, int id) {
-        manager.set(socketHandler, context, id);
-        manager.execute('J');
+    JSONArray joinExistingLobby(LobbyManager manager, int id) {
+        return manager.joinLobby(socketHandler, id);
     }
 
     class ServerBinder extends Binder {
