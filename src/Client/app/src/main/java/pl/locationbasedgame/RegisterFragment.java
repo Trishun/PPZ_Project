@@ -97,8 +97,11 @@ public class RegisterFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.i("ERROR", e.getMessage());
+                        if (e instanceof RegisterFailureException) {
+                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        } else {
+                            Log.i("ERROR", e.getMessage());
+                        }
                     }
                 });
     }

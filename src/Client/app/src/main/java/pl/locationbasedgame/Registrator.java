@@ -18,7 +18,7 @@ class Registrator {
             if (json.getBoolean("register")) {
                 return true;
             } else {
-                throw new RuntimeException(json.getString("alert"));
+                throw new RegisterFailureException(json.getString("alert"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
