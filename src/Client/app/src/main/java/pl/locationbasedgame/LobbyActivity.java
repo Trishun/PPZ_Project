@@ -7,19 +7,21 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import org.json.JSONArray;
 
 import java.util.concurrent.Callable;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
+import static butterknife.ButterKnife.findById;
 
 public class LobbyActivity extends Activity {
 
@@ -48,38 +50,13 @@ public class LobbyActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
-        assignListeners();
         Intent bindIntent = new Intent(this, CommunicationService.class);
         bindService(bindIntent, serviceConnection, BIND_IMPORTANT);
+        ButterKnife.bind(this);
     }
 
-    private void assignListeners() {
-        Button newGameButton = (Button) findViewById(R.id.btn_create_lobby);
-        Button joinGameButton = (Button) findViewById(R.id.btn_join_lobby);
-
-        newGameButton.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createLobby();
-            }
-        });
-
-        joinGameButton.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText codeEditText = (EditText) findViewById(R.id.et_lobby_id);
-
-                String content = codeEditText.getText().toString();
-
-                if (!content.isEmpty()) {
-                    final int lobbyId = Integer.parseInt(content);
-                    createLobby(lobbyId);
-                }
-            }
-        });
-    }
-
-    private void createLobby() {
+    @OnClick(R.id.btn_create_lobby)
+    void createLobby() {
         Single<Integer> createTask = Single.fromCallable(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -106,7 +83,19 @@ public class LobbyActivity extends Activity {
                 });
     }
 
-    private void createLobby(final int lobbyId) {
+    @OnClick(R.id.btn_join_lobby)
+    void joinLobbyIfInputOk() {
+        EditText codeEditText = findById(this, R.id.et_lobby_id);
+
+        String content = codeEditText.getText().toString();
+
+        if (!content.isEmpty()) {
+            final int lobbyId = Integer.parseInt(content);
+            sendJoinRequest(lobbyId);
+        }
+    }
+
+    private void sendJoinRequest(final int lobbyId) {
         Single<JSONArray> getPlayerList = Single.fromCallable(new Callable<JSONArray>() {
             @Override
             public JSONArray call() throws Exception {

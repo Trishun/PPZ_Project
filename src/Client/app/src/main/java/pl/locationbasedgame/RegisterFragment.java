@@ -6,57 +6,41 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: 15-Apr-17 RESOLVE CODE CODE DUPLICATION SOMEHOW
 public class RegisterFragment extends Fragment {
 
-    private EditText nameEditText;
-    private EditText passwordEditText;
-    private EditText repeatedPasswordEditText;
-    private EditText mailEditText;
+    @BindView(R.id.et_name)
+    EditText nameEditText;
+    @BindView(R.id.et_password)
+    EditText passwordEditText;
+    @BindView(R.id.et_repeated_password)
+    EditText repeatedPasswordEditText;
+    @BindView(R.id.et_mail)
+    EditText mailEditText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_register, container, false);
+        View view = inflater.inflate(R.layout.fragment_register, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        getEditTexts();
-        assignListeners();
-    }
-
-    private void getEditTexts() {
-        repeatedPasswordEditText = (EditText) getView().findViewById(R.id.et_repeated_password);
-        nameEditText = (EditText) getView().findViewById(R.id.et_name);
-        mailEditText = (EditText) getView().findViewById(R.id.et_mail);
-        passwordEditText = (EditText) getView().findViewById(R.id.et_password);
-    }
-
-    private void assignListeners() {
-        Button registerButton = (Button) getView().findViewById(R.id.btn_register);
-        registerButton.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                register();
-            }
-        });
-    }
-
-    private void register() {
+    @OnClick(R.id.btn_register)
+    void register() {
         String name = nameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         String repeatedPassword = repeatedPasswordEditText.getText().toString();

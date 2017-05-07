@@ -14,12 +14,14 @@ import android.view.View;
 
 import java.util.concurrent.Callable;
 
+import butterknife.ButterKnife;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static butterknife.ButterKnife.findById;
 import static pl.locationbasedgame.PreferencesHelper.autoLogin;
 
 public class StartActivity extends AppCompatActivity {
@@ -139,11 +141,11 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void setupTabNavigation() {
-        ViewPager viewPager = (ViewPager) findViewById(R.id.vp_start_screen_pager);
+        ViewPager viewPager = findById(this, R.id.vp_start_screen_pager);
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), getApplicationContext(),
                 loginFragment, registerFragment));
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tl_start_screen_tabs);
+        TabLayout tabLayout = findById(this, R.id.tl_start_screen_tabs);
         tabLayout.setupWithViewPager(viewPager);
     }
 }
