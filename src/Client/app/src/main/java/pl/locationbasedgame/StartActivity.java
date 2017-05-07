@@ -12,12 +12,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import static pl.locationbasedgame.PreferencesHelper.*;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
+import static pl.locationbasedgame.PreferencesHelper.autoLogin;
 
 public class StartActivity extends AppCompatActivity {
 
-    private static CommunicationService service;
     private static final String TAG = "START";
+    private static CommunicationService service;
     private boolean isCommunicatorBound;
     private LoginFragment loginFragment = new LoginFragment();
     private RegisterFragment registerFragment = new RegisterFragment();
@@ -27,11 +35,10 @@ public class StartActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             CommunicationService.ServerBinder binder = (CommunicationService.ServerBinder) service;
             StartActivity.service = binder.getService();
+
+            tryToInitializeSocket();
+
             isCommunicatorBound = true;
-            if (!autoLogin(getApplicationContext(), loginFragment)) {
-                findViewById(R.id.ll_start_screen).setVisibility(View.VISIBLE);
-            }
-            Log.i(TAG, "Service connected");
         }
 
         @Override
@@ -40,6 +47,69 @@ public class StartActivity extends AppCompatActivity {
             Log.i(TAG, "Service connection lost");
         }
     };
+
+    private void tryToInitializeSocket() {
+        Single socketInitializationTask = Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                service.initializeConnection();
+                return true;
+            }
+        });
+
+        socketInitializationTask
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) { }
+
+                    @Override
+                    public void onSuccess(Boolean b) {
+                        Log.i(TAG, "Service connected");
+                        performAutoLogin();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "ERROR");
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    private void performAutoLogin() {
+        Single<Boolean> autoLoginTask = Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return !autoLogin(getApplicationContext());
+            }
+        });
+
+        autoLoginTask
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) { }
+
+                    @Override
+                    public void onSuccess(Boolean success) {
+                        if (success) {
+                            // Show login page if auto login failed
+                            findViewById(R.id.ll_start_screen).setVisibility(View.VISIBLE);
+                        } else {
+                            loginFragment.goToMainMenu();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "Error");
+                        e.printStackTrace();
+                    }
+                });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

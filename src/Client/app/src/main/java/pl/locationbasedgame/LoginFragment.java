@@ -1,10 +1,7 @@
 package pl.locationbasedgame;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,10 +12,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.Locale;
+import java.util.concurrent.Callable;
 
-import static pl.locationbasedgame.PreferencesHelper.*;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
-public class LoginFragment extends Fragment implements AuthenticationResultListener {
+import static pl.locationbasedgame.PreferencesHelper.storeUser;
+
+public class LoginFragment extends Fragment {
 
     private String TAG = "LOGIN";
 
@@ -33,6 +37,11 @@ public class LoginFragment extends Fragment implements AuthenticationResultListe
         assignListeners();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // TODO: 06-May-17 unsubscribe
+    }
 
     private void assignListeners() {
         Button loginButton = (Button) getView().findViewById(R.id.btn_login);
@@ -51,15 +60,52 @@ public class LoginFragment extends Fragment implements AuthenticationResultListe
         EditText nameEditText = (EditText) getView().findViewById(R.id.et_name);
         EditText passwordEditText = (EditText) getView().findViewById(R.id.et_password);
 
-        String name = nameEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
-        String locale = Locale.getDefault().toString();
+        final String name = nameEditText.getText().toString();
+        final String password = passwordEditText.getText().toString();
+        final String locale = Locale.getDefault().toString();
 
         if (areSpecified(name, password)) {
-            StartActivity.getService().sendLoginRequestToServer(name, password, locale, this);
-        }
-        else {
+
+            Single<Boolean> singleLoginTask = Single.fromCallable(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return StartActivity.getService().sendLoginRequestToServer(name, password, locale);
+                }
+            });
+
+            singleLoginTask
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Boolean success) {
+                        processResponse(success, name, password);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "OnError");
+                        e.printStackTrace();
+                    }
+                });
+        } else {
             Toast.makeText(getContext(), R.string.credentials_not_specified, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void processResponse(boolean success, String name, String password) {
+        if (success) {
+            Log.i(TAG, "OK");
+            storeUser(getActivity().getApplicationContext(), name, password);
+            goToMainMenu();
+        } else {
+            Toast.makeText(getContext(), R.string.wrong_credentials, Toast.LENGTH_LONG).show();
+            Log.i(TAG, "FAIL");
         }
     }
 
@@ -70,21 +116,7 @@ public class LoginFragment extends Fragment implements AuthenticationResultListe
         return !name.isEmpty() && !password.isEmpty();
     }
 
-    @Override
-    public void onAuthenticationSuccess(String name, String password) {
-        Log.i(TAG, "OK");
-        storeUser(getActivity().getApplicationContext(), name, password);
-        goToMainMenu();
-    }
-
-
-    @Override
-    public void onAuthenticationFailure(String alertMessage) {
-        Toast.makeText(getContext(), alertMessage, Toast.LENGTH_LONG).show();
-        Log.i(TAG, "FAIL");
-    }
-
-    private void goToMainMenu() {
+    void goToMainMenu() {
         Intent mainMenuIntent = new Intent(getActivity(), MainMenuActivity.class);
         startActivity(mainMenuIntent);
     }

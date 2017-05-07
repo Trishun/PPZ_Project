@@ -35,17 +35,13 @@ class PreferencesHelper {
      *
      * @return true if automatic login request was dispatched to perform, false otherwise
      */
-    static boolean autoLogin(Context context, LoginFragment fragment) {
+    static boolean autoLogin(Context context) {
         // TODO: 21-Apr-17 Consider safer way of storing passwords locally
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String name = preferences.getString("name", "");
         String password = preferences.getString("password", "");
         String locale = Locale.getDefault().toString();
 
-        if (!name.equals("") && !password.equals("")) {
-            StartActivity.getService().sendLoginRequestToServer(name, password, locale, fragment);
-            return true;
-        }
-        return false;
+        return !name.equals("") && !password.equals("") && StartActivity.getService().sendLoginRequestToServer(name, password, locale);
     }
 }
