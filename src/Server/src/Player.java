@@ -135,7 +135,7 @@ public class Player extends Thread {
                 return;
             }
             for (Player player: playerManager.getPlayerList()) {
-                if (player.getName().equals(uName)) {
+                if (player.getName().equalsIgnoreCase(uName)) {
                     response.put("login", false);
                     response.put("alert", "Already logged in!");
                     messageProvider.sendMessage(new JSONObject(response));
