@@ -6,10 +6,6 @@ import android.os.Binder;
 import android.os.IBinder;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.List;
 
 public class CommunicationService extends Service {
 
@@ -17,25 +13,12 @@ public class CommunicationService extends Service {
     private IBinder binder = new ServerBinder();
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                socketHandler = new SocketHandler();
-            }
-        });
-        thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     public IBinder onBind(Intent intent) {
         return binder;
+    }
+
+    void initializeConnection() {
+        socketHandler = new SocketHandler();
     }
 
     void closeConnection() {
