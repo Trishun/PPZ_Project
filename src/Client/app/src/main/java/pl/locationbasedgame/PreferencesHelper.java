@@ -31,22 +31,12 @@ class PreferencesHelper {
     }
 
     /**
-     * Tries to log with previously logged player's credentials.
+     * Gets value from SharedPreferences associated with key.
      *
-     * @return true if automatic login request was dispatched to perform, false otherwise
+     * @return value from SP if present, empty String otherwise.
      */
-    static boolean autoLogin(Context context) {
-        // TODO: 21-Apr-17 Consider safer way of storing passwords locally
+    static String getStringFromPrefs(Context context, String key) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String name = preferences.getString("name", "");
-        String password = preferences.getString("password", "");
-        String locale = Locale.getDefault().toString();
-
-        if (name.equals("") && password.equals("")) {
-            return false;
-        } else {
-            AccountResponse result = StartActivity.getService().sendLoginRequestToServer(name, password, locale);
-            return result.isSuccess();
-        }
+        return preferences.getString(key, "");
     }
 }
