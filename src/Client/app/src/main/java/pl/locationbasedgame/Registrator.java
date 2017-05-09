@@ -10,7 +10,6 @@ import org.json.JSONObject;
 class Registrator {
 
     AccountResponse registerUser(SocketHandler socketHandler, String name, String password, String mail, String locale) {
-
         String message = constructRegistrationMessage(name, password, mail, locale);
         String response = socketHandler.sendMessageAndGetResponse(message);
 
@@ -26,7 +25,6 @@ class Registrator {
     }
 
     private String constructRegistrationMessage(String name, String password, String mail, String locale) {
-
         JSONObject json = new JSONObject();
         try {
             json.put("header", "register");

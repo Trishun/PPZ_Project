@@ -10,7 +10,6 @@ import org.json.JSONObject;
 class Authenticator {
 
     AccountResponse authenticate(SocketHandler handler, String name, String password, String locale) {
-
         String message = constructLoginMessage(name, password, locale);
         String response = handler.sendMessageAndGetResponse(message);
 
