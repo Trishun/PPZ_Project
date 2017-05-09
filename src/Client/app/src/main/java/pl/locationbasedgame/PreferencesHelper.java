@@ -42,6 +42,11 @@ class PreferencesHelper {
         String password = preferences.getString("password", "");
         String locale = Locale.getDefault().toString();
 
-        return !name.equals("") && !password.equals("") && StartActivity.getService().sendLoginRequestToServer(name, password, locale);
+        if (name.equals("") && password.equals("")) {
+            return false;
+        } else {
+            AccountResponse result = StartActivity.getService().sendLoginRequestToServer(name, password, locale);
+            return result.isSuccess();
+        }
     }
 }

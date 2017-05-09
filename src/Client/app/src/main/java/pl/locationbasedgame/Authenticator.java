@@ -9,10 +9,20 @@ import org.json.JSONObject;
 
 class Authenticator {
 
-    boolean authenticate(SocketHandler handler, String name, String password, String locale) {
+    AccountResponse authenticate(SocketHandler handler, String name, String password, String locale) {
+
         String message = constructLoginMessage(name, password, locale);
         String response = handler.sendMessageAndGetResponse(message);
-        return ifAuthenticationSucceeded(response);
+
+        try {
+            JSONObject json = new JSONObject(response);
+            return json.getBoolean("login")
+                    ? new AccountResponse(true, null)
+                    : new AccountResponse(false, json.getString("alert"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new AccountResponse(false, null);
     }
 
     private String constructLoginMessage(String name, String password, String locale) {
@@ -27,19 +37,5 @@ class Authenticator {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private boolean ifAuthenticationSucceeded(String response) {
-        if (response == null) {
-            return false;
-        }
-
-        try {
-            JSONObject json = new JSONObject(response);
-            return json.getBoolean("login");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 }

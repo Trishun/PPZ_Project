@@ -32,6 +32,8 @@ public class RegisterFragment extends Fragment {
     @BindView(R.id.et_mail)
     EditText mailEditText;
 
+    static final String TAG = "REGISTER";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
@@ -60,9 +62,9 @@ public class RegisterFragment extends Fragment {
 
     private void performRegisterRequest(final String name, final String password, final String mail, final String locale) {
 
-        Single<Boolean> registerTask = Single.fromCallable(new Callable<Boolean>() {
+        Single<AccountResponse> registerTask = Single.fromCallable(new Callable<AccountResponse>() {
             @Override
-            public Boolean call() throws Exception {
+            public AccountResponse call() throws Exception {
                 return StartActivity.getService().sendRegisterRequestToServer(name, password, mail, locale);
             }
         });
@@ -70,22 +72,23 @@ public class RegisterFragment extends Fragment {
         registerTask
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<Boolean>() {
+                .subscribe(new SingleObserver<AccountResponse>() {
+
                     @Override
                     public void onSubscribe(Disposable d) { }
 
                     @Override
-                    public void onSuccess(Boolean b) {
-                        Toast.makeText(getContext(), R.string.registration_success, Toast.LENGTH_LONG).show();
+                    public void onSuccess(AccountResponse response) {
+                        Toast.makeText(getContext(), response.isSuccess()
+                                ? getString(R.string.registration_success)
+                                : response.getAlertMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof RegisterFailureException) {
-                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        } else {
-                            Log.i("ERROR", e.getMessage());
-                        }
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.i(TAG, e.getMessage());
                     }
                 });
     }

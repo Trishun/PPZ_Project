@@ -55,9 +55,9 @@ public class LoginFragment extends Fragment {
 
         if (areSpecified(name, password)) {
 
-            Single<Boolean> singleLoginTask = Single.fromCallable(new Callable<Boolean>() {
+            Single<AccountResponse> singleLoginTask = Single.fromCallable(new Callable<AccountResponse>() {
                 @Override
-                public Boolean call() throws Exception {
+                public AccountResponse call() throws Exception {
                     return StartActivity.getService().sendLoginRequestToServer(name, password, locale);
                 }
             });
@@ -65,15 +65,15 @@ public class LoginFragment extends Fragment {
             singleLoginTask
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<Boolean>() {
+                .subscribe(new SingleObserver<AccountResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(Boolean success) {
-                        processResponse(success, name, password);
+                    public void onSuccess(AccountResponse response) {
+                        processResponse(response, name, password);
                     }
 
                     @Override
@@ -87,14 +87,14 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void processResponse(boolean success, String name, String password) {
-        if (success) {
+    private void processResponse(AccountResponse response, String name, String password) {
+        if (response.isSuccess()) {
             Log.i(TAG, "OK");
             storeUser(getActivity().getApplicationContext(), name, password);
             goToMainMenu();
         } else {
-            Toast.makeText(getContext(), R.string.wrong_credentials, Toast.LENGTH_LONG).show();
-            Log.i(TAG, "FAIL");
+            Toast.makeText(getContext(), response.getAlertMessage(), Toast.LENGTH_LONG).show();
+            Log.i(TAG, response.getAlertMessage());
         }
     }
 
