@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
@@ -20,7 +21,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static pl.locationbasedgame.PreferencesHelper.autoLogin;
+import static butterknife.ButterKnife.findById;
+import static pl.locationbasedgame.PreferencesHelper.getStringFromPrefs;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -82,7 +84,16 @@ public class StartActivity extends AppCompatActivity {
         Single<Boolean> autoLoginTask = Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return !autoLogin(getApplicationContext());
+                String name = getStringFromPrefs(StartActivity.this, "name");
+                String password = getStringFromPrefs(StartActivity.this, "password");
+                String locale = Locale.getDefault().toString();
+
+                if (name.equals("") && password.equals("")) {
+                    return false;
+                } else {
+                    AccountResponse result = StartActivity.getService().sendLoginRequestToServer(name, password, locale);
+                    return result.isSuccess();
+                }
             }
         });
 
@@ -95,7 +106,7 @@ public class StartActivity extends AppCompatActivity {
 
                     @Override
                     public void onSuccess(Boolean success) {
-                        if (success) {
+                        if (!success) {
                             // Show login page if auto login failed
                             findViewById(R.id.ll_start_screen).setVisibility(View.VISIBLE);
                         } else {
@@ -139,11 +150,11 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void setupTabNavigation() {
-        ViewPager viewPager = (ViewPager) findViewById(R.id.vp_start_screen_pager);
+        ViewPager viewPager = findById(this, R.id.vp_start_screen_pager);
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), getApplicationContext(),
                 loginFragment, registerFragment));
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tl_start_screen_tabs);
+        TabLayout tabLayout = findById(this, R.id.tl_start_screen_tabs);
         tabLayout.setupWithViewPager(viewPager);
     }
 }

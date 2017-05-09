@@ -9,25 +9,22 @@ import org.json.JSONObject;
 
 class Registrator {
 
-    boolean registerUser(SocketHandler socketHandler, String name, String password, String mail, String locale) {
+    AccountResponse registerUser(SocketHandler socketHandler, String name, String password, String mail, String locale) {
         String message = constructRegistrationMessage(name, password, mail, locale);
         String response = socketHandler.sendMessageAndGetResponse(message);
 
         try {
             JSONObject json = new JSONObject(response);
-            if (json.getBoolean("register")) {
-                return true;
-            } else {
-                throw new RegisterFailureException(json.getString("alert"));
-            }
+            return json.getBoolean("register")
+                    ? new AccountResponse(true, null)
+                    : new AccountResponse(false, json.getString("alert"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return false;
+        return new AccountResponse(false, null);
     }
 
     private String constructRegistrationMessage(String name, String password, String mail, String locale) {
-
         JSONObject json = new JSONObject();
         try {
             json.put("header", "register");

@@ -25,12 +25,12 @@ public class CommunicationService extends Service {
         socketHandler.closeSocket();
     }
 
-    boolean sendLoginRequestToServer(String name, String password, String locale) {
+    AccountResponse sendLoginRequestToServer(String name, String password, String locale) {
         Authenticator authenticator = new Authenticator();
         return authenticator.authenticate(socketHandler, name, password, locale);
     }
 
-    boolean sendRegisterRequestToServer(String name, String password, String mail, String locale) {
+    AccountResponse sendRegisterRequestToServer(String name, String password, String mail, String locale) {
         Registrator registrator = new Registrator();
         return registrator.registerUser(socketHandler, name, password, mail, locale);
     }

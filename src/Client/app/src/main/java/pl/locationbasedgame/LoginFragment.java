@@ -7,19 +7,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static butterknife.ButterKnife.*;
 import static pl.locationbasedgame.PreferencesHelper.storeUser;
 
 public class LoginFragment extends Fragment {
@@ -28,13 +30,9 @@ public class LoginFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_login, container, false);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        assignListeners();
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        bind(this, view);
+        return view;
     }
 
     @Override
@@ -43,22 +41,13 @@ public class LoginFragment extends Fragment {
         // TODO: 06-May-17 unsubscribe
     }
 
-    private void assignListeners() {
-        Button loginButton = (Button) getView().findViewById(R.id.btn_login);
-        loginButton.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                login();
-            }
-        });
-    }
-
     /**
      * Send credentials to server if they are specified by user.
      */
-    private void login() {
-        EditText nameEditText = (EditText) getView().findViewById(R.id.et_name);
-        EditText passwordEditText = (EditText) getView().findViewById(R.id.et_password);
+    @OnClick(R.id.btn_login)
+    void login() {
+        EditText nameEditText = findById(getView(), R.id.et_name);
+        EditText passwordEditText = findById(getView(), R.id.et_password);
 
         final String name = nameEditText.getText().toString();
         final String password = passwordEditText.getText().toString();
@@ -66,9 +55,9 @@ public class LoginFragment extends Fragment {
 
         if (areSpecified(name, password)) {
 
-            Single<Boolean> singleLoginTask = Single.fromCallable(new Callable<Boolean>() {
+            Single<AccountResponse> singleLoginTask = Single.fromCallable(new Callable<AccountResponse>() {
                 @Override
-                public Boolean call() throws Exception {
+                public AccountResponse call() throws Exception {
                     return StartActivity.getService().sendLoginRequestToServer(name, password, locale);
                 }
             });
@@ -76,15 +65,15 @@ public class LoginFragment extends Fragment {
             singleLoginTask
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<Boolean>() {
+                .subscribe(new SingleObserver<AccountResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(Boolean success) {
-                        processResponse(success, name, password);
+                    public void onSuccess(AccountResponse response) {
+                        processResponse(response, name, password);
                     }
 
                     @Override
@@ -98,14 +87,14 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void processResponse(boolean success, String name, String password) {
-        if (success) {
+    private void processResponse(AccountResponse response, String name, String password) {
+        if (response.isSuccess()) {
             Log.i(TAG, "OK");
             storeUser(getActivity().getApplicationContext(), name, password);
             goToMainMenu();
         } else {
-            Toast.makeText(getContext(), R.string.wrong_credentials, Toast.LENGTH_LONG).show();
-            Log.i(TAG, "FAIL");
+            Toast.makeText(getContext(), response.getAlertMessage(), Toast.LENGTH_LONG).show();
+            Log.i(TAG, response.getAlertMessage());
         }
     }
 
