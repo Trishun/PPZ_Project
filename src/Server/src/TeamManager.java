@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Team manager Class
- * Created by PD on 24.04.2017.
+ * @author PD
  */
 class TeamManager {
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Team main class
- * Created by PD on 19.04.2017.
+ * @author PD
  */
 class Team {
 

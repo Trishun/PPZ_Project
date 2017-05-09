@@ -13,7 +13,8 @@ class Checkpoint {
     private Instant time_completed;
     private boolean visited = false;
     private boolean completed = false;
-    private boolean correct = false;
+    private boolean checked = false;
+    private Boolean correct = null;
 
     Checkpoint(double[] location, String description) {
         this.location = location;
@@ -69,8 +70,16 @@ class Checkpoint {
         return correct;
     }
 
-    void setCorrect() {
-        this.correct = true;
+    void setCorrect(boolean correct) {
+        this.correct = correct;
+    }
+
+    void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
+    Boolean isChecked() {
+        return checked;
     }
 
 }
