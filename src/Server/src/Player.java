@@ -300,10 +300,8 @@ public class Player extends Thread {
     }
 
     private void handleLCreate() {
-        HashMap<String, Integer> response = new HashMap<>();
         setLobby(lobbyManager.createLobby(this));
-        response.put("lcreate", lobbyManager.getLobbyEnterCode(getLobby()));
-        messageProvider.sendMessage(new JSONObject(response));
+        messageProvider.sendSimpleMessage("lcreate", lobbyManager.getLobbyEnterCode(getLobby()));
     }
 
     private void handleLJoin(JSONObject message) {
@@ -319,11 +317,9 @@ public class Player extends Thread {
     }
 
     private void handleLLeave() {
-        HashMap<String, Object> response = new HashMap<>();
         lobbyManager.removeFromLobby(lobby, this);
         setLobby(null);
-        response.put("lleave", true);
-        messageProvider.sendMessage(new JSONObject(response));
+        messageProvider.sendSimpleMessage("lleave", true);
     }
 
     //Lobby management
@@ -344,14 +340,14 @@ public class Player extends Thread {
     // Team management
     private void joinTeam(int team) {
         lobbyManager.getLobbyById(lobby).getTeamManager().addPlayerToTeam(this, team);
+        lobbyManager.getLobbyById(lobby).broadcastLobbyStructure();
+        messageProvider.sendSimpleMessage("tjoin", true);
     }
 
     private void leaveTeam() {
         lobbyManager.getLobbyById(lobby).getTeamManager().removePlayer(this);
-    }
-
-    private void updateTeamPlayers() {
-
+        lobbyManager.getLobbyById(lobby).broadcastLobbyStructure();
+        messageProvider.sendSimpleMessage("tleave", true);
     }
 
     private void beginGame() {

@@ -79,11 +79,11 @@ class Lobby {
 
         HashMap<String, Object> message = new HashMap<>();
         message.put("llist", output);
-        message.put("initiator", initiator);
+        message.put("initiator", initiator.getName());
         return message;
     }
 
-    private void broadcastLobbyStructure() {
+    void broadcastLobbyStructure() {
         HashMap<String, Object> lobbyStructure = setLobbyStructure();
         for (Player player : players) {
             player.updatePlayers(lobbyStructure);
