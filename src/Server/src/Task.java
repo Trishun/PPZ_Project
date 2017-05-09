@@ -21,7 +21,7 @@ class Task {
         return "Not answered yet";
     }
 
-    public void setAnswer(String answer) {
+    void setAnswer(String answer) {
         this.answer = answer;
     }
 

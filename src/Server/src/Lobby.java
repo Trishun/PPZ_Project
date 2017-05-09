@@ -1,8 +1,9 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Lobby class
- * Created by PD on 24.04.2017.
+ * @author PD
  */
 
 class Lobby {
@@ -34,14 +35,13 @@ class Lobby {
 
     void addToLobby(Player newPlayer) {
         players.add(newPlayer);
-        for (Player player : players) {
-            player.updatePlayers(players);
-        }
+        broadcastLobbyStructure();
     }
 
     Boolean removeFromLobby(Player player) {
         if (players.contains(player)) {
             players.remove(player);
+            broadcastLobbyStructure();
             return true;
         }
         return false;
@@ -55,8 +55,39 @@ class Lobby {
         Thread.currentThread().interrupt();
     }
 
-    ArrayList<Player> getPlayers() {
+    private ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    private HashMap<String, Object> setLobbyStructure() {
+        ArrayList<String> team0 = new ArrayList<>();
+        ArrayList<String> team1 = new ArrayList<>();
+        ArrayList<String> lobby = new ArrayList<>();
+
+        for (Player player : players) {
+            if (teamManager.getTeam(0).hasPlayer(player))
+                team0.add(player.getPlayerName());
+            else if (teamManager.getTeam(1).hasPlayer(player))
+                team1.add(player.getPlayerName());
+            else
+                lobby.add(player.getPlayerName());
+        }
+        ArrayList<ArrayList<String>> output = new ArrayList<>();
+        output.add(team0);
+        output.add(team1);
+        output.add(lobby);
+
+        HashMap<String, Object> message = new HashMap<>();
+        message.put("llist", output);
+        message.put("initiator", initiator);
+        return message;
+    }
+
+    private void broadcastLobbyStructure() {
+        HashMap<String, Object> lobbyStructure = setLobbyStructure();
+        for (Player player : players) {
+            player.updatePlayers(lobbyStructure);
+        }
     }
 
     Integer getPlayerCount() {

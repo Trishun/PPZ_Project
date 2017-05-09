@@ -4,7 +4,6 @@ import org.json.simple.JSONObject;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -338,13 +337,7 @@ public class Player extends Thread {
         return lobby;
     }
 
-    void updatePlayers(ArrayList<Player> players) {
-        HashMap<String, Object> message = new HashMap<>();
-        ArrayList<String> arrayList = new ArrayList<>();
-        for (Player player : players) {
-            arrayList.add(player.getPlayerName());
-        }
-        message.put("llist", arrayList);
+    void updatePlayers(HashMap<String, Object> message) {
         messageProvider.sendMessage(new JSONObject(message));
     }
 
