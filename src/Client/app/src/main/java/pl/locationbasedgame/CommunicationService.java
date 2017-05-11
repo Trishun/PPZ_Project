@@ -2,11 +2,17 @@ package pl.locationbasedgame;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
+
+import java.io.InputStream;
+import java.util.Properties;
 
 public class CommunicationService extends Service {
 
+    private String TAG = "COMMSERVICE";
     private SocketHandler socketHandler;
     private IBinder binder = new ServerBinder();
 
@@ -16,7 +22,16 @@ public class CommunicationService extends Service {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                socketHandler = new SocketHandler();
+                try {
+                    AssetManager assetManager = getBaseContext().getAssets();
+                    InputStream inputStream = assetManager.open("connection.properties");
+                    Properties properties = new Properties();
+                    properties.load(inputStream);
+                    socketHandler = new SocketHandler(properties.getProperty("IP"), Integer.valueOf(properties.getProperty("port")));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.i(TAG, "PROPERTIES FAILURE");
+                }
             }
         });
         thread.start();
