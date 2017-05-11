@@ -17,9 +17,9 @@ class SocketHandler {
     private String TAG = "SOCKET";
     private Socket socket;
 
-    SocketHandler() {
+    SocketHandler(final String ip, final int port) {
         try {
-            socket = new Socket(ConnectionConfig.IP, ConnectionConfig.PORT);
+            socket = new Socket(ip, port);
             Log.i(TAG, "SOCKET CONNECTED");
         } catch (IOException e) {
             e.printStackTrace();
