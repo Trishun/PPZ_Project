@@ -43,6 +43,7 @@ class LobbyManager {
             if (lobby.removeFromLobby(player)) {
                 if (lobby.getPlayerCount() == 0) {
                     lobbyList.remove(lobby);
+                    Debug.Log("Lobby " + lobby.getId() + " closed!");
                     lobby.close();
                 }
                 return;
