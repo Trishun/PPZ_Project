@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <settings>
   <server>
-    <setting type="port">9090</setting>
+    <setting type="port">53339</setting>
   </server>
   <httpserver>
     <setting type="httpport">8080</setting>
