@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.Locale;
+
 /**
  * Created by Patryk Ligenza on 03-May-17.
  */
@@ -29,19 +31,12 @@ class PreferencesHelper {
     }
 
     /**
-     * Tries to log with previously logged player's credentials.
+     * Gets value from SharedPreferences associated with key.
      *
-     * @return true if automatic login request was dispatched to perform, false otherwise
+     * @return value from SP if present, empty String otherwise.
      */
-    static boolean autoLogin(Context context, LoginFragment fragment) {
-        // TODO: 21-Apr-17 Consider safer way of storing passwords locally
+    static String getStringFromPrefs(Context context, String key) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String name = preferences.getString("name", "");
-        String password = preferences.getString("password", "");
-        if (!name.equals("") && !password.equals("")) {
-            StartActivity.getService().sendLoginRequestToServer(name, password, fragment);
-            return true;
-        }
-        return false;
+        return preferences.getString(key, "");
     }
 }
