@@ -9,6 +9,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.HashMap;
 
+import static org.json.simple.JSONObject.escape;
+
 /**
  * Message provider
  * Created by PD on 10.04.2017.
@@ -43,6 +45,7 @@ class MessageProvider {
     void sendMessage(JSONObject message) {
         try {
             String jsonString = message.toJSONString();
+            jsonString = escape(jsonString);
             Debug.Log("Message sent: " + jsonString);
             socketWriter.println(jsonString);
             socketWriter.flush();
