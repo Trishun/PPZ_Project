@@ -85,10 +85,42 @@
 
 
 
+## Enter a game lobby using a lobby id code
+
+### Author: User
+
+### Main case:
+1. The user enters the lobby id code into the Join Lobby window
+2. The system checks to see if there is a lobby with the submitted id
+3. The user is taken to the game lobby screen
+
+#### Alternate cases:
+2a. There is no lobby that corresponds with the submitted id
+2a1. The system informs the player of the id being incorrect
 
 
 
+## Add a checkpoint
 
+### Author: User
 
+### Main case:
+1. The user selects the add checkpoint button
+2. The user selects the desired checkpoint location on the map
+3. The user types in a description of the task in the appropriate text box
+3. The system adds the new chekpoint to the list of checkpoints
+4. The system sends out a message to the opposing team informing them of a new checkpoint
 
+#### Alternate cases:
+1a. The most recent checkpoint has been flagged as the last one
+1a1. The system sends out a message to the user informing them of the checkpoint limit being reached
 
+1b. The most recent checkpoint is the last one specified by the system's checkpoint limit
+1b1. The system sends out a message to the user informing them of the checkpoint limit being reached
+
+4a. During the checkpoint selection process, the opposing team has cleared all of the existing checkpoints
+4a1. The system stops the checkpoint addition process
+4a2. The system displays a defeat message to the user
+
+4b. The user has not covered the minimal distance between checkpoints
+4b1. The system sends out a message to the user informing them of the minimal distance requirement
