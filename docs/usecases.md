@@ -12,12 +12,17 @@
 
 #### Alternate cases:
 3a. The e-mail is already taken
+
 3a1. The server sends out an appropriate message
 
+
 3b. The nickname is already taken
+
 3b1. The server sends out an appropriate message
 
+
 3c.A different error occurs
+
 3c1. An appropriate error message is shown
 
 
@@ -33,12 +38,17 @@
 
 #### Alternate cases:
 3a. The nickname is not used
+
 3a1. The server displays an appropriate message
 
+
 3b. The password is incorrect
+
 3b1. The server displays an appropriate message
 
+
 3c. A different error occurs
+
 3c1. An appropriate error message is shown
 
 
@@ -54,12 +64,17 @@
 
 #### Alternate cases:
 3a. The e-mail does not exist
+
 3a1. The server displays an appropriate message
 
+
 3b. The backup code is incorrect
+
 3b1. The server displays an appropriate message
 
+
 3c. A different error occurs
+
 3c1. An appropriate error message is shown
 
 
@@ -75,12 +90,17 @@
 
 #### Alternate cases:
 3a. The e-mail does not exist
+
 3a1. The server displays an appropriate message
 
+
 3b. The entered old password is different from the actual old password
+
 3b1. The server informs the user of the password difference
 
+
 3c. A different error occurs
+
 3c1. An appropriate error message is shown
 
 
@@ -96,6 +116,7 @@
 
 #### Alternate cases:
 2a. There is no lobby that corresponds with the submitted id
+
 2a1. The system informs the player of the id being incorrect
 
 
@@ -113,14 +134,22 @@
 
 #### Alternate cases:
 1a. The most recent checkpoint has been flagged as the last one
+
 1a1. The system sends out a message to the user informing them of the checkpoint limit being reached
 
+
 1b. The most recent checkpoint is the last one specified by the system's checkpoint limit
+
 1b1. The system sends out a message to the user informing them of the checkpoint limit being reached
 
+
 4a. During the checkpoint selection process, the opposing team has cleared all of the existing checkpoints
+
 4a1. The system stops the checkpoint addition process
+
 4a2. The system displays a defeat message to the user
 
+
 4b. The user has not covered the minimal distance between checkpoints
+
 4b1. The system sends out a message to the user informing them of the minimal distance requirement
