@@ -1,7 +1,5 @@
 package pl.locationbasedgame;
 
-import android.os.AsyncTask;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,47 +7,24 @@ import org.json.JSONObject;
  * Created by Patryk Ligenza on 15-Apr-17.
  */
 
-interface RegistrationResultListener {
-    void onRegistrationSuccess();
-    void onRegistrationFailure(String error);
-}
+class Registrator {
 
-class Registrator extends AsyncTask<String, Void, String> {
+    AccountResponse registerUser(SocketHandler socketHandler, String name, String password, String mail, String locale) {
+        String message = constructRegistrationMessage(name, password, mail, locale);
+        String response = socketHandler.sendMessageAndGetResponse(message);
 
-    private RegistrationResultListener caller;
-    private SocketHandler handler;
-
-    @Override
-    protected String doInBackground(String... params) {
-        String name = params[0];
-        String password = params[1];
-        String mail = params[2];
-
-        String message = constructRegistrationMessage(name, password, mail);
-        return handler.sendMessageAndGetResponse(message);
-    }
-
-    @Override
-    protected void onPostExecute(String response) {
         try {
-            processResponse(response);
+            JSONObject json = new JSONObject(response);
+            return json.getBoolean("register")
+                    ? new AccountResponse(true, null)
+                    : new AccountResponse(false, json.getString("alert"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        super.onPostExecute(response);
+        return new AccountResponse(false, null);
     }
 
-    private void processResponse(String response) throws JSONException {
-        JSONObject jsonResponse = new JSONObject(response);
-        if (jsonResponse.getBoolean("register")) {
-            caller.onRegistrationSuccess();
-        } else {
-            caller.onRegistrationFailure(jsonResponse.getString("alert"));
-        }
-    }
-
-    private String constructRegistrationMessage(String name, String password, String mail) {
-
+    private String constructRegistrationMessage(String name, String password, String mail, String locale) {
         JSONObject json = new JSONObject();
         try {
             json.put("header", "register");
@@ -57,18 +32,11 @@ class Registrator extends AsyncTask<String, Void, String> {
             json.put("upass", password);
             json.put("backup_code", "1234");
             json.put("email", mail);
+            json.put("locale", locale);
             return json.toString();
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    void setCaller(RegistrationResultListener caller) {
-        this.caller = caller;
-    }
-
-    void setHandler(SocketHandler handler) {
-        this.handler = handler;
     }
 }

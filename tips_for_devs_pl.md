@@ -43,7 +43,7 @@ gdzie `%params%` to `-m`, Opis zmiany(typ, stan #1234), koniecznie ze spacją.
 	- logowanie:
 		* Klient:
 		```javascript
-		{ "header" : "login", "uname" : "admin", "upass": "123" }
+		{ "header" : "login", "uname" : "admin", "upass" : "123", "locale" : "pl_PL" }
 		```
 		* Serwer:
 			* W przypadku sukcesu:
@@ -57,7 +57,7 @@ gdzie `%params%` to `-m`, Opis zmiany(typ, stan #1234), koniecznie ze spacją.
 	- rejestracja:
 		* Klient:
 		```javascript
-		{ "header" : "register", "uname" : "admin", "upass": "123", "backup_code" : "1234", "email" : "janusz@hackers.pl" }
+		{ "header" : "register", "uname" : "admin", "upass": "123", "backup_code" : "1234", "email" : "janusz@hackers.pl", "locale" : "pl_PL" }
 		```
 		* Serwer:
 			* W przypadku sukcesu:
