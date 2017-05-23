@@ -9,11 +9,12 @@ class Checkpoint {
     private Task task;
     private double[] location;
     private Instant time_created;
-    private Instant time_attended;
+    private Instant time_visited;
     private Instant time_completed;
     private boolean visited = false;
     private boolean completed = false;
-    private boolean correct = false;
+    private boolean checked = false;
+    private Boolean correct = null;
 
     Checkpoint(double[] location, String description) {
         this.location = location;
@@ -33,12 +34,12 @@ class Checkpoint {
         return time_created;
     }
 
-    void setTime_attended(Instant time_attended) {
-        this.time_attended = time_attended;
+    void setTime_visited(Instant time_visited) {
+        this.time_visited = time_visited;
     }
 
-    Instant getTime_attended() {
-        return time_attended;
+    Instant getTime_visited() {
+        return time_visited;
     }
 
     Instant getTime_completed() {
@@ -69,8 +70,16 @@ class Checkpoint {
         return correct;
     }
 
-    void setCorrect() {
-        this.correct = true;
+    void setCorrect(boolean correct) {
+        this.correct = correct;
+    }
+
+    void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
+    Boolean isChecked() {
+        return checked;
     }
 
 }

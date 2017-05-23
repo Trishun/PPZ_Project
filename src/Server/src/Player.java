@@ -4,7 +4,6 @@ import org.json.simple.JSONObject;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -19,6 +18,7 @@ public class Player extends Thread {
     private LobbyManager lobbyManager;
     private Integer lobby;
     private MessageProvider messageProvider;
+    private LocaleProvider localeProvider;
     private EncryptionProvider encryptionProvider;
     private int playerId = 0;
     private String playerName = "not logged";
@@ -30,6 +30,7 @@ public class Player extends Thread {
         this.databaseCommunicator = databaseCommunicator;
         this.messageProvider = new MessageProvider(socket);
         this.encryptionProvider = new EncryptionProvider();
+        localeProvider = new LocaleProvider(databaseCommunicator.getSettingsProvider());
     }
 
     /**
@@ -45,12 +46,16 @@ public class Player extends Thread {
                     disconnect();
                     return;
                 } else if (header.equalsIgnoreCase("login")) {
+                    localeProvider.setLocale(String.valueOf(message.get("locale")));
                     handleLogin(message);
                 } else if (header.equalsIgnoreCase("register")) {
+                    localeProvider.setLocale(String.valueOf(message.get("locale")));
                     handleRegister(message);
                 } else if (header.equalsIgnoreCase("newpass")) {
+                    localeProvider.setLocale(String.valueOf(message.get("locale")));
                     handleNewPass(message);
                 } else if (header.equalsIgnoreCase("changepass")) {
+                    localeProvider.setLocale(String.valueOf(message.get("locale")));
                     handleChangePass(message);
                 } else if (header.equalsIgnoreCase("lcreate")) {
                     handleLCreate();
@@ -96,6 +101,10 @@ public class Player extends Thread {
         this.playerName = playerName;
     }
 
+    MessageProvider getMessageProvider() {
+        return messageProvider;
+    }
+
     /**
      * Disconnect management
      */
@@ -124,20 +133,18 @@ public class Player extends Thread {
             String uName = String.valueOf(message.get("uname"));
             String uPasswd = encryptionProvider.encrypt(String.valueOf(message.get("upass")));
 
-
-
             String query = "SELECT * FROM accounts WHERE nickname = '" + uName + "'";
             ResultSet resultSet = databaseCommunicator.executeQuery(query);
             if (!resultSet.isBeforeFirst()) {
                 response.put("login", false);
-                response.put("alert", "Wrong username!");
+                response.put("alert", localeProvider.get("wrongUsername"));
                 messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
             for (Player player: playerManager.getPlayerList()) {
                 if (player.getName().equals(uName)) {
                     response.put("login", false);
-                    response.put("alert", "Already logged in!");
+                    response.put("alert", localeProvider.get("alreadyLogged"));
                     messageProvider.sendMessage(new JSONObject(response));
                 }
             }
@@ -150,13 +157,13 @@ public class Player extends Thread {
                 setPlayerId(resultSet.getInt("user_id"));
             } else {
                 response.put("login", false);
-                response.put("alert", "Wrong password!");
+                response.put("alert", localeProvider.get("wrongPassword"));
                 messageProvider.sendMessage(new JSONObject(response));
                 Debug.Log("User " + uName + " (" + resultSet.getInt("user_id") + ") failed to login \nReason: Wrong Password.");
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             response.put("login", false);
-            response.put("alert", "Internal error");
+            response.put("alert", localeProvider.get("internalError"));
             messageProvider.sendMessage(new JSONObject(response));
         } catch (Exception e) {
             response.put("login", false);
@@ -185,7 +192,7 @@ public class Player extends Thread {
             ResultSet resultSet = databaseCommunicator.executeQuery(query);
             if (resultSet.isBeforeFirst()) {
                 response.put("register", false);
-                response.put("alert", "e-mail already registered!");
+                response.put("alert", localeProvider.get("emailExists"));
                 messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
@@ -195,7 +202,7 @@ public class Player extends Thread {
             resultSet = databaseCommunicator.executeQuery(query);
             if (resultSet.isBeforeFirst()) {
                 response.put("register", false);
-                response.put("alert", "Username taken");
+                response.put("alert", localeProvider.get("usernameTaken"));
                 messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
@@ -206,7 +213,7 @@ public class Player extends Thread {
             resultSet = databaseCommunicator.executeQuery(query);
             if (!resultSet.isBeforeFirst()) {
                 response.put("register", false);
-                response.put("alert", "Internal database error");
+                response.put("alert", localeProvider.get("internalError"));
                 messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
@@ -238,7 +245,7 @@ public class Player extends Thread {
             ResultSet resultSet = databaseCommunicator.executeQuery(query);
             if (!resultSet.isBeforeFirst()) {
                 response.put("newPass", false);
-                response.put("alert", "e-mail not found!");
+                response.put("alert", localeProvider.get("emailNotFound"));
                 messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
@@ -246,11 +253,11 @@ public class Player extends Thread {
                 query = "UPDATE accounts SET password='" + uPasswd + "' WHERE email='" + email + "'";
                 databaseCommunicator.executeUpdate(query);
                 response.put("newPass", true);
-                response.put("alert", "e-mail not found!");
+                response.put("alert", localeProvider.get("changed"));
                 messageProvider.sendMessage(new JSONObject(response));
             } else {
                 response.put("newPass", false);
-                response.put("alert", "Wrong code!");
+                response.put("alert", localeProvider.get("wrongCode"));
                 messageProvider.sendMessage(new JSONObject(response));
             }
         } catch (Exception e) {
@@ -271,7 +278,7 @@ public class Player extends Thread {
             ResultSet resultSet = databaseCommunicator.executeQuery(query);
             if (!resultSet.isBeforeFirst()) {
                 response.put("changepass", false);
-                response.put("alert", "e-mail not found!");
+                response.put("alert", localeProvider.get("emailNotFound"));
                 messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
@@ -282,7 +289,7 @@ public class Player extends Thread {
                 messageProvider.sendMessage(new JSONObject(response));
             } else {
                 response.put("changepass", false);
-                response.put("alert", "Wrong password!");
+                response.put("alert", localeProvider.get("wrongPassword"));
                 messageProvider.sendMessage(new JSONObject(response));
             }
         } catch (Exception e) {
@@ -293,10 +300,8 @@ public class Player extends Thread {
     }
 
     private void handleLCreate() {
-        HashMap<String, Integer> response = new HashMap<>();
         setLobby(lobbyManager.createLobby(this));
-        response.put("lcreate", lobbyManager.getLobbyEnterCode(getLobby()));
-        messageProvider.sendMessage(new JSONObject(response));
+        messageProvider.sendSimpleMessage("lcreate", lobbyManager.getLobbyEnterCode(getLobby()));
     }
 
     private void handleLJoin(JSONObject message) {
@@ -306,17 +311,15 @@ public class Player extends Thread {
             response.put("ljoin", true);
         } else {
             response.put("ljoin", false);
-            response.put("alert", "Wrong code!");
+            response.put("alert", localeProvider.get("wrongCode"));
         }
         messageProvider.sendMessage(new JSONObject(response));
     }
 
     private void handleLLeave() {
-        HashMap<String, Object> response = new HashMap<>();
         lobbyManager.removeFromLobby(lobby, this);
         setLobby(null);
-        response.put("lleave", true);
-        messageProvider.sendMessage(new JSONObject(response));
+        messageProvider.sendSimpleMessage("lleave", true);
     }
 
     //Lobby management
@@ -330,27 +333,21 @@ public class Player extends Thread {
         return lobby;
     }
 
-    void updatePlayers(ArrayList<Player> players) {
-        HashMap<String, Object> message = new HashMap<>();
-        ArrayList<String> arrayList = new ArrayList<>();
-        for (Player player : players) {
-            arrayList.add(player.getPlayerName());
-        }
-        message.put("llist", arrayList);
+    void updatePlayers(HashMap<String, Object> message) {
         messageProvider.sendMessage(new JSONObject(message));
     }
 
     // Team management
     private void joinTeam(int team) {
         lobbyManager.getLobbyById(lobby).getTeamManager().addPlayerToTeam(this, team);
+        lobbyManager.getLobbyById(lobby).broadcastLobbyStructure();
+        messageProvider.sendSimpleMessage("tjoin", true);
     }
 
     private void leaveTeam() {
         lobbyManager.getLobbyById(lobby).getTeamManager().removePlayer(this);
-    }
-
-    private void updateTeamPlayers() {
-
+        lobbyManager.getLobbyById(lobby).broadcastLobbyStructure();
+        messageProvider.sendSimpleMessage("tleave", true);
     }
 
     private void beginGame() {

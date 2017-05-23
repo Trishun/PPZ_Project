@@ -1,8 +1,10 @@
+import org.json.simple.JSONObject;
+
 import java.util.ArrayList;
 
 /**
  * Team main class
- * Created by PD on 19.04.2017.
+ * @author PD
  */
 class Team {
 
@@ -28,8 +30,10 @@ class Team {
         return players.size();
     }
 
-    void sendMessageToPlayers(String message) {
-
+    void sendMessageToPlayers(JSONObject message) {
+        for (Player player : players) {
+            player.getMessageProvider().sendMessage(message);
+        }
     }
 
 }

@@ -5,21 +5,23 @@
 class Task {
 
     private String description;
-    private String answer;
+    private String answer = null;
 
     Task(String description) {
         this.description = description;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return description;
     }
 
     public String getAnswer() {
-        return answer;
+        if (answer != null)
+            return answer;
+        return "Not answered yet";
     }
 
-    public void setAnswer(String answer) {
+    void setAnswer(String answer) {
         this.answer = answer;
     }
 

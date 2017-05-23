@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.HashMap;
 
 /**
  * Message provider
@@ -41,11 +42,19 @@ class MessageProvider {
 
     void sendMessage(JSONObject message) {
         try {
-            socketWriter.println(message.toJSONString());
+            String jsonString = message.toJSONString();
+            Debug.Log("Message sent: " + jsonString);
+            socketWriter.println(jsonString);
             socketWriter.flush();
         } catch (Exception e) {
             Debug.Log("Exception in MessageProvider/sendMessage: " + e);
         }
+    }
+
+    void sendSimpleMessage(String header, Object content) {
+        HashMap<String, Object> message = new HashMap<>();
+        message.put(header, content);
+        sendMessage(new JSONObject(message));
     }
 
     private JSONObject processMessage(String data) {
