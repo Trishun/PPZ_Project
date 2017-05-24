@@ -7,14 +7,23 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
-public class LobbyActivity extends Activity implements LobbyTaskCallback {
+import org.json.JSONArray;
+
+import java.util.concurrent.Callable;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
+import static butterknife.ButterKnife.findById;
+
+public class LobbyActivity extends Activity {
 
     private String TAG = "LOBBY";
     private CommunicationService service;
@@ -41,33 +50,77 @@ public class LobbyActivity extends Activity implements LobbyTaskCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
-        assignListeners();
         Intent bindIntent = new Intent(this, CommunicationService.class);
         bindService(bindIntent, serviceConnection, BIND_IMPORTANT);
+        ButterKnife.bind(this);
     }
 
-    private void assignListeners() {
-        Button newGameButton = (Button) findViewById(R.id.btn_create_lobby);
-        Button joinGameButton = (Button) findViewById(R.id.btn_join_lobby);
-
-        newGameButton.setOnClickListener(new Button.OnClickListener() {
+    @OnClick(R.id.btn_create_lobby)
+    void createLobby() {
+        Single<Integer> createTask = Single.fromCallable(new Callable<Integer>() {
             @Override
-            public void onClick(View v) {
-                service.createNewLobby(new LobbyTask(), LobbyActivity.this);
+            public Integer call() throws Exception {
+                return service.createNewLobby(new LobbyManager());
             }
         });
 
-        joinGameButton.setOnClickListener(new Button.OnClickListener() {
+        createTask
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Integer>() {
+                    @Override
+                    public void onSubscribe(Disposable d) { }
+
+                    @Override
+                    public void onSuccess(Integer integer) {
+                          Log.i(TAG, "OK: " + integer.toString());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i("ERROR", e.getMessage());
+                    }
+                });
+    }
+
+    @OnClick(R.id.btn_join_lobby)
+    void joinLobbyIfInputOk() {
+        EditText codeEditText = findById(this, R.id.et_lobby_id);
+
+        String content = codeEditText.getText().toString();
+
+        if (!content.isEmpty()) {
+            final int lobbyId = Integer.parseInt(content);
+            sendJoinRequest(lobbyId);
+        }
+    }
+
+    private void sendJoinRequest(final int lobbyId) {
+        Single<JSONArray> getPlayerList = Single.fromCallable(new Callable<JSONArray>() {
             @Override
-            public void onClick(View v) {
-                EditText codeEditText = (EditText) findViewById(R.id.et_lobby_id);
-                String content = codeEditText.getText().toString();
-                if (!content.isEmpty()) {
-                    int lobbyId = Integer.parseInt(content);
-                    service.joinExistingLobby(new LobbyTask(), LobbyActivity.this, lobbyId);
-                }
+            public JSONArray call() throws Exception {
+                return service.joinExistingLobby(new LobbyManager(), lobbyId);
             }
         });
+
+        getPlayerList
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<JSONArray>() {
+                    @Override
+                    public void onSubscribe(Disposable d) { }
+
+                    @Override
+                    public void onSuccess(JSONArray jsonArray) {
+                        Log.i(TAG, jsonArray.toString());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "error");
+                        e.printStackTrace();
+                    }
+                });
     }
 
     @Override
@@ -76,17 +129,5 @@ public class LobbyActivity extends Activity implements LobbyTaskCallback {
         if (isServiceBound) {
             unbindService(serviceConnection);
         }
-    }
-
-    @Override
-    public void onLobbyCreated(int id) {
-        Log.i("CODE", String.valueOf(id));
-        //proceed
-    }
-
-    @Override
-    public void onLobbyJoined() {
-        Log.i(TAG, "JOIN");
-        //proceed
     }
 }

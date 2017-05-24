@@ -12,10 +12,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import java.util.Locale;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
+import static butterknife.ButterKnife.findById;
+import static pl.locationbasedgame.PreferencesHelper.getStringFromPrefs;
+
 public class StartActivity extends AppCompatActivity {
 
-    private static CommunicationService service;
     private static final String TAG = "START";
+    private static CommunicationService service;
     private boolean isCommunicatorBound;
     private LoginFragment loginFragment = new LoginFragment();
     private RegisterFragment registerFragment = new RegisterFragment();
@@ -25,11 +37,10 @@ public class StartActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             CommunicationService.ServerBinder binder = (CommunicationService.ServerBinder) service;
             StartActivity.service = binder.getService();
+
+            tryToInitializeSocket();
+
             isCommunicatorBound = true;
-            if (!loginFragment.autoLogin(getApplicationContext())) {
-                findViewById(R.id.ll_start_screen).setVisibility(View.VISIBLE);
-            }
-            Log.i(TAG, "Service connected");
         }
 
         @Override
@@ -38,6 +49,78 @@ public class StartActivity extends AppCompatActivity {
             Log.i(TAG, "Service connection lost");
         }
     };
+
+    private void tryToInitializeSocket() {
+        Single socketInitializationTask = Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                service.initializeConnection();
+                return true;
+            }
+        });
+
+        socketInitializationTask
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) { }
+
+                    @Override
+                    public void onSuccess(Boolean b) {
+                        Log.i(TAG, "Service connected");
+                        performAutoLogin();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "ERROR");
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    private void performAutoLogin() {
+        Single<Boolean> autoLoginTask = Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                String name = getStringFromPrefs(StartActivity.this, "name");
+                String password = getStringFromPrefs(StartActivity.this, "password");
+                String locale = Locale.getDefault().toString();
+
+                if (name.equals("") && password.equals("")) {
+                    return false;
+                } else {
+                    AccountResponse result = StartActivity.getService().sendLoginRequestToServer(name, password, locale);
+                    return result.isSuccess();
+                }
+            }
+        });
+
+        autoLoginTask
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) { }
+
+                    @Override
+                    public void onSuccess(Boolean success) {
+                        if (!success) {
+                            // Show login page if auto login failed
+                            findViewById(R.id.ll_start_screen).setVisibility(View.VISIBLE);
+                        } else {
+                            loginFragment.goToMainMenu();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "Error");
+                        e.printStackTrace();
+                    }
+                });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +150,11 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void setupTabNavigation() {
-        ViewPager viewPager = (ViewPager) findViewById(R.id.vp_start_screen_pager);
+        ViewPager viewPager = findById(this, R.id.vp_start_screen_pager);
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), getApplicationContext(),
                 loginFragment, registerFragment));
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tl_start_screen_tabs);
+        TabLayout tabLayout = findById(this, R.id.tl_start_screen_tabs);
         tabLayout.setupWithViewPager(viewPager);
     }
 }

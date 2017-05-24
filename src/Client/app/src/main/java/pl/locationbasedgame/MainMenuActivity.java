@@ -2,11 +2,12 @@ package pl.locationbasedgame;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.view.View;
-import android.widget.RelativeLayout;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+import static pl.locationbasedgame.PreferencesHelper.deleteStoredUser;
 
 public class MainMenuActivity extends Activity {
 
@@ -14,47 +15,30 @@ public class MainMenuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+    }
 
-        RelativeLayout gameButton = (RelativeLayout) findViewById(R.id.rl_start_new_game);
-        RelativeLayout settingsButton = (RelativeLayout) findViewById(R.id.rl_settings);
-        RelativeLayout logoutButton = (RelativeLayout) findViewById(R.id.rl_logout);
+    @OnClick(R.id.rl_start_new_game)
+    void onNewGameButton() {
+        startActivity(new Intent(MainMenuActivity.this, LobbyActivity.class));
+    }
 
-        gameButton.setOnClickListener(new RelativeLayout.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainMenuActivity.this, LobbyActivity.class));
-            }
-        });
+    @OnClick(R.id.rl_settings)
+    void onSettingsButton() {
+        startActivity(new Intent(MainMenuActivity.this, SettingsActivity.class));
+    }
 
-        settingsButton.setOnClickListener(new RelativeLayout.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainMenuActivity.this, SettingsActivity.class));
-            }
-        });
-
-        logoutButton.setOnClickListener(new RelativeLayout.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent backToLoginIntent = new Intent(MainMenuActivity.this, StartActivity.class);
-                deleteStoredUser();
-                finishAffinity();
-                startActivity(backToLoginIntent);
-            }
-        });
+    @OnClick(R.id.rl_logout)
+    void onLogoutButton() {
+        Intent backToLoginIntent = new Intent(MainMenuActivity.this, StartActivity.class);
+        deleteStoredUser(getApplicationContext());
+        finishAffinity();
+        startActivity(backToLoginIntent);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finishAffinity();
-    }
-
-    private void deleteStoredUser() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("name");
-        editor.remove("password");
-        editor.apply();
     }
 }

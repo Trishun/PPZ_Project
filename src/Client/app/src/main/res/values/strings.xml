@@ -26,4 +26,12 @@
     <string name="join_existing_game">Dołącz do istniejącej gry</string>
     <string name="creating_new_game">Tworzę nową grę...</string>
     <string name="joining_existing_game">Dołączam do istniejącej gry...</string>
+    <string name="prefs_vibrations_only">prefs_vibrations_only</string>
+    <string name="prefs_only_wifi">prefs_only_wifi</string>
+    <string name="prefs_title_use_wifi_only">Używaj tylko WiFi</string>
+    <string name="prefs_header_network">Połączenie z siecią</string>
+    <string name="prefs_header_ux">Użytkowanie aplikacji</string>
+    <string name="prefs_title_use_vibration_only">Używaj tylko wibracji</string>
+    <string name="prefs_summary_vibration_only_on">Urządzenie będzie tylko wibrować</string>
+    <string name="prefs_summary_vibration_only_off">Aplikacja będzie powiadamiać za pomocą sygnału dźwiękowego</string>
 </resources>
