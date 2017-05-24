@@ -36,4 +36,10 @@ class Team {
         }
     }
 
+    void sendSimpleMessageToPlayers(String header, String content) {
+        for (Player player : players) {
+            player.getMessageProvider().sendSimpleMessage(header, content);
+        }
+    }
+
 }

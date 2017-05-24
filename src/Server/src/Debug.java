@@ -27,7 +27,7 @@ class Debug {
                 ArrayList<String> commands = new ArrayList<>();
                 commands.add("mv");
                 commands.add("log.txt");
-                commands.add("log." + Instant.now() + "txt");
+                commands.add("log_" + Instant.now() + ".txt");
                 ProcessBuilder processbuilder = new ProcessBuilder(commands);
                 processbuilder.start();
             }
