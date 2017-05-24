@@ -1,4 +1,3 @@
-import org.jetbrains.annotations.Contract;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -16,7 +15,7 @@ public class Player extends Thread {
     private DatabaseCommunicator databaseCommunicator;
     private PlayerManager playerManager;
     private LobbyManager lobbyManager;
-    private Integer lobby;
+    private Lobby lobby;
     private MessageProvider messageProvider;
     private LocaleProvider localeProvider;
     private EncryptionProvider encryptionProvider;
@@ -57,11 +56,11 @@ public class Player extends Thread {
                 } else if (header.equalsIgnoreCase("changepass")) {     //new password
                     localeProvider.setLocale(String.valueOf(message.get("locale")));
                     handleChangePass(message);
-                } else if (header.equalsIgnoreCase("lcreate")) {        //create lobby
+                } else if (header.equalsIgnoreCase("lcreate")) {        //create lobbyId
                     handleLCreate();
-                } else if (header.equalsIgnoreCase("ljoin")) {          //join lobby
+                } else if (header.equalsIgnoreCase("ljoin")) {          //join lobbyId
                     handleLJoin(message);
-                } else if (header.equalsIgnoreCase("lleave")) {         //leave lobby
+                } else if (header.equalsIgnoreCase("lleave")) {         //leave lobbyId
                     handleLLeave();
                 } else if (header.equalsIgnoreCase("tjoin")) {          //join team
                     handleTJoin(message);
@@ -72,7 +71,7 @@ public class Player extends Thread {
                 } else if (header.equalsIgnoreCase("ccreate")) {        //create checkpoint
                     handleCCreate(message);
                 } else if (header.equalsIgnoreCase("cdesc")) {          //get task description
-                    handleCDesc();
+                    handleCVisit();
                 } else if (header.equalsIgnoreCase("csans")) {          //set task answer
                     handleCSAns(message);
                 } else if (header.equalsIgnoreCase("cvans")) {          //verify task answer
@@ -317,9 +316,11 @@ public class Player extends Thread {
         }
     }
 
+    //Lobby management
+
     private void handleLCreate() {
         setLobby(lobbyManager.createLobby(this));
-        messageProvider.sendSimpleMessage("lcreate", lobbyManager.getLobbyEnterCode(getLobby()));
+        messageProvider.sendSimpleMessage("lcreate", lobbyManager.getLobbyEnterCode(lobby.getId()));
     }
 
     private void handleLJoin(JSONObject message) {
@@ -335,19 +336,16 @@ public class Player extends Thread {
     }
 
     private void handleLLeave() {
-        lobbyManager.removeFromLobby(lobby, this);
+        lobbyManager.removeFromLobby(this);
         setLobby(null);
         messageProvider.sendSimpleMessage("lleave", true);
     }
 
-    //Lobby management
-
-    void setLobby(Integer lobby) {
+    void setLobby(Lobby lobby) {
         this.lobby = lobby;
     }
 
-    @Contract(pure = true)
-    private Integer getLobby() {
+    Lobby getLobby() {
         return lobby;
     }
 
@@ -358,27 +356,51 @@ public class Player extends Thread {
     // Team management
     private void handleTJoin(JSONObject message) {
         int team = Integer.valueOf(message.get("team").toString());
-        lobbyManager.getLobbyById(lobby).getTeamManager().addPlayerToTeam(this, team);
-        lobbyManager.getLobbyById(lobby).broadcastLobbyStructure();
+        lobby.getTeamManager().addPlayerToTeam(this, team);
+        lobby.broadcastLobbyStructure();
         messageProvider.sendSimpleMessage("tjoin", true);
     }
 
     private void handleTLeave() {
-        lobbyManager.getLobbyById(lobby).getTeamManager().removePlayer(this);
-        lobbyManager.getLobbyById(lobby).broadcastLobbyStructure();
+        lobby.getTeamManager().removePlayer(this);
+        lobby.broadcastLobbyStructure();
         messageProvider.sendSimpleMessage("tleave", true);
     }
 
     private void handleGbegin() {
-        Lobby lobbyInstance = lobbyManager.getLobbyById(lobby);
-        if (lobbyInstance.getInitiator() == this)
-            lobbyInstance.beginGame();
+        if (lobby.getInitiator() == this)
+            lobby.beginGame();
     }
 
-    private void handleCCreate(JSONObject message) {}
-    private void handleCDesc() {}
-    private void handleCSAns(JSONObject message) {}
-    private void handleCVAns(JSONObject message) {}
-    private void handleCGTasks() {}
-    private void handleStats(JSONObject message) {}
+    private void handleCCreate(JSONObject message) {
+        double[] location = {Double.valueOf(message.get("locx").toString()), Double.valueOf(message.get("locy").toString())};
+        String description = String.valueOf(message.get("desc"));
+        lobby.getGameManager().addCheckpoint(location, description);
+    }
+
+    private void handleCVisit() {
+        lobby.getGameManager().visitCheckpoint();
+    }
+
+    private void handleCSAns(JSONObject message) {
+        lobby.getGameManager().resolveTask(String.valueOf(message.get("ans")));
+        HashMap<String, Object> response = new HashMap<>();
+        double[] coords = lobby.getGameManager().getCoords();
+        response.put("coords", true);
+        response.put("locx", coords[0]);
+        response.put("locy", coords[1]);
+        messageProvider.sendMessage(new JSONObject(response));
+    }
+
+    private void handleCVAns(JSONObject message) {
+        lobby.getGameManager().verifyTask(Integer.valueOf(String.valueOf(message.get("cnum"))), Boolean.valueOf(String.valueOf(message.get("var"))));
+    }
+
+    private void handleCGTasks() {
+        messageProvider.sendMessage(lobby.getGameManager().getTasks());
+    }
+
+    private void handleStats(JSONObject message) {
+
+    }
 }

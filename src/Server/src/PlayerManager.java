@@ -40,4 +40,5 @@ class PlayerManager {
     ArrayList<Player> getPlayerList() {
         return playerList;
     }
+
 }
