@@ -5,4 +5,17 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="RoundedButton">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">24dp</item>
+        <item name="android:background">@drawable/roundedbutton</item>
+    </style>
+
+    <style name="StandardEditText">
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:background">@drawable/roundededittext</item>
+    </style>
 </resources>

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import java.util.Locale;
-
 /**
  * Created by Patryk Ligenza on 03-May-17.
  */

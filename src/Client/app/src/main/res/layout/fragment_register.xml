@@ -1,63 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical" android:weightSum="1"
+              android:background="#96C851">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/name"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/name" tools:text="Username"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp"/>
     <EditText
-        android:id="@+id/et_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:maxLines="1"
-        android:gravity="center_horizontal" />
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            style="@style/StandardEditText"
+    />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/password"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/password" tools:text="Password"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+    />
     <EditText
-        android:id="@+id/et_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:gravity="center_horizontal"
-        android:inputType="textPassword" />
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            style="@style/StandardEditText"
+    />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/password_repeat"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/password_repeat" tools:text="Repeat password"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+    />
     <EditText
-        android:id="@+id/et_repeated_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:gravity="center_horizontal"
-        android:inputType="textPassword" />
+            android:id="@+id/et_repeated_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            style="@style/StandardEditText"
+    />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/e_mail"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/e_mail" tools:text="E-mail Address"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+    />
     <EditText
-        android:id="@+id/et_mail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:gravity="center_horizontal"
-        android:inputType="textEmailAddress" />
+            android:id="@+id/et_mail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            style="@style/StandardEditText"
+    />
 
     <Button
-        android:id="@+id/btn_register"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
-        android:text="@string/register"/>
+            android:id="@+id/btn_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/register" tools:text="Register"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:fontFamily="sans-serif" android:textAlignment="center" android:textAllCaps="false"
+            android:textColor="#000" android:textSize="24sp"
+            android:layout_marginLeft="50dp" android:layout_marginRight="50dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.13"
+            android:autoText="false"
+            android:background="@drawable/roundedbutton"
+    />
 
 </LinearLayout>
