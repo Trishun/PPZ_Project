@@ -31,13 +31,23 @@ class GameManager {
         gameStarted = Instant.now();
     }
 
-    void end() {
+    private void end() {
         Long elapsed = Duration.between(gameStarted, Instant.now()).abs().toMinutes();
         timeElapsed = (elapsed.intValue());
+        teamManager.broadcastSimpleToAll("gend", "true");
     }
 
     void addCheckpoint(double[] location, String description) {
         checkpoints.add(new Checkpoint(location, description));
+        if (lastCheckpoint == -1) {
+            currentCheckpoint++;
+            HashMap<String, Object> response = new HashMap<>();
+            double[] coords = getCoords();
+            response.put("coords", true);
+            response.put("locx", coords[0]);
+            response.put("locy", coords[1]);
+            teamManager.broadcastToTeam(1, new JSONObject(response));
+        }
         lastCheckpoint++;
     }
 
@@ -48,6 +58,10 @@ class GameManager {
         teamManager.broadcastToTeam(1, new JSONObject(message));
         current.setTime_visited(Instant.now());
         current.setVisited();
+        if (current.isLast()) {
+            end();
+            countPoints();
+        }
     }
 
     void resolveTask(String answer) {
@@ -84,6 +98,12 @@ class GameManager {
         checkpoints.get(checkpoint).setCorrect(value);
     }
 
+    void forceEnd(int team, String reason) {
+        end();
+        HashMap<String, Object> message = new HashMap<>();
+        message.put("reason", reason);
+        teamManager.broadcastToTeam(team, new JSONObject(message));
+    }
 
     void countPoints() {
         int points = 0;

@@ -15,11 +15,14 @@ class Checkpoint {
     private boolean completed = false;
     private boolean checked = false;
     private Boolean correct = null;
+    private Boolean last;
 
     Checkpoint(double[] location, String description) {
         this.location = location;
         task = new Task(description);
         time_created = Instant.now();
+        if (description.equalsIgnoreCase("last"))
+            last = true;
     }
 
     double[] getLocation() {
@@ -82,4 +85,11 @@ class Checkpoint {
         return checked;
     }
 
+    void setLast(Boolean last) {
+        this.last = last;
+    }
+
+    Boolean isLast() {
+        return last;
+    }
 }
