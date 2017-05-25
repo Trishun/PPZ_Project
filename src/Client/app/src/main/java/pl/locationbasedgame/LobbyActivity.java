@@ -13,14 +13,16 @@ import org.json.JSONArray;
 
 import java.util.concurrent.Callable;
 
-import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static butterknife.ButterKnife.bind;
 import static butterknife.ButterKnife.findById;
 
 public class LobbyActivity extends Activity {
@@ -35,7 +37,6 @@ public class LobbyActivity extends Activity {
             CommunicationService.ServerBinder binder = (CommunicationService.ServerBinder) service;
             LobbyActivity.this.service = binder.getService();
             isServiceBound = true;
-
             Log.i(TAG, "Service connected");
         }
 
@@ -52,7 +53,7 @@ public class LobbyActivity extends Activity {
         setContentView(R.layout.activity_lobby);
         Intent bindIntent = new Intent(this, CommunicationService.class);
         bindService(bindIntent, serviceConnection, BIND_IMPORTANT);
-        ButterKnife.bind(this);
+        bind(this);
     }
 
     @OnClick(R.id.btn_create_lobby)
@@ -74,6 +75,7 @@ public class LobbyActivity extends Activity {
                     @Override
                     public void onSuccess(Integer integer) {
                           Log.i(TAG, "OK: " + integer.toString());
+                          listenForMessage();
                     }
 
                     @Override
@@ -113,11 +115,41 @@ public class LobbyActivity extends Activity {
                     @Override
                     public void onSuccess(JSONArray jsonArray) {
                         Log.i(TAG, jsonArray.toString());
+                        listenForMessage();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.i(TAG, "error");
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    void listenForMessage() {
+        Single<String> getMessage = Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return service.getServerMessage();
+            }
+        });
+
+        getMessage.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(String s) {
+                        Log.i(TAG, s);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, e.getMessage());
                         e.printStackTrace();
                     }
                 });

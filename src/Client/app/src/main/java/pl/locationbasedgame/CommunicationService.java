@@ -58,6 +58,10 @@ public class CommunicationService extends Service {
         return manager.joinLobby(socketHandler, id);
     }
 
+    String getServerMessage() {
+        return socketHandler.listen();
+    }
+
     class ServerBinder extends Binder {
         CommunicationService getService() {
             return CommunicationService.this;

@@ -62,6 +62,19 @@ class SocketHandler {
         return response;
     }
 
+    String listen() {
+        String message = null;
+        Log.i("LISTENING", "LISTENING ON");
+        try {
+            BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            message = socketReader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("INTERCEPTED MESSAGE", message);
+        return message;
+    }
+
     void closeSocket() {
         try {
             socket.close();
