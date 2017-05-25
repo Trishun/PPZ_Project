@@ -15,10 +15,10 @@ class GameManager {
     private ArrayList<Checkpoint> checkpoints;
     private TeamManager teamManager;
     private Instant gameStarted;
-    private Integer timeElepsed;
+    private Integer timeElapsed;
     private Timer timer;
-    private int thisCheckpoint = -1;
-    private int nextCheckpoint = -1;
+    private int currentCheckpoint = -1;
+    private int lastCheckpoint = -1;
 
 
     GameManager(TeamManager teamManager) {
@@ -27,38 +27,56 @@ class GameManager {
     }
 
     void begin() {
-        HashMap<String, Object> message = new HashMap<>();
-        message.put("gbegin", true);
-        teamManager.broadcastToAll(new JSONObject(message));
+        teamManager.broadcastSimpleToAll("gbegin", "true");
         gameStarted = Instant.now();
     }
 
-    void end() {
+    private void end() {
         Long elapsed = Duration.between(gameStarted, Instant.now()).abs().toMinutes();
-        timeElepsed = (elapsed.intValue());
+        timeElapsed = (elapsed.intValue());
+        teamManager.broadcastSimpleToAll("gend", "true");
     }
 
     void addCheckpoint(double[] location, String description) {
         checkpoints.add(new Checkpoint(location, description));
+        if (lastCheckpoint == -1) {
+            currentCheckpoint++;
+            HashMap<String, Object> response = new HashMap<>();
+            double[] coords = getCoords();
+            response.put("coords", true);
+            response.put("locx", coords[0]);
+            response.put("locy", coords[1]);
+            teamManager.broadcastToTeam(1, new JSONObject(response));
+        }
+        lastCheckpoint++;
     }
 
     void visitCheckpoint() {
-        Checkpoint current = checkpoints.get(thisCheckpoint);
+        Checkpoint current = checkpoints.get(currentCheckpoint);
         HashMap<String, Object> message = new HashMap<>();
         message.put("desc", current.getTask().getDescription());
         teamManager.broadcastToTeam(1, new JSONObject(message));
         current.setTime_visited(Instant.now());
         current.setVisited();
+        if (current.isLast()) {
+            end();
+            countPoints();
+        }
     }
 
-    void resolveTask(int checkpoint, String answer) {
-        Checkpoint current = checkpoints.get(checkpoint);
+    void resolveTask(String answer) {
+        Checkpoint current = checkpoints.get(currentCheckpoint);
         current.getTask().setAnswer(answer);
         current.setTime_completed(Instant.now());
         current.setCompleted();
+        currentCheckpoint++;
     }
 
-    void getTasks(Player player) {
+    double[] getCoords() {
+        return checkpoints.get(currentCheckpoint).getLocation();
+    }
+
+    JSONObject getTasks() {
         HashMap<String, Object> message = new HashMap<>();
         ArrayList<JSONObject> messageContent = new ArrayList<>();
         HashMap<String, Object> task;
@@ -72,7 +90,7 @@ class GameManager {
             messageContent.add(new JSONObject(task));
         }
         message.put("tasks", messageContent);
-        player.getMessageProvider().sendMessage(new JSONObject(message));
+        return (new JSONObject(message));
     }
 
     void verifyTask(int checkpoint, Boolean value) {
@@ -80,8 +98,11 @@ class GameManager {
         checkpoints.get(checkpoint).setCorrect(value);
     }
 
-    void submitTasks() {
-
+    void forceEnd(int team, String reason) {
+        end();
+        HashMap<String, Object> message = new HashMap<>();
+        message.put("reason", reason);
+        teamManager.broadcastToTeam(team, new JSONObject(message));
     }
 
     void countPoints() {
@@ -96,9 +117,15 @@ class GameManager {
                 points -= 20;
             }
         }
-        points += (int) (1.2 * timeElepsed) - (int) Duration.between(gameStarted, checkpoints.get(checkpoints.size() - 1).getTime_created()).toMinutes();
+        points += (int) (1.2 * timeElapsed) - (int) Duration.between(gameStarted, checkpoints.get(checkpoints.size() - 1).getTime_created()).toMinutes();
         if (points > 0) {
-//            teamManager.broadcastToTeam(1, "win");
+            teamManager.broadcastSimpleToTeam(1, "result", "win");
+            teamManager.broadcastSimpleToTeam(0, "result", "lose");
+        } else if (points < 0) {
+            teamManager.broadcastSimpleToTeam(1, "result", "lose");
+            teamManager.broadcastSimpleToTeam(0, "result", "win");
+        } else {
+            teamManager.broadcastSimpleToAll("result", "draw");
         }
     }
 

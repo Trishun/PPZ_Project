@@ -96,9 +96,18 @@ class TeamManager {
         getTeam(team).sendMessageToPlayers(message);
     }
 
+    void broadcastSimpleToTeam(int team, String header, String content) {
+        getTeam(team).sendSimpleMessageToPlayers(header, content);
+    }
+
     void broadcastToAll(JSONObject message) {
         broadcastToTeam(0, message);
         broadcastToTeam(1, message);
+    }
+
+    void broadcastSimpleToAll(String header, String content) {
+        broadcastSimpleToTeam(0, header, content);
+        broadcastSimpleToTeam(1, header, content);
     }
 
 }

@@ -9,11 +9,11 @@ class LobbyManager {
     private static ArrayList<Lobby> lobbyList = new ArrayList<>();
 
 
-    int createLobby(Player initiator) {
+    Lobby createLobby(Player initiator) {
         Lobby lobby = new Lobby(lobbyList.size(), initiator);
         lobbyList.add(lobby);
         Debug.Log("Lobby " + lobby.getId() + " created!");
-        return lobby.getId();
+        return lobby;
     }
 
     boolean addToLobby(int enterCode, Player player) {
@@ -28,26 +28,19 @@ class LobbyManager {
 
     private void addToLobby(Lobby lobby, Player player) {
         lobby.addToLobby(player);
-        player.setLobby(lobby.getId());
+        player.setLobby(lobby);
         Debug.Log("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") joined lobby " + lobby.getId());
     }
 
-    void removeFromLobby(int lobbyId, Player player) {
-        Lobby lobby = getLobbyById(lobbyId);
-        lobby.removeFromLobby(player);
-        Debug.Log("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") left lobby " + lobbyId);
-    }
-
     void removeFromLobby(Player player) {
-        for (Lobby lobby : lobbyList) {
-            if (lobby.removeFromLobby(player)) {
-                if (lobby.getPlayerCount() == 0) {
-                    lobbyList.remove(lobby);
-                    lobby.close();
-                }
-                return;
-            }
+        Lobby lobby = player.getLobby();
+        lobby.removeFromLobby(player);
+        if (lobby.getPlayerCount() == 0) {
+            lobbyList.remove(lobby);
+            Debug.Log("Lobby " + lobby.getId() + " closed!");
+            lobby.close();
         }
+        Debug.Log("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") left lobby " + lobby.getId());
     }
 
     Integer getLobbyEnterCode(int id) {
