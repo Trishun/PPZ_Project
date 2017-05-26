@@ -8,6 +8,11 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.EditText;
+
+import org.json.JSONArray;
+
+import java.util.concurrent.Callable;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Single;
@@ -15,9 +20,6 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import org.json.JSONArray;
-
-import java.util.concurrent.Callable;
 
 import static butterknife.ButterKnife.findById;
 

@@ -11,14 +11,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+
+import java.util.Locale;
+import java.util.concurrent.Callable;
+
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
-import java.util.Locale;
-import java.util.concurrent.Callable;
 
 import static butterknife.ButterKnife.findById;
 import static pl.locationbasedgame.PreferencesHelper.getStringFromPrefs;
