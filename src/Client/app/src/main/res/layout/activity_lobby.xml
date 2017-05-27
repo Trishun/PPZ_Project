@@ -27,19 +27,6 @@
         style="@style/RoundedButton"
     />
 
-    <Button
-        android:id="@+id/btn_join_lobby"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/et_lobby_id"
-        android:textColor="#000" android:textSize="@dimen/text_size_medium"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="50dp" android:layout_marginRight="50dp"
-        android:layout_centerHorizontal="true"
-        android:text="@string/join_existing_game"
-        style="@style/RoundedButton"
-    />
-
     <EditText
             android:id="@+id/et_lobby_id"
             android:layout_width="match_parent"
@@ -48,6 +35,18 @@
             android:layout_alignParentLeft="true"
             android:layout_margin="10dp"
             style="@style/StandardEditText"
+    />
+
+    <Button
+        android:id="@+id/btn_join_lobby"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/et_lobby_id"
+        android:textColor="#000" android:textSize="@dimen/text_size_medium"
+        android:layout_marginLeft="50dp" android:layout_marginRight="50dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/join_existing_game"
+        style="@style/RoundedButton"
     />
 
     <!-- Connection progress indicator -->
