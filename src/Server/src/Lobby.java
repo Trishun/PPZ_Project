@@ -19,7 +19,6 @@ class Lobby {
         this.initiator = initiator;
         enterCode = enterCodeGeneration();
         players.add(initiator);
-        broadcastLobbyStructure();
     }
 
     private int enterCodeGeneration() {

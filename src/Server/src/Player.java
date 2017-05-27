@@ -321,6 +321,7 @@ public class Player extends Thread {
     private void handleLCreate() {
         setLobby(lobbyManager.createLobby(this));
         messageProvider.sendSimpleMessage("lcreate", lobbyManager.getLobbyEnterCode(lobby.getId()));
+        lobby.broadcastLobbyStructure();
     }
 
     private void handleLJoin(JSONObject message) {
