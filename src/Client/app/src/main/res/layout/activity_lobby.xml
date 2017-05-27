@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/backgroundColor">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical" android:weightSum="1"
+              android:background="@color/backgroundColor">
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lobby_screen"
+            android:textSize="@dimen/text_size_big"
+            style="@style/StandardTextView"
+
+    />
 
     <Button
         android:id="@+id/btn_create_lobby"
@@ -16,33 +27,28 @@
         style="@style/RoundedButton"
     />
 
-    <EditText
-            android:id="@+id/et_lobby_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number" android:layout_below="@+id/btn_create_lobby"
-            android:layout_alignParentLeft="true" android:layout_marginTop="30dp"
-            style="@style/StandardEditText"
-    />
     <Button
         android:id="@+id/btn_join_lobby"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/et_lobby_id"
         android:textColor="#000" android:textSize="@dimen/text_size_medium"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
         android:layout_marginLeft="50dp" android:layout_marginRight="50dp"
         android:layout_centerHorizontal="true"
         android:text="@string/join_existing_game"
         style="@style/RoundedButton"
     />
-    <TextView
+
+    <EditText
+            android:id="@+id/et_lobby_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/lobby_screen"
-            android:textSize="@dimen/text_size_big"
-            style="@style/StandardTextView"
-            android:layout_alignParentTop="true" android:layout_alignParentLeft="true"/>
+            android:inputType="number" android:layout_below="@+id/btn_create_lobby"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="10dp"
+            style="@style/StandardEditText"
+    />
 
     <!-- Connection progress indicator -->
 
@@ -60,4 +66,4 @@
         <!--android:layout_alignParentBottom="true"-->
         <!--android:layout_centerHorizontal="true"-->
         <!--android:padding="15dp"/>-->
-</RelativeLayout>
+</LinearLayout>
