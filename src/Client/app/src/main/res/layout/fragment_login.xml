@@ -2,31 +2,53 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/backgroundColor"
+>
 
     <TextView
-        android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/et_login"
+            android:layout_margin="10dp"
+            android:text="@string/logon"
+            android:textSize="@dimen/text_size_big"
+            style="@style/StandardTextView"
+    />
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/name"/>
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:text="@string/name"
+        android:layout_marginTop="10dp"
+        style="@style/StandardTextView"
+    />
     <EditText
         android:id="@+id/et_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:maxLines="1"
-        android:gravity="center_horizontal" />
+        android:layout_margin="10dp"
+        style="@style/StandardEditText"
+    />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/password"/>
+        android:text="@string/password"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+        style="@style/StandardTextView"
+    />
+
     <EditText
         android:id="@+id/et_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"
-        android:gravity="center_horizontal"
-        android:inputType="textPassword" />
+        android:layout_margin="10dp"
+        android:inputType="textPassword"
+        style="@style/StandardEditText"
+    />
 
     <Button
         android:id="@+id/btn_login"
@@ -34,6 +56,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
-        android:text="@string/log_in"/>
+        android:text="@string/log_in"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:textAlignment="center" android:textAllCaps="false"
+        android:textColor="#000" android:textSize="24sp"
+        android:layout_marginLeft="50dp" android:layout_marginRight="50dp"
+        style="@style/RoundedButton"
+    />
 
 </LinearLayout>
