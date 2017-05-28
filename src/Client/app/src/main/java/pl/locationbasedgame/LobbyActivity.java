@@ -62,6 +62,7 @@ public class LobbyActivity extends Activity {
             @Override
             public Integer call() throws Exception {
                 return service.createNewLobby(new LobbyManager());
+
             }
         });
 
@@ -127,7 +128,7 @@ public class LobbyActivity extends Activity {
     }
 
     void listenForMessage() {
-        Single<String> getMessage = Single.fromCallable(new Callable<String>() {
+        final Single<String> getMessage = Single.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
                 return service.getServerMessage();
@@ -145,6 +146,7 @@ public class LobbyActivity extends Activity {
                     @Override
                     public void onSuccess(String s) {
                         Log.i(TAG, s);
+                        listenForMessage();
                     }
 
                     @Override
