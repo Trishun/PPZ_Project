@@ -68,6 +68,7 @@ gdzie `%params%` to `-m`, Opis zmiany(typ, stan #1234), koniecznie ze spacją.
 			```javascript
 			{ "register" : "false", "alert" : "E-mail is already in use" }		
 			```
+		
 2. Lobby:
 	- stworzenie:	
 		* Klient:
@@ -92,5 +93,70 @@ gdzie `%params%` to `-m`, Opis zmiany(typ, stan #1234), koniecznie ze spacją.
 	- lista graczy: (odświeżana automatycznie przez serwer)
 		* Serwer:
 		```javascript
-		{ "llist" : [{ "name" : "PlayerTaki" }, { "name", "PlayerŚmaki" }, ...] } 
+		{ "llist" : [[<Grupa uciekająca>], [<Grupa goniąca>], [<nieprzydzieleni>]], "initiator" : <założyciel> } 
 		```
+	- opuszczenie:	
+		* Klient:
+		```javascript
+		{ "header" : "lleave" }
+		```
+		* Serwer:
+		```javascript
+		{ "lleave" : true }
+		```
+		
+3. Zespół:
+	- dołączenie:	
+		* Klient:
+		```javascript
+		{ "header" : "tjoin", "team" : 0 / 1 }
+		```
+		* Serwer:
+		```javascript
+		{ "tjoin" : true }
+		```
+	- opuszczenie:	
+		* Klient:
+		```javascript
+		{ "header" : "tleave" }
+		```
+		* Serwer:
+		```javascript
+		{ "tleave" : true }
+		```
+4. Gra
+	- rozpoczęcie:	
+		* Klient:
+		```javascript
+		{ "header" : "gbegin" }
+		```
+		* Serwer:
+		```javascript
+		{ "gbegin" : true }
+		```
+	- ustawienie punktu:	
+		* Klient:
+		```javascript
+		{ "header" : "ccreate", "locx" : <długość>, "locy" : <szerokość>, "desc" : <opis zadania>}
+		```
+		* Serwer:
+			- Grupa uciekająca:
+			```javascript
+			{ "ccreate" : true }
+			```
+			- Grupa goniąca:
+			```javascript
+			{ "<???>" : <???>, "locx" : <długość>, "locy" : <szerokość> }
+			```
+			
+	- odwiedzenie punktu (automatycznie):
+		* Klient:
+		```javascript
+		{ "header" : "cvisit" }
+		```
+		* Serwer:
+		```javascript
+		{ "desc" : "<opis odwiedzonego punktu>"
+		```
+		
+	
