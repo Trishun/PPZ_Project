@@ -39,6 +39,8 @@ class LobbyManager {
             lobbyList.remove(lobby);
             Debug.Log("Lobby " + lobby.getId() + " closed!");
             lobby.close();
+        } else {
+            lobby.broadcastLobbyStructure();
         }
         Debug.Log("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") left lobby " + lobby.getId());
     }
