@@ -79,7 +79,7 @@ class Lobby {
 
         HashMap<String, Object> message = new HashMap<>();
         message.put("llist", output);
-        message.put("initiator", initiator.getName());
+        message.put("initiator", initiator.getPlayerName());
         return message;
     }
 
