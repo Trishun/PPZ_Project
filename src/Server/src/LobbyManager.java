@@ -9,6 +9,12 @@ class LobbyManager {
     private static ArrayList<Lobby> lobbyList = new ArrayList<>();
 
 
+    /**
+     * Create lobby lobby.
+     *
+     * @param initiator the initiator
+     * @return the lobby
+     */
     Lobby createLobby(Player initiator) {
         Lobby lobby = new Lobby(lobbyList.size(), initiator);
         lobbyList.add(lobby);
@@ -16,6 +22,13 @@ class LobbyManager {
         return lobby;
     }
 
+    /**
+     * Add to lobby boolean.
+     *
+     * @param enterCode the enter code
+     * @param player    the player
+     * @return the boolean
+     */
     boolean addToLobby(int enterCode, Player player) {
         for (Lobby lobby : lobbyList) {
             if (enterCode == lobby.getEnterCode()) {
@@ -32,6 +45,11 @@ class LobbyManager {
         Debug.Log("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") joined lobby " + lobby.getId());
     }
 
+    /**
+     * Remove from lobby.
+     *
+     * @param player the player
+     */
     void removeFromLobby(Player player) {
         Lobby lobby = player.getLobby();
         lobby.removeFromLobby(player);
@@ -45,6 +63,12 @@ class LobbyManager {
         Debug.Log("Player " + player.getPlayerName() + " (" + player.getPlayerId() + ") left lobby " + lobby.getId());
     }
 
+    /**
+     * Gets lobby enter code.
+     *
+     * @param id the id
+     * @return the lobby enter code
+     */
     Integer getLobbyEnterCode(int id) {
         Lobby lobby = getLobbyById(id);
         try {
@@ -54,6 +78,12 @@ class LobbyManager {
         }
     }
 
+    /**
+     * Gets lobby by id.
+     *
+     * @param id the id
+     * @return the lobby by id
+     */
     Lobby getLobbyById(int id) {
         for (Lobby lobby : lobbyList) {
             if (lobby.getId() == id) {

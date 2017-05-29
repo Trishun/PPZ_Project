@@ -19,6 +19,8 @@ class DatabaseCommunicator {
 
     /**
      * Class constructor
+     *
+     * @param settingsProvider the settings provider
      */
     DatabaseCommunicator(SettingsProvider settingsProvider) {
         this.settingsProvider = settingsProvider;
@@ -50,7 +52,6 @@ class DatabaseCommunicator {
      * @param query String query to be executed on the database
      * @return ResultSet of results in case of success, null otherwise
      */
-
     ResultSet executeQuery(String query) {
         try {
             Statement statement = connection.createStatement();
@@ -75,6 +76,11 @@ class DatabaseCommunicator {
         }
     }
 
+    /**
+     * Gets settings provider.
+     *
+     * @return the settings provider
+     */
     SettingsProvider getSettingsProvider() {
         return settingsProvider;
     }

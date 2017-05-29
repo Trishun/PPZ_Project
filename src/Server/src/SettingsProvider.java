@@ -11,11 +11,13 @@ import java.util.Map;
  * Settings Provider
  * Created by PD on 15.04.2017.
  */
-
 class SettingsProvider {
 
     private Map<String, String> data = new HashMap<>();
 
+    /**
+     * Instantiates a new Settings provider.
+     */
     SettingsProvider() {
         Document document = prepareDocument();
         if (document != null)
@@ -26,6 +28,12 @@ class SettingsProvider {
         data.put(key, value);
     }
 
+    /**
+     * Get string.
+     *
+     * @param key the key
+     * @return the string
+     */
     String get(String key) {
         return data.get(key);
     }

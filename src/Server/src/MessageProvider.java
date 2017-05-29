@@ -18,6 +18,11 @@ class MessageProvider {
     private BufferedReader socketReader;
     private PrintWriter socketWriter;
 
+    /**
+     * Instantiates a new Message provider.
+     *
+     * @param clientSocket the client socket
+     */
     MessageProvider(Socket clientSocket) {
         try {
             this.socketReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -27,6 +32,11 @@ class MessageProvider {
         }
     }
 
+    /**
+     * Gets message.
+     *
+     * @return the message
+     */
     JSONObject getMessage() {
         try {
             String data = socketReader.readLine();
@@ -40,6 +50,11 @@ class MessageProvider {
         return null;
     }
 
+    /**
+     * Send message.
+     *
+     * @param message the message
+     */
     void sendMessage(JSONObject message) {
         try {
             String jsonString = message.toJSONString();
@@ -51,6 +66,12 @@ class MessageProvider {
         }
     }
 
+    /**
+     * Send simple message.
+     *
+     * @param header  the header
+     * @param content the content
+     */
     void sendSimpleMessage(String header, Object content) {
         HashMap<String, Object> message = new HashMap<>();
         message.put(header, content);

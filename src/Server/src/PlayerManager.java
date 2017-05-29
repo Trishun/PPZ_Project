@@ -12,17 +12,33 @@ class PlayerManager {
     private DatabaseCommunicator databaseCommunicator;
     private LobbyManager lobbyManager;
 
+    /**
+     * Instantiates a new Player manager.
+     *
+     * @param lobbyManager         the lobby manager
+     * @param databaseCommunicator the database communicator
+     */
     PlayerManager(LobbyManager lobbyManager, DatabaseCommunicator databaseCommunicator) {
         this.lobbyManager = lobbyManager;
         this.databaseCommunicator = databaseCommunicator;
     }
 
+    /**
+     * Create player.
+     *
+     * @param socket the socket
+     */
     void createPlayer(Socket socket) {
         Player player = new Player(socket, this, lobbyManager, databaseCommunicator);
         playerList.add(player);
         player.start();
     }
 
+    /**
+     * Disconnect player.
+     *
+     * @param playerToDisconnect the player to disconnect
+     */
     void disconnectPlayer(Player playerToDisconnect) {
         try {
             playerList.remove(playerToDisconnect);
@@ -37,6 +53,11 @@ class PlayerManager {
         Debug.Log("Player " + playerToDisconnect.getPlayerName() + " (" + playerToDisconnect.getPlayerId() + ") disconnected");
     }
 
+    /**
+     * Gets player list.
+     *
+     * @return the player list
+     */
     ArrayList<Player> getPlayerList() {
         return playerList;
     }

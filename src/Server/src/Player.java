@@ -22,6 +22,14 @@ public class Player extends Thread {
     private int playerId = 0;
     private String playerName = "not logged";
 
+    /**
+     * Instantiates a new Player.
+     *
+     * @param socket               the socket
+     * @param playerManager        the player manager
+     * @param lobbyManager         the lobby manager
+     * @param databaseCommunicator the database communicator
+     */
     Player(Socket socket, PlayerManager playerManager, LobbyManager lobbyManager, DatabaseCommunicator databaseCommunicator) {
         this.clientSocket = socket;
         this.playerManager = playerManager;
@@ -91,6 +99,8 @@ public class Player extends Thread {
     // Player management
 
     /**
+     * Gets player id.
+     *
      * @return DB playerID
      */
     int getPlayerId() {
@@ -105,6 +115,8 @@ public class Player extends Thread {
     }
 
     /**
+     * Gets player name.
+     *
      * @return DB nickname
      */
     String getPlayerName() {
@@ -118,6 +130,11 @@ public class Player extends Thread {
         this.playerName = playerName;
     }
 
+    /**
+     * Gets message provider.
+     *
+     * @return the message provider
+     */
     MessageProvider getMessageProvider() {
         return messageProvider;
     }
@@ -284,6 +301,9 @@ public class Player extends Thread {
         }
     }
 
+    /**
+     * @param message
+     */
     private void handleChangePass(JSONObject message) {
         HashMap<String, Object> response = new HashMap<>();
         try {
@@ -342,14 +362,29 @@ public class Player extends Thread {
         messageProvider.sendSimpleMessage("lleave", true);
     }
 
+    /**
+     * Sets lobby.
+     *
+     * @param lobby the lobby
+     */
     void setLobby(Lobby lobby) {
         this.lobby = lobby;
     }
 
+    /**
+     * Gets lobby.
+     *
+     * @return the lobby
+     */
     Lobby getLobby() {
         return lobby;
     }
 
+    /**
+     * Update players.
+     *
+     * @param message the message
+     */
     void updatePlayers(HashMap<String, Object> message) {
         messageProvider.sendMessage(new JSONObject(message));
     }
@@ -384,13 +419,9 @@ public class Player extends Thread {
     }
 
     private void handleCSAns(JSONObject message) {
-        lobby.getGameManager().resolveTask(String.valueOf(message.get("ans")));
-        HashMap<String, Object> response = new HashMap<>();
-        double[] coords = lobby.getGameManager().getCoords();
-        response.put("coords", true);
-        response.put("locx", coords[0]);
-        response.put("locy", coords[1]);
-        messageProvider.sendMessage(new JSONObject(response));
+        GameManager gm = lobby.getGameManager();
+        gm.resolveTask(String.valueOf(message.get("ans")));
+        gm.sendCheckpointCoords();
     }
 
     private void handleCVAns(JSONObject message) {

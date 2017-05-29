@@ -13,11 +13,15 @@ import java.io.File;
 
 
 /**
- *
  * Created by PD on 15.04.2017.
  */
 public class XmlBuilder {
 
+    /**
+     * Main.
+     *
+     * @param argv the argv
+     */
     public static void main(String argv[]) {
         build();
 //        SettingsProvider settingsProvider = new SettingsProvider();
