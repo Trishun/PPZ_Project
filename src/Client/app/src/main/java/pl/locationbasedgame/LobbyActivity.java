@@ -14,8 +14,6 @@ import org.json.JSONArray;
 import java.util.concurrent.Callable;
 
 import butterknife.OnClick;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -27,10 +25,11 @@ import static butterknife.ButterKnife.findById;
 
 public class LobbyActivity extends Activity {
 
+    public static final int ESCAPER = 0;
+    public static final int CHASER = 1;
     private String TAG = "LOBBY";
     private CommunicationService service;
     private boolean isServiceBound = false;
-
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -146,7 +145,16 @@ public class LobbyActivity extends Activity {
                     @Override
                     public void onSuccess(String s) {
                         Log.i(TAG, s);
-                        listenForMessage();
+
+//                        if (teams assigned) {
+                        Intent startGame = new Intent(LobbyActivity.this, GameActivity.class);
+                        startGame.putExtra("TEAM", ESCAPER);
+                        finish();
+                        startActivity(startGame);
+//                        }
+//                        else {
+//                            listenForMessage();
+//                        }
                     }
 
                     @Override
