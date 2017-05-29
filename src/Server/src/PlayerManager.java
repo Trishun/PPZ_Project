@@ -46,7 +46,8 @@ class PlayerManager {
             Debug.Log("Exception 1 in PlayerManager/disconnectPlayer: " + ee);
         }
         try {
-            lobbyManager.removeFromLobby(playerToDisconnect);
+            if (playerToDisconnect.getLobby() != null)
+                lobbyManager.removeFromLobby(playerToDisconnect);
         } catch (ConcurrentModificationException ee) {
             Debug.Log("Exception 2 in PlayerManager/disconnectPlayer: " + ee);
         }
