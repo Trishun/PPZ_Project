@@ -140,6 +140,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (isCommunicatorBound) {
+            service.sendEndConnectionSignal();
             service.closeConnection();
             unbindService(serviceConnection);
         }

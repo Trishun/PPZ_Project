@@ -37,8 +37,7 @@ class SocketHandler {
         if (socket != null) {
             try {
                 send(data);
-                String response = receive();
-                return response;
+                return receive();
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.i(TAG, "EXCHANGING DATA FAILURE");
@@ -47,7 +46,7 @@ class SocketHandler {
         return null;
     }
 
-    private void send(String data) throws IOException {
+    void send(String data) throws IOException {
         Log.i("REQUEST", data);
         PrintWriter writer = new PrintWriter(socket.getOutputStream());
         writer.println(data);
