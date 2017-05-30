@@ -20,7 +20,7 @@
     <string name="e_mail">E-mail</string>
     <string name="registration_success">Registration success!</string>
     <string name="fill_form">Fill out all fields!</string>
-    <string name="registration_error">An error has occurred during the registration</string>
+    <string name="registration_error">An error during the registration has occurred</string>
     <string name="password_repeat">Repeat password</string>
     <string name="passwords_dont_match">The provided passwords are not the same!</string>
     <string name="create_lobby">Create new lobby</string>
