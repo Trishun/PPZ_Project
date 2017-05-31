@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Hare and Hounds Online</string>
     <string name="start_new_game">Start new game</string>
+    <string name="lobby_screen">Game Lobby</string>
     <string name="settings">Settings</string>
     <string name="logout">Logout</string>
     <string name="email">E-mail</string>
@@ -18,8 +19,20 @@
     <string name="registrering_success">Registration success!</string>
     <string name="e_mail">E-mail</string>
     <string name="registration_success">Registration success!</string>
-    <string name="fill_form">Fill all fields!</string>
-    <string name="registration_error">An error has occurred</string>
+    <string name="fill_form">Fill out all fields!</string>
+    <string name="registration_error">An error during the registration has occurred</string>
     <string name="password_repeat">Repeat password</string>
-    <string name="passwords_dont_match">Provided passwords are not same!</string>
+    <string name="passwords_dont_match">The provided passwords are not the same!</string>
+    <string name="create_lobby">Create new lobby</string>
+    <string name="join_existing_game">Join existing lobby</string>
+    <string name="creating_new_game">Creating new game...</string>
+    <string name="joining_existing_game">Joining lobby...</string>
+    <string name="prefs_vibrations_only">prefs_vibrations_only</string>
+    <string name="prefs_only_wifi">prefs_only_wifi</string>
+    <string name="prefs_title_use_wifi_only">Use WiFi only</string>
+    <string name="prefs_header_network">Network connection</string>
+    <string name="prefs_header_ux">App usage</string>
+    <string name="prefs_title_use_vibration_only">Use vibration only</string>
+    <string name="prefs_summary_vibration_only_on">The device will only vibrate</string>
+    <string name="prefs_summary_vibration_only_off">The device will use notification sounds</string>
 </resources>

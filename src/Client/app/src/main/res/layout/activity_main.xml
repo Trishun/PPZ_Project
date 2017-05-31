@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor">
     <TextView
         android:id="@+id/tv_main_title_bar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true"
         android:textSize="@dimen/text_size_big"
-        android:text="@string/app_name"/>
+        android:text="@string/app_name"
+        style="@style/StandardTextView"
+    />
     <View
         android:id="@+id/view_empty_pivot"
         android:layout_width="0dp"
@@ -26,7 +30,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/start_new_game"/>
+            android:textSize="@dimen/text_size_medium"
+            android:text="@string/start_new_game"
+            style="@style/StandardTextView"/>
     </RelativeLayout>
 
     <!--Settings-->
@@ -40,7 +46,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/settings"/>
+            android:textSize="@dimen/text_size_medium"
+            android:text="@string/settings"
+            style="@style/StandardTextView"/>
     </RelativeLayout>
 
     <!--Logout-->
@@ -54,7 +62,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/logout"/>
+            android:textSize="@dimen/text_size_medium"
+            android:text="@string/logout"
+            style="@style/StandardTextView"/>
     </RelativeLayout>
 
 </RelativeLayout>
