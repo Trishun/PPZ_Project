@@ -26,10 +26,17 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/tv_main_title_bar"
         android:layout_above="@id/view_empty_pivot">
+        <ImageView
+            android:id="@+id/iv_game_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_game"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_below="@id/iv_game_icon"
             android:textSize="@dimen/text_size_medium"
             android:text="@string/start_new_game"
             style="@style/StandardTextView"/>
@@ -42,10 +49,17 @@
         android:layout_height="match_parent"
         android:layout_below="@id/view_empty_pivot"
         android:layout_toStartOf="@id/view_empty_pivot">
+        <ImageView
+            android:id="@+id/iv_settings_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_settings"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_below="@id/iv_settings_icon"
             android:textSize="@dimen/text_size_medium"
             android:text="@string/settings"
             style="@style/StandardTextView"/>
@@ -58,10 +72,17 @@
         android:layout_height="match_parent"
         android:layout_below="@id/view_empty_pivot"
         android:layout_toEndOf="@id/view_empty_pivot">
+        <ImageView
+            android:id="@+id/iv_exit_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_exit"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_below="@id/iv_exit_icon"
             android:textSize="@dimen/text_size_medium"
             android:text="@string/logout"
             style="@style/StandardTextView"/>
