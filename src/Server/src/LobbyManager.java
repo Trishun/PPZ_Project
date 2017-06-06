@@ -1,3 +1,5 @@
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 
 /**
@@ -30,6 +32,9 @@ class LobbyManager {
      * @return the boolean
      */
     boolean addToLobby(int enterCode, Player player) {
+        if (player.getLobby() != null) {
+            removeFromLobby(player);
+        }
         for (Lobby lobby : lobbyList) {
             if (enterCode == lobby.getEnterCode()) {
                 addToLobby(lobby, player);
@@ -84,7 +89,8 @@ class LobbyManager {
      * @param id the id
      * @return the lobby by id
      */
-    Lobby getLobbyById(int id) {
+    @Nullable
+    private Lobby getLobbyById(int id) {
         for (Lobby lobby : lobbyList) {
             if (lobby.getId() == id) {
                 return lobby;
