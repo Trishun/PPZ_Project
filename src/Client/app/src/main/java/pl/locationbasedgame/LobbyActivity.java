@@ -1,6 +1,7 @@
 package pl.locationbasedgame;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -8,17 +9,17 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.EditText;
-
-import org.json.JSONArray;
-
-import java.util.concurrent.Callable;
-
 import butterknife.OnClick;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.Callable;
 
 import static butterknife.ButterKnife.bind;
 import static butterknife.ButterKnife.findById;
@@ -27,6 +28,10 @@ public class LobbyActivity extends Activity {
 
     public static final int ESCAPER = 0;
     public static final int CHASER = 1;
+    private final Fragment lobbyRoot = new LobbyRootFragment();
+    private int lobbyEnterCode;
+    private Integer assignedTeam;
+    private boolean gameStarted;
     private String TAG = "LOBBY";
     private CommunicationService service;
     private boolean isServiceBound = false;
@@ -74,8 +79,10 @@ public class LobbyActivity extends Activity {
 
                     @Override
                     public void onSuccess(Integer integer) {
+                          lobbyEnterCode = integer;
                           Log.i(TAG, "OK: " + integer.toString());
                           listenForMessage();
+                          loadLobbyRootFragment();
                     }
 
                     @Override
@@ -126,6 +133,15 @@ public class LobbyActivity extends Activity {
                 });
     }
 
+    private void loadLobbyRootFragment() {
+
+        Bundle bundle = new Bundle();
+        bundle.putString("enter_code", String.valueOf(lobbyEnterCode));
+        lobbyRoot.setArguments(bundle);
+        setContentView(R.layout.activity_lobby_join);
+        getFragmentManager().beginTransaction().add(R.id.lobby_list_container, lobbyRoot).commit();
+    }
+
     void listenForMessage() {
         final Single<String> getMessage = Single.fromCallable(new Callable<String>() {
             @Override
@@ -145,16 +161,30 @@ public class LobbyActivity extends Activity {
                     @Override
                     public void onSuccess(String s) {
                         Log.i(TAG, s);
+                        try {
+                            JSONObject jsonObject = new JSONObject(s);
+                            if (jsonObject.has("initiator")) {
+                                String initiator = jsonObject.getString("initiator");
+                                LobbyRootFragment fragment = (LobbyRootFragment) getFragmentManager().findFragmentById(lobbyRoot.getId());
+//                                Log.i(TAG, String.valueOf(fragment));
+                                fragment.setAdapter(jsonObject);
+//                                Log.i(TAG, initiator);
+                            }
 
-//                        if (teams assigned) {
-                        Intent startGame = new Intent(LobbyActivity.this, GameActivity.class);
-                        startGame.putExtra("TEAM", ESCAPER);
-                        finish();
-                        startActivity(startGame);
-//                        }
-//                        else {
-//                            listenForMessage();
-//                        }
+                        } catch (JSONException e) {
+                            Log.i(TAG, "Zjebało się");
+                            Log.i(TAG, String.valueOf(e));
+                        }
+
+                        if (gameStarted) {
+                            Intent startGame = new Intent(LobbyActivity.this, GameActivity.class);
+                            startGame.putExtra("TEAM", assignedTeam);
+                            finish();
+                            startActivity(startGame);
+                        }
+                        else {
+                            listenForMessage();
+                        }
                     }
 
                     @Override
@@ -163,6 +193,10 @@ public class LobbyActivity extends Activity {
                         e.printStackTrace();
                     }
                 });
+    }
+
+    CommunicationService getService() {
+        return service;
     }
 
     @Override

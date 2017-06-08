@@ -64,14 +64,37 @@ public class CommunicationService extends Service {
         return socketHandler.listen();
     }
 
-    void sendEndConnectionSignal() {
-        // // TODO: 30-May-17 refactor
+    void sendSimpleMessage(final String headerValue) {
+        Thread messageThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject object = new JSONObject();
+                    object.put("header", headerValue);
+                    socketHandler.send(object.toString());
+
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        messageThread.start();
+        try {
+            messageThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void sendComplexMessage(final String headerValue, final String param1name, final String param1value) {
+        // TODO: extend params
         Thread signalThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     JSONObject object = new JSONObject();
-                    object.put("header", "endcon");
+                    object.put("header", headerValue);
+                    object.put(param1name, param1value);
                     socketHandler.send(object.toString());
 
                 } catch (IOException | JSONException e) {
