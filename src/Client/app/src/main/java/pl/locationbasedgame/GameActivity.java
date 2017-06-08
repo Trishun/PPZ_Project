@@ -2,11 +2,8 @@ package pl.locationbasedgame;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 import static pl.locationbasedgame.LobbyActivity.CHASER;
-import static pl.locationbasedgame.LobbyActivity.ESCAPER;
 
 public class GameActivity extends Activity {
 
@@ -17,15 +14,19 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_game);
+        loadLobbyRootFragment();
+//        int team = getIntent().getIntExtra("TEAM", 2);
+//
+//        if (team == CHASER || team == ESCAPER) {
+//            loadFragment(team);
+//        } else {
+//            Toast.makeText(this, "OOPS!", Toast.LENGTH_SHORT).show();
+//            Log.i(TAG, "You should have never seen that!");
+//        }
+    }
 
-        int team = getIntent().getIntExtra("TEAM", 2);
-
-        if (team == CHASER || team == ESCAPER) {
-            loadFragment(team);
-        } else {
-            Toast.makeText(this, "OOPS!", Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "You should never see that!");
-        }
+    private void loadLobbyRootFragment() {
+        getFragmentManager().beginTransaction().add(R.id.fl_game_module_container, new LobbyRootFragment()).commit();
     }
 
     private void loadFragment(int team) {

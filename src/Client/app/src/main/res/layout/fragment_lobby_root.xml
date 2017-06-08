@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="pl.locationbasedgame.LobbyActivity">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="75dp"
+            android:layout_marginTop="21dp"
+            android:id="@+id/lobbyId"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"/>
+
+    <ListView
+            android:id="@+id/lv_player_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/lobbyId"/>
+
+    <Button
+            android:text="btn_join_escape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_join_escape"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="37dp"
+            android:layout_marginBottom="16dp"/>
+
+    <Button
+            android:text="btn_join_pursuit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_join_pursuit"
+            android:layout_alignBaseline="@+id/btn_join_escape"
+            android:layout_alignBottom="@+id/btn_join_escape"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="37dp"/>
+</RelativeLayout>
