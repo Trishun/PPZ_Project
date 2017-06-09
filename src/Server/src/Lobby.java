@@ -3,9 +3,9 @@ import java.util.HashMap;
 
 /**
  * Lobby class
+ *
  * @author PD
  */
-
 class Lobby {
     private int id;
     private Player initiator;
@@ -14,6 +14,12 @@ class Lobby {
     private TeamManager teamManager = new TeamManager();
     private GameManager gameManager = new GameManager(teamManager);
 
+    /**
+     * Instantiates a new Lobby.
+     *
+     * @param id        the id
+     * @param initiator the initiator
+     */
     Lobby(int id, Player initiator) {
         this.id = id;
         this.initiator = initiator;
@@ -25,32 +31,60 @@ class Lobby {
         return initiator.hashCode() / 10000;
     }
 
+    /**
+     * Gets enter code.
+     *
+     * @return the enter code
+     */
     int getEnterCode() {
         return enterCode;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     int getId() {
         return id;
     }
 
+    /**
+     * Add to lobby.
+     *
+     * @param newPlayer the new player
+     */
     void addToLobby(Player newPlayer) {
         players.add(newPlayer);
         broadcastLobbyStructure();
     }
 
+    /**
+     * Remove from lobby boolean.
+     *
+     * @param player the player
+     * @return the boolean
+     */
     Boolean removeFromLobby(Player player) {
         if (players.contains(player)) {
             players.remove(player);
-            broadcastLobbyStructure();
             return true;
         }
         return false;
     }
 
+    /**
+     * Gets initiator.
+     *
+     * @return the initiator
+     */
     Player getInitiator() {
         return initiator;
     }
 
+    /**
+     * Close.
+     */
     void close() {
         Thread.currentThread().interrupt();
     }
@@ -79,10 +113,13 @@ class Lobby {
 
         HashMap<String, Object> message = new HashMap<>();
         message.put("llist", output);
-        message.put("initiator", initiator.getName());
+        message.put("initiator", initiator.getPlayerName());
         return message;
     }
 
+    /**
+     * Broadcast lobby structure.
+     */
     void broadcastLobbyStructure() {
         HashMap<String, Object> lobbyStructure = setLobbyStructure();
         for (Player player : players) {
@@ -90,18 +127,36 @@ class Lobby {
         }
     }
 
+    /**
+     * Gets player count.
+     *
+     * @return the player count
+     */
     Integer getPlayerCount() {
         return players.size();
     }
 
+    /**
+     * Gets team manager.
+     *
+     * @return the team manager
+     */
     TeamManager getTeamManager() {
         return teamManager;
     }
 
+    /**
+     * Gets game manager.
+     *
+     * @return the game manager
+     */
     GameManager getGameManager() {
         return gameManager;
     }
 
+    /**
+     * Begin game.
+     */
     void beginGame() {
         if (teamManager.teamsReady(getPlayers()))
             gameManager.begin();

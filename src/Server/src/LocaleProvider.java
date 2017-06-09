@@ -14,6 +14,11 @@ class LocaleProvider {
     private String locale;
     private Map<String, String> data = new HashMap<>();
 
+    /**
+     * Instantiates a new Locale provider.
+     *
+     * @param settingsProvider the settings provider
+     */
     LocaleProvider(SettingsProvider settingsProvider) {
 //        TODO
 //        locale = settingsProvider.get("defaultLocale");
@@ -21,10 +26,21 @@ class LocaleProvider {
         createDictionary();
     }
 
+    /**
+     * Sets locale.
+     *
+     * @param locale the locale
+     */
     void setLocale(String locale) {
         this.locale = locale;
     }
 
+    /**
+     * Get string.
+     *
+     * @param key the key
+     * @return the string
+     */
     String get(String key) {
         return data.get(key);
     }

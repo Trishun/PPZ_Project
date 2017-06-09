@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 
+
 /**
- * Game management class
- * Created by PD on 25.04.2017.
+ * The type Game manager.
  */
 class GameManager {
 
@@ -21,11 +21,19 @@ class GameManager {
     private int lastCheckpoint = -1;
 
 
+    /**
+     * Instantiates a new Game manager.
+     *
+     * @param teamManager the team manager
+     */
     GameManager(TeamManager teamManager) {
         this.teamManager = teamManager;
         checkpoints = new ArrayList<>();
     }
 
+    /**
+     * Begin.
+     */
     void begin() {
         teamManager.broadcastSimpleToAll("gbegin", "true");
         gameStarted = Instant.now();
@@ -37,20 +45,24 @@ class GameManager {
         teamManager.broadcastSimpleToAll("gend", "true");
     }
 
+    /**
+     * Add checkpoint.
+     *
+     * @param location    the location
+     * @param description the description
+     */
     void addCheckpoint(double[] location, String description) {
         checkpoints.add(new Checkpoint(location, description));
         if (lastCheckpoint == -1) {
             currentCheckpoint++;
-            HashMap<String, Object> response = new HashMap<>();
-            double[] coords = getCoords();
-            response.put("coords", true);
-            response.put("locx", coords[0]);
-            response.put("locy", coords[1]);
-            teamManager.broadcastToTeam(1, new JSONObject(response));
+            sendCheckpointCoords();
         }
         lastCheckpoint++;
     }
 
+    /**
+     * Visit checkpoint.
+     */
     void visitCheckpoint() {
         Checkpoint current = checkpoints.get(currentCheckpoint);
         HashMap<String, Object> message = new HashMap<>();
@@ -64,6 +76,11 @@ class GameManager {
         }
     }
 
+    /**
+     * Resolve task.
+     *
+     * @param answer the answer
+     */
     void resolveTask(String answer) {
         Checkpoint current = checkpoints.get(currentCheckpoint);
         current.getTask().setAnswer(answer);
@@ -72,10 +89,32 @@ class GameManager {
         currentCheckpoint++;
     }
 
+    /**
+     * Get coords double [ ].
+     *
+     * @return the double [ ]
+     */
     double[] getCoords() {
         return checkpoints.get(currentCheckpoint).getLocation();
     }
 
+    /**
+     * Send checkpoint coords.
+     */
+    void sendCheckpointCoords() {
+        HashMap<String, Object> response = new HashMap<>();
+        double[] coords = getCoords();
+        response.put("coords", true);
+        response.put("locx", coords[0]);
+        response.put("locy", coords[1]);
+        teamManager.broadcastToTeam(1, new JSONObject(response));
+    }
+
+    /**
+     * Gets tasks.
+     *
+     * @return the tasks
+     */
     JSONObject getTasks() {
         HashMap<String, Object> message = new HashMap<>();
         ArrayList<JSONObject> messageContent = new ArrayList<>();
@@ -93,11 +132,23 @@ class GameManager {
         return (new JSONObject(message));
     }
 
+    /**
+     * Verify task.
+     *
+     * @param checkpoint the checkpoint
+     * @param value      the value
+     */
     void verifyTask(int checkpoint, Boolean value) {
         checkpoints.get(checkpoint).setChecked(true);
         checkpoints.get(checkpoint).setCorrect(value);
     }
 
+    /**
+     * Force end.
+     *
+     * @param team   the team
+     * @param reason the reason
+     */
     void forceEnd(int team, String reason) {
         end();
         HashMap<String, Object> message = new HashMap<>();
@@ -105,7 +156,7 @@ class GameManager {
         teamManager.broadcastToTeam(team, new JSONObject(message));
     }
 
-    void countPoints() {
+    private void countPoints() {
         int points = 0;
         for (Checkpoint checkpoint : checkpoints) {
             if (checkpoint.isVisited()) {

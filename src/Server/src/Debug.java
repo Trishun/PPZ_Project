@@ -10,6 +10,11 @@ class Debug {
 
     private Debug(){}
 
+    /**
+     * Log.
+     *
+     * @param message the message
+     */
     static void Log(String message){
         try {
             PrintWriter file1 = new PrintWriter(new BufferedWriter(new FileWriter("log.txt", true)));
@@ -20,6 +25,9 @@ class Debug {
         }
     }
 
+    /**
+     * Init log.
+     */
     static void initLog() {
         try {
             boolean file = new File("log.txt").isFile();

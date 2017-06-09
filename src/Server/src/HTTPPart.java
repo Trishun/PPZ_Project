@@ -5,11 +5,21 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+/**
+ * The type Http client manager.
+ */
 class HTTPClientManager extends Thread {
     private Socket socket;
     private String url;
     private ArrayList<String> connections;
 
+    /**
+     * Instantiates a new Http client manager.
+     *
+     * @param clientSocket the client socket
+     * @param url          the url
+     * @param connections  the connections
+     */
     HTTPClientManager(Socket clientSocket, String url, ArrayList<String> connections) {
         this.socket = clientSocket;
         this.url = url;
@@ -100,14 +110,25 @@ class HTTPClientManager extends Thread {
     }
 }
 
+/**
+ * The type Http part.
+ */
 class HTTPPart {
 
     private SettingsProvider settingsProvider;
 
+    /**
+     * Instantiates a new Http part.
+     *
+     * @param settingsProvider the settings provider
+     */
     HTTPPart(SettingsProvider settingsProvider) {
         this.settingsProvider = settingsProvider;
     }
 
+    /**
+     * Run.
+     */
     void Run() {
         new Thread(() -> incoming()).start();
     }

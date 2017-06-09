@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Team manager Class
+ *
  * @author PD
  */
 class TeamManager {
@@ -92,19 +93,43 @@ class TeamManager {
         return true;
     }
 
+    /**
+     * Broadcast to team.
+     *
+     * @param team    the team
+     * @param message the message
+     */
     void broadcastToTeam(int team, JSONObject message) {
         getTeam(team).sendMessageToPlayers(message);
     }
 
+    /**
+     * Broadcast simple to team.
+     *
+     * @param team    the team
+     * @param header  the header
+     * @param content the content
+     */
     void broadcastSimpleToTeam(int team, String header, String content) {
         getTeam(team).sendSimpleMessageToPlayers(header, content);
     }
 
+    /**
+     * Broadcast to all.
+     *
+     * @param message the message
+     */
     void broadcastToAll(JSONObject message) {
         broadcastToTeam(0, message);
         broadcastToTeam(1, message);
     }
 
+    /**
+     * Broadcast simple to all.
+     *
+     * @param header  the header
+     * @param content the content
+     */
     void broadcastSimpleToAll(String header, String content) {
         broadcastSimpleToTeam(0, header, content);
         broadcastSimpleToTeam(1, header, content);
