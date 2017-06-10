@@ -32,6 +32,7 @@ class TeamManager {
      */
     void addPlayerToTeam(Player player, int team) {
         if (checkPossibility(team)) {
+            getTeam(1 - team).removePlayer(player);
             addPlayerToTeam(player, getTeam(team));
         }
     }
