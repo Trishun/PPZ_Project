@@ -25,6 +25,9 @@
     <string name="passwords_dont_match">The provided passwords are not the same!</string>
     <string name="create_lobby">Create new lobby</string>
     <string name="join_existing_game">Join existing lobby</string>
+    <string name="join_pursuit_team">Join pursuit team</string>
+    <string name="join_escape_team">Join escape team</string>
+    <string name="ready_start_game">Ready</string>
     <string name="creating_new_game">Creating new game...</string>
     <string name="joining_existing_game">Joining lobby...</string>
     <string name="prefs_vibrations_only">prefs_vibrations_only</string>

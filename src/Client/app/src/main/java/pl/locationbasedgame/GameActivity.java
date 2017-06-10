@@ -17,14 +17,13 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_game);
-
         int team = getIntent().getIntExtra("TEAM", 2);
 
         if (team == CHASER || team == ESCAPER) {
             loadFragment(team);
         } else {
             Toast.makeText(this, "OOPS!", Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "You should never see that!");
+            Log.i(TAG, "You should have never seen that!");
         }
     }
 

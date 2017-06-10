@@ -1,0 +1,68 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="pl.locationbasedgame.LobbyActivity"
+    android:background="@color/backgroundColor">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <TextView
+            android:id="@+id/lobbyId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_big"
+            style="@style/StandardTextView"
+    />
+
+    <Button
+            android:id="@+id/btn_join_pursuit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="37dp"
+            android:layout_alignBaseline="@+id/btn_join_escape" android:layout_alignBottom="@+id/btn_join_escape"
+            android:layout_alignParentRight="true" android:layout_marginRight="15dp"
+            android:text="@string/join_pursuit_team"
+            android:textAlignment="center" android:textAllCaps="false"
+            android:textColor="#000" android:textSize="@dimen/text_size_tiny"
+            android:background="@drawable/roundedbutton"
+            style="@style/RoundedButton"
+    />
+
+    <Button
+            android:id="@+id/btn_join_escape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lv_player_list" android:layout_alignParentLeft="true"
+            android:layout_marginTop="13dp"
+            android:layout_marginLeft="11dp"
+            android:layout_marginStart="37dp"
+            android:text="@string/join_escape_team"
+            android:textAlignment="center" android:textAllCaps="false"
+            android:textColor="#000" android:textSize="@dimen/text_size_tiny"
+            android:background="@drawable/roundedbutton"
+            style="@style/RoundedButton"
+    />
+
+    <Button
+            android:id="@+id/btn_ready_game_begin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" android:layout_centerHorizontal="true"
+            android:layout_marginEnd="37dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="100dp" android:layout_marginRight="100dp"
+            android:text="@string/ready_start_game"
+            android:textAlignment="center" android:textAllCaps="false"
+            android:textColor="#000" android:textSize="@dimen/text_size_medium"
+            android:background="@drawable/roundedbutton"
+            style="@style/RoundedButton"
+    />
+    <ListView
+            android:id="@+id/lv_player_list"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:layout_below="@+id/lobbyId" android:layout_alignParentLeft="true"/>
+
+</RelativeLayout>
