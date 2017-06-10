@@ -31,7 +31,6 @@ public class LobbyActivity extends Activity {
     private final Fragment lobbyRoot = new LobbyRootFragment();
     private int lobbyEnterCode;
     private Integer assignedTeam;
-    private boolean gameStarted;
     private String TAG = "LOBBY";
     private CommunicationService service;
     private boolean isServiceBound = false;
@@ -181,16 +180,8 @@ public class LobbyActivity extends Activity {
                             Log.i(TAG, "Zjebało się");
                             Log.i(TAG, String.valueOf(e));
                         }
+                        listenForMessage();
 
-                        if (gameStarted) {
-//                            Intent startGame = new Intent(LobbyActivity.this, GameActivity.class);
-//                            startGame.putExtra("TEAM", assignedTeam);
-//                            finish();
-//                            startActivity(startGame);
-                        }
-                        else {
-                            listenForMessage();
-                        }
                     }
 
                     @Override

@@ -31,17 +31,18 @@ public class LobbyRootFragment extends Fragment {
     private View rootView;
     private Integer team;
 
-    public LobbyRootFragment() {
-        // Required empty public constructor
-    }
-
+    public LobbyRootFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_lobby_root, container, false);
-        setLobbyEnter(getArguments().getString("enter_code"), rootView);
+        try {
+            setLobbyEnter(getArguments().getString("enter_code"), rootView);
+        } catch (NullPointerException e) {
+            Log.i(TAG, String.valueOf(e));
+        }
         unbinder = ButterKnife.bind(this, rootView);
 
         return rootView;
@@ -69,7 +70,6 @@ public class LobbyRootFragment extends Fragment {
             JSONArray teamEscape = lobbyStructure.getJSONArray(0);
             JSONArray teamPursuit = lobbyStructure.getJSONArray(1);
             JSONArray uncategorized = lobbyStructure.getJSONArray(2);
-//            Log.i(TAG, uncategorized.get(0).toString());
 
             for (int i = 0; i < teamEscape.length(); i++){
                 playerList.add(new ListViewPlayerItem(teamEscape.get(i).toString(), "Team escape"));
@@ -82,8 +82,6 @@ public class LobbyRootFragment extends Fragment {
             for (int i = 0; i < uncategorized.length(); i++){
                 playerList.add(new ListViewPlayerItem(uncategorized.get(i).toString(), "Uncategorized"));
             }
-
-//            playerList.add(new ListViewPlayerItem(uncategorized.get(0).toString(), "2"));
 
         } catch (JSONException e) {
             Log.i(TAG, String.valueOf(e));
