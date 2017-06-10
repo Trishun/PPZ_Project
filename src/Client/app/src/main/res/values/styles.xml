@@ -24,4 +24,15 @@
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:gravity">center_horizontal</item>
     </style>
+
+    <style name="PlayerNameListViewItem">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+    </style>
+
+    <style name="PlayerTeamListViewItem">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">@dimen/text_size_tiny</item>
+    </style>
+
 </resources>
