@@ -133,7 +133,6 @@ public class LobbyActivity extends Activity {
     }
 
     private void loadLobbyRootFragment() {
-
         Bundle bundle = new Bundle();
         bundle.putString("enter_code", String.valueOf(lobbyEnterCode));
         lobbyRoot.setArguments(bundle);
@@ -166,6 +165,7 @@ public class LobbyActivity extends Activity {
                                 String initiator = jsonObject.getString("initiator");
                                 LobbyRootFragment fragment = (LobbyRootFragment) getFragmentManager().findFragmentById(lobbyRoot.getId());
                                 fragment.setAdapter(jsonObject);
+                                fragment.setMyName(PreferencesHelper.getStringFromPrefs(getBaseContext(), "name"));
                                 assignedTeam = fragment.getTeam();
                             }
 

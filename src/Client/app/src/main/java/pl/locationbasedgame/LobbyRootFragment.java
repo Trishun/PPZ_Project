@@ -30,6 +30,7 @@ public class LobbyRootFragment extends Fragment {
     private Unbinder unbinder;
     private View rootView;
     private Integer team;
+    private String myName;
 
     public LobbyRootFragment() {}
 
@@ -57,10 +58,18 @@ public class LobbyRootFragment extends Fragment {
     private void setLobbyEnter(String text, View view) {
         TextView textView = (TextView) view.findViewById(R.id.lobbyId);
         textView.setText(text);
-    }
+}
 
     Integer getTeam() {
         return team;
+    }
+
+    void setTeam (int team) {
+        this.team = team;
+    }
+
+    void setMyName(String myName) {
+        this.myName = myName;
     }
 
     private ArrayList<ListViewPlayerItem> processPlayersList(JSONObject message){
@@ -70,13 +79,20 @@ public class LobbyRootFragment extends Fragment {
             JSONArray teamEscape = lobbyStructure.getJSONArray(0);
             JSONArray teamPursuit = lobbyStructure.getJSONArray(1);
             JSONArray uncategorized = lobbyStructure.getJSONArray(2);
+            String playerName;
 
             for (int i = 0; i < teamEscape.length(); i++){
-                playerList.add(new ListViewPlayerItem(teamEscape.get(i).toString(), "Team escape"));
+                playerName = teamEscape.get(i).toString();
+                playerList.add(new ListViewPlayerItem(playerName, "Team escape"));
+                if (playerName.equalsIgnoreCase(myName))
+                    team = 0;
             }
 
             for (int i = 0; i < teamPursuit.length(); i++){
-                playerList.add(new ListViewPlayerItem(teamPursuit.get(i).toString(), "Team pursuit"));
+                playerName = teamPursuit.get(i).toString();
+                playerList.add(new ListViewPlayerItem(playerName, "Team pursuit"));
+                if (playerName.equalsIgnoreCase(myName))
+                    team = 1;
             }
 
             for (int i = 0; i < uncategorized.length(); i++){
