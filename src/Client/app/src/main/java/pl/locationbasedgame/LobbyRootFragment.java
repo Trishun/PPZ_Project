@@ -28,7 +28,8 @@ public class LobbyRootFragment extends Fragment {
 
     private String TAG = "LOBBY_ROOT";
     private Unbinder unbinder;
-    View rootView;
+    private View rootView;
+    private Integer team;
 
     public LobbyRootFragment() {
         // Required empty public constructor
@@ -55,6 +56,10 @@ public class LobbyRootFragment extends Fragment {
     private void setLobbyEnter(String text, View view) {
         TextView textView = (TextView) view.findViewById(R.id.lobbyId);
         textView.setText(text);
+    }
+
+    Integer getTeam() {
+        return team;
     }
 
     private ArrayList<ListViewPlayerItem> processPlayersList(JSONObject message){
@@ -90,13 +95,17 @@ public class LobbyRootFragment extends Fragment {
     @OnClick(R.id.btn_join_escape)
     void joinEscape() {
         ((LobbyActivity) getActivity()).getService().sendComplexMessage("tjoin" ,"team", "0");
-        Log.i(TAG, "SENT");
+        team = 0;
     }
 
     @OnClick(R.id.btn_join_pursuit)
     void joinPursuit() {
         ((LobbyActivity) getActivity()).getService().sendComplexMessage("tjoin" ,"team", "1");
-        Log.i(TAG, "SENT");
+        team = 1;
+    }
+    @OnClick(R.id.btn_ready_game_begin)
+    void beginGame() {
+        ((LobbyActivity) getActivity()).getService().sendSimpleMessage("gbegin");
     }
 
     @Override

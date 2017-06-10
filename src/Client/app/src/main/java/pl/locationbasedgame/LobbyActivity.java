@@ -166,9 +166,15 @@ public class LobbyActivity extends Activity {
                             if (jsonObject.has("initiator")) {
                                 String initiator = jsonObject.getString("initiator");
                                 LobbyRootFragment fragment = (LobbyRootFragment) getFragmentManager().findFragmentById(lobbyRoot.getId());
-//                                Log.i(TAG, String.valueOf(fragment));
                                 fragment.setAdapter(jsonObject);
-//                                Log.i(TAG, initiator);
+                                assignedTeam = fragment.getTeam();
+                            }
+
+                            else if (jsonObject.has("gbegin")) {
+                                Intent startGame = new Intent(LobbyActivity.this, GameActivity.class);
+                                startGame.putExtra("TEAM", assignedTeam);
+                                finish();
+                                startActivity(startGame);
                             }
 
                         } catch (JSONException e) {
@@ -177,10 +183,10 @@ public class LobbyActivity extends Activity {
                         }
 
                         if (gameStarted) {
-                            Intent startGame = new Intent(LobbyActivity.this, GameActivity.class);
-                            startGame.putExtra("TEAM", assignedTeam);
-                            finish();
-                            startActivity(startGame);
+//                            Intent startGame = new Intent(LobbyActivity.this, GameActivity.class);
+//                            startGame.putExtra("TEAM", assignedTeam);
+//                            finish();
+//                            startActivity(startGame);
                         }
                         else {
                             listenForMessage();

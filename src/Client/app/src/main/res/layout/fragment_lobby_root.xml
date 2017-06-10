@@ -41,4 +41,12 @@
             android:layout_alignBottom="@+id/btn_join_escape"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="37dp"/>
+
+    <Button
+            android:text="btn_ready_game_begin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_ready_game_begin"
+            android:layout_alignParentTop="true"
+            android:layout_alignEnd="@+id/btn_join_pursuit"/>
 </RelativeLayout>
