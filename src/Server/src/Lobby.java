@@ -158,8 +158,10 @@ class Lobby {
      * Begin game.
      */
     void beginGame() {
-        if (teamManager.teamsReady(getPlayers()))
+        if (teamManager.teamsReady(getPlayers())) {
+            broadcastLobbyStructure();
             gameManager.begin();
+        }
     }
 
 }
