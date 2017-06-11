@@ -1,10 +1,13 @@
 package pl.locationbasedgame;
 
+import android.animation.TypeConverter;
 import android.app.Service;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Binder;
 import android.os.IBinder;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +57,31 @@ public class CommunicationService extends Service {
 
     int createNewLobby(LobbyManager manager) {
         return manager.createLobbyAndGetCode(socketHandler);
+    }
+
+    void sendPoint(final LatLng location, final String hint) {
+        Thread messageThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                JSONObject object = new JSONObject();
+                try {
+                    object.put("header", "ccreate");
+                    object.put("locx", location.longitude);
+                    object.put("locy", location.latitude);
+                    object.put("desc", hint);
+                    socketHandler.send(object.toString());
+                } catch (JSONException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        messageThread.start();
+        try {
+            messageThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     JSONArray joinExistingLobby(LobbyManager manager, int id) {

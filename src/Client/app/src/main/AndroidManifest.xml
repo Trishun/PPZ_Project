@@ -4,8 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!-- Needed only if app targets Android 5.0 (API level 21) or higher. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-feature android:name="android.hardware.location.gps" />
+
 
     <application
         android:allowBackup="true"
@@ -32,7 +34,11 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".GameActivity"></activity>
+        <activity android:name=".GameActivity"/>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDvM_ZVT9oQRcSdWF7Y-wXjQIU839tw0Yw"/>
     </application>
 
 </manifest>

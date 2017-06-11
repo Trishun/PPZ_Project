@@ -43,4 +43,8 @@
     <string name="prefs_title_use_vibration_only">Używaj tylko wibracji</string>
     <string name="prefs_summary_vibration_only_on">Urządzenie będzie tylko wibrować</string>
     <string name="prefs_summary_vibration_only_off">Aplikacja będzie powiadamiać za pomocą sygnału dźwiękowego</string>
+    <string name="leave_hint">Zostaw wskazówkę</string>
+    <string name="map_loading">Ładowanie mapy</string>
+    <string name="player_pinpointing">Lokalizowanie gracza</string>
+    <string name="ok">OK</string>
 </resources>
