@@ -22,6 +22,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Objects;
+
 import butterknife.OnClick;
 
 import static butterknife.ButterKnife.bind;
@@ -37,7 +39,6 @@ public class GameEscaperFragment extends Fragment {
     private LocationListener locationListener;
     private boolean isLocationInitialized = false;
     private GoogleMap map;
-    private MapView mapView;
     private ProgressDialog progressDialog;
 
     @Override
@@ -90,8 +91,8 @@ public class GameEscaperFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String hint = hintEditText.getText().toString();
-                if (hint != "") {
-                    //send to server and
+                if (!Objects.equals(hint, "")) {
+                    ((GameActivity) getActivity()).getService().sendPoint(currentLocation, hint);
                     stampHintOnMap(hint);
                 }
             }
@@ -137,7 +138,7 @@ public class GameEscaperFragment extends Fragment {
     }
 
     private void setMap() {
-        mapView = findById(getView(), R.id.map);
+        MapView mapView = findById(getView(), R.id.map);
         mapView.onCreate(null);
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
