@@ -78,20 +78,20 @@ public class LobbyRootFragment extends Fragment {
 
             for (int i = 0; i < teamEscape.length(); i++) {
                 playerName = teamEscape.get(i).toString();
-                playerList.add(new ListViewPlayerItem(playerName, "Team escape"));
+                playerList.add(new ListViewPlayerItem(playerName, getString(R.string.escape_team)));
                 if (playerName.equalsIgnoreCase(myName))
                     team = 0;
             }
 
             for (int i = 0; i < teamPursuit.length(); i++) {
                 playerName = teamPursuit.get(i).toString();
-                playerList.add(new ListViewPlayerItem(playerName, "Team pursuit"));
+                playerList.add(new ListViewPlayerItem(playerName, getString(R.string.pursuit_team)));
                 if (playerName.equalsIgnoreCase(myName))
                     team = 1;
             }
 
             for (int i = 0; i < uncategorized.length(); i++) {
-                playerList.add(new ListViewPlayerItem(uncategorized.get(i).toString(), "Uncategorized"));
+                playerList.add(new ListViewPlayerItem(uncategorized.get(i).toString(), getString(R.string.uncategorized)));
             }
 
         } catch (JSONException e) {

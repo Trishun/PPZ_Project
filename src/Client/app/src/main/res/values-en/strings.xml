@@ -28,6 +28,9 @@
     <string name="join_pursuit_team">Join pursuit team</string>
     <string name="join_escape_team">Join escape team</string>
     <string name="ready_start_game">Ready</string>
+    <string name="pursuit_team">Pursuit team</string>
+    <string name="escape_team">Escape team</string>
+    <string name="uncategorized">Uncategorized</string>
     <string name="creating_new_game">Creating new game...</string>
     <string name="joining_existing_game">Joining lobby...</string>
     <string name="prefs_vibrations_only">prefs_vibrations_only</string>
