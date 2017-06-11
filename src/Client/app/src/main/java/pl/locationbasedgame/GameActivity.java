@@ -163,7 +163,7 @@ public class GameActivity extends Activity {
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        service.sendComplexMessage("tjoin", "ans", input.getText().toString());
+                        service.sendComplexMessage("csans", "ans", input.getText().toString());
                         Toast toast = Toast.makeText(context, getText(R.string.sent), duration);
                         toast.show();
                     }
@@ -171,5 +171,9 @@ public class GameActivity extends Activity {
                 })
                 .setNegativeButton("Dismiss", null)
                 .show();
+    }
+
+    public CommunicationService getService() {
+        return service;
     }
 }

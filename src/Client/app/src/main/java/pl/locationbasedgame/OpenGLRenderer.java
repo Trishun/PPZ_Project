@@ -35,8 +35,8 @@ class OpenGLRenderer implements android.opengl.GLSurfaceView.Renderer, SensorEve
     private LocationListener locationListener;
     private Location location;
     private Location destination;
-    final String locationGpsProvider = LocationManager.GPS_PROVIDER;
-    final String locationNetworkProvider = LocationManager.NETWORK_PROVIDER;
+    private final String locationGpsProvider = LocationManager.GPS_PROVIDER;
+    private final String locationNetworkProvider = LocationManager.NETWORK_PROVIDER;
 
     private Pointer pointer = new Pointer();
     private Circle circle = new Circle();
@@ -142,10 +142,6 @@ class OpenGLRenderer implements android.opengl.GLSurfaceView.Renderer, SensorEve
                         * event.values[1];
                 mGravity[2] = alpha * mGravity[2] + (1 - alpha)
                         * event.values[2];
-
-                // mGravity = event.values;
-
-                // Log.e(TAG, Float.toString(mGravity[0]));
             }
 
             if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
@@ -157,8 +153,6 @@ class OpenGLRenderer implements android.opengl.GLSurfaceView.Renderer, SensorEve
                         * event.values[1];
                 mGeomagnetic[2] = alpha * mGeomagnetic[2] + (1 - alpha)
                         * event.values[2];
-                // Log.e(TAG, Float.toString(event.values[0]));
-
             }
 
             float R[] = new float[9];
@@ -168,7 +162,6 @@ class OpenGLRenderer implements android.opengl.GLSurfaceView.Renderer, SensorEve
             if (success) {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
-                // Log.d(TAG, "azimuth (rad): " + azimuth);
                 heading = (float) Math.toDegrees(orientation[0]); // orientation
                 heading = (heading + 360) % 360;
             }
@@ -197,12 +190,14 @@ class OpenGLRenderer implements android.opengl.GLSurfaceView.Renderer, SensorEve
     }
 
     private void locationInit() {
-        // Acquire a reference to the system Location Manager
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 setLocation(location);
+                if (countDistance(location, destination) < 10) {
+                    ((GameActivity) context).getService().sendSimpleMessage("cdesc");
+                }
             }
 
             @Override
@@ -237,7 +232,7 @@ class OpenGLRenderer implements android.opengl.GLSurfaceView.Renderer, SensorEve
     }
 
     void setDestination(double latitude, double longitude) {
-        destination = new Location(LocationManager.GPS_PROVIDER);
+        destination = new Location(locationGpsProvider);
         destination.setLongitude(longitude);
         destination.setLatitude(latitude);
     }
