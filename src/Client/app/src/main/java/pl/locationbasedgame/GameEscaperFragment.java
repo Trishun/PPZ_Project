@@ -1,8 +1,10 @@
 package pl.locationbasedgame;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -11,13 +13,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import butterknife.OnClick;
 
 import static butterknife.ButterKnife.bind;
 import static butterknife.ButterKnife.findById;
@@ -72,6 +77,32 @@ public class GameEscaperFragment extends Fragment {
     public void onPause() {
         locationManager.removeUpdates(locationListener);
         super.onPause();
+    }
+
+    @OnClick(R.id.btn_leave_hint)
+    void onLeaveHintButtonClick() {
+        final EditText hintEditText = new EditText(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle(R.string.leave_hint);
+        builder.setView(hintEditText);
+        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String hint = hintEditText.getText().toString();
+                if (hint != "") {
+                    //send to server and
+                    stampHintOnMap(hint);
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void stampHintOnMap(String hint) {
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                .title(hint));
     }
 
     private void setLocationListening(final View view) {

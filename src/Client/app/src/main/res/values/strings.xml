@@ -41,4 +41,5 @@
     <string name="leave_hint">Zostaw wskazówkę</string>
     <string name="map_loading">Ładowanie mapy</string>
     <string name="player_pinpointing">Lokalizowanie gracza</string>
+    <string name="ok">OK</string>
 </resources>
