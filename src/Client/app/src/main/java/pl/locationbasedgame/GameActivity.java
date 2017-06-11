@@ -4,13 +4,13 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.*;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
@@ -110,6 +110,9 @@ public class GameActivity extends Activity {
                             JSONObject jsonObject = new JSONObject(s);
                             if (jsonObject.has("coords")) {
                                 ((GameChaserFragment) fragment).setDestination(jsonObject.getDouble("locx"), jsonObject.getDouble("locy"));
+                            } else if (jsonObject.has("desc")) {
+                                String desc = jsonObject.getString("desc");
+                                showMessage(desc);
                             }
 
 
@@ -147,4 +150,26 @@ public class GameActivity extends Activity {
         return fragment;
     }
 
+    private void showMessage(String text) {
+        final Context context = getApplicationContext();
+        final EditText input = new EditText(GameActivity.this);
+        final int duration = Toast.LENGTH_SHORT;
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_map)
+                .setTitle("New Task!")
+                .setMessage(text)
+                .setView(input)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        service.sendComplexMessage("tjoin", "ans", input.getText().toString());
+                        Toast toast = Toast.makeText(context, "Sent!", duration);
+                        toast.show();
+                    }
+
+                })
+                .setNegativeButton("Dismiss", null)
+                .show();
+    }
 }

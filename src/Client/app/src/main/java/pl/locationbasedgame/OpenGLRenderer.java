@@ -176,9 +176,7 @@ class OpenGLRenderer implements android.opengl.GLSurfaceView.Renderer, SensorEve
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     private void compassInit() {
         sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
