@@ -156,7 +156,7 @@ public class GameActivity extends Activity {
         final int duration = Toast.LENGTH_SHORT;
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_map)
-                .setTitle("New Task!")
+                .setTitle(getText(R.string.new_task))
                 .setMessage(text)
                 .setView(input)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener()
@@ -164,7 +164,7 @@ public class GameActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         service.sendComplexMessage("tjoin", "ans", input.getText().toString());
-                        Toast toast = Toast.makeText(context, "Sent!", duration);
+                        Toast toast = Toast.makeText(context, getText(R.string.sent), duration);
                         toast.show();
                     }
 
