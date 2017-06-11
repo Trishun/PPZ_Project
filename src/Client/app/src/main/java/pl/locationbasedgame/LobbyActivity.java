@@ -28,7 +28,7 @@ public class LobbyActivity extends Activity {
 
     public static final int ESCAPER = 0;
     public static final int CHASER = 1;
-    private final Fragment lobbyRoot = new LobbyRootFragment();
+    private Fragment lobbyRoot = new LobbyRootFragment();
     private int lobbyEnterCode;
     private Integer assignedTeam;
     private String TAG = "LOBBY";
@@ -80,8 +80,9 @@ public class LobbyActivity extends Activity {
                     public void onSuccess(Integer integer) {
                           lobbyEnterCode = integer;
                           Log.i(TAG, "OK: " + integer.toString());
-                          listenForMessage();
                           loadLobbyRootFragment();
+                          listenForMessage();
+
                     }
 
                     @Override
@@ -163,7 +164,8 @@ public class LobbyActivity extends Activity {
                             JSONObject jsonObject = new JSONObject(s);
                             if (jsonObject.has("initiator")) {
                                 String initiator = jsonObject.getString("initiator");
-                                LobbyRootFragment fragment = (LobbyRootFragment) getFragmentManager().findFragmentById(lobbyRoot.getId());
+//                                LobbyRootFragment fragment = (LobbyRootFragment) getFragmentManager().findFragmentById(lobbyRoot.getId());
+                                LobbyRootFragment fragment = (LobbyRootFragment) lobbyRoot;
                                 fragment.setAdapter(jsonObject);
                                 fragment.setMyName(PreferencesHelper.getStringFromPrefs(getBaseContext(), "name"));
                                 assignedTeam = fragment.getTeam();

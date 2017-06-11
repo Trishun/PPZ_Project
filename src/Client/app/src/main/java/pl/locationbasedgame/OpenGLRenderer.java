@@ -6,7 +6,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -23,11 +22,21 @@ import static android.content.Context.SENSOR_SERVICE;
  * Created on 25.05.2017.
  */
 class OpenGLRenderer implements android.opengl.GLSurfaceView.Renderer, SensorEventListener {
+
     private SensorManager sensorManager;
-    private LocationManager locationManager;
+    private Sensor gsensor;
+    private Sensor msensor;
+    private float[] mGravity = new float[3];
+    private float[] mGeomagnetic = new float[3];
+
     private Context context;
+
+    private LocationManager locationManager;
+    private LocationListener locationListener;
     private Location location;
     private Location destination;
+    final String locationGpsProvider = LocationManager.GPS_PROVIDER;
+    final String locationNetworkProvider = LocationManager.NETWORK_PROVIDER;
 
     private Pointer pointer = new Pointer();
     private Circle circle = new Circle();
@@ -36,17 +45,12 @@ class OpenGLRenderer implements android.opengl.GLSurfaceView.Renderer, SensorEve
     private float angle = 0;
     private float heading = 0;
 
-    OpenGLRenderer() {
-    }
-
     OpenGLRenderer(Context context) {
         this.context = context;
-        locationBegin();
-        location = new Location(LocationManager.GPS_PROVIDER);
-//        destination = new Location(LocationManager.GPS_PROVIDER);
 
-        sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
+        compassInit();
+        locationInit();
+
         //TEMP
         setDestination(50.295321, 18.932156);
         //
@@ -126,92 +130,105 @@ class OpenGLRenderer implements android.opengl.GLSurfaceView.Renderer, SensorEve
         return (int) player.distanceTo(point);
     }
 
-    @Deprecated
-    private Integer countDistance(double playerLon, double playerLat, double pointLon, double pointLat) {
-        int R = 6371; // km
-        double dLat = Math.toRadians(pointLon - playerLon);
-        double dLon = Math.toRadians(pointLat - playerLat);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(playerLon)) * Math.cos(Math.toRadians(pointLon)) *
-                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        angle = (float) Math.toDegrees(Math.atan2(pointLat - playerLat, pointLon - playerLon));
-        double d = R * c;
-        return (int) (d * 1000);
-    }
-
     @Override
     public void onSensorChanged(SensorEvent event) {
-        heading = Math.round(event.values[0]);
+        float alpha = 0.97f;
+        synchronized (this) {
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+
+                mGravity[0] = alpha * mGravity[0] + (1 - alpha)
+                        * event.values[0];
+                mGravity[1] = alpha * mGravity[1] + (1 - alpha)
+                        * event.values[1];
+                mGravity[2] = alpha * mGravity[2] + (1 - alpha)
+                        * event.values[2];
+
+                // mGravity = event.values;
+
+                // Log.e(TAG, Float.toString(mGravity[0]));
+            }
+
+            if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+                // mGeomagnetic = event.values;
+
+                mGeomagnetic[0] = alpha * mGeomagnetic[0] + (1 - alpha)
+                        * event.values[0];
+                mGeomagnetic[1] = alpha * mGeomagnetic[1] + (1 - alpha)
+                        * event.values[1];
+                mGeomagnetic[2] = alpha * mGeomagnetic[2] + (1 - alpha)
+                        * event.values[2];
+                // Log.e(TAG, Float.toString(event.values[0]));
+
+            }
+
+            float R[] = new float[9];
+            float I[] = new float[9];
+            boolean success = SensorManager.getRotationMatrix(R, I, mGravity,
+                    mGeomagnetic);
+            if (success) {
+                float orientation[] = new float[3];
+                SensorManager.getOrientation(R, orientation);
+                // Log.d(TAG, "azimuth (rad): " + azimuth);
+                heading = (float) Math.toDegrees(orientation[0]); // orientation
+                heading = (heading + 360) % 360;
+            }
+        }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 
-    private void locationBegin() {
+    private void compassInit() {
+        sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        gsensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        msensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        compassStart();
+    }
+
+    void compassStart() {
+        sensorManager.registerListener(this, gsensor,
+                SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(this, msensor,
+                SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    void compassStop() {
+        sensorManager.unregisterListener(this);
+    }
+
+    private void locationInit() {
         // Acquire a reference to the system Location Manager
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        final String locationProvider = LocationManager.GPS_PROVIDER;
-        locationManager.addGpsStatusListener(mGPSStatusListener);
-        // Define a listener that responds to location updates
-        LocationListener locationListener = new LocationListener() {
+        locationListener = new LocationListener() {
+            @Override
             public void onLocationChanged(Location location) {
-                // Called when a new location is found by the network location provider.
                 setLocation(location);
             }
 
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
 
-            public void onProviderEnabled(String provider) {
-            }
+            @Override
+            public void onProviderEnabled(String provider) {}
 
-            public void onProviderDisabled(String provider) {
-            }
+            @Override
+            public void onProviderDisabled(String provider) {}
         };
-
-        // Register the listener with the Location Manager to receive location updates
-        locationManager.requestLocationUpdates(locationProvider, 0, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-//        location = locationManager.getLastKnownLocation(locationProvider);
+        locationStart();
+        location = new Location(locationGpsProvider);
+        destination = new Location(locationGpsProvider);
     }
 
-    private GpsStatus.Listener mGPSStatusListener = new GpsStatus.Listener() {
-        public void onGpsStatusChanged(int event) {
-            switch (event) {
-                case GpsStatus.GPS_EVENT_STARTED:
-//                    Toast.makeText(context, "GPS_SEARCHING", Toast.LENGTH_SHORT).show();
-                    System.out.println("TAG - GPS searching: ");
-                    break;
-                case GpsStatus.GPS_EVENT_STOPPED:
-                    System.out.println("TAG - GPS Stopped");
-                    break;
-                case GpsStatus.GPS_EVENT_FIRST_FIX:
+    void locationStart() {
+        locationManager.requestLocationUpdates(locationGpsProvider, 3000, 5, locationListener);
+        locationManager.requestLocationUpdates(locationNetworkProvider, 3000, 5, locationListener);
+    }
 
-                /*
-                 * GPS_EVENT_FIRST_FIX Event is called when GPS is locked
-                 */
-//                    Toast.makeText(context, "GPS_LOCKED", Toast.LENGTH_SHORT).show();
-                    Location gpslocation = locationManager
-                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                    if (gpslocation != null) {
-                        System.out.println("GPS Info:" + gpslocation.getLatitude() + ":" + gpslocation.getLongitude());
-
-                    /*
-                     * Removing the GPS status listener once GPS is locked
-                     */
-                        locationManager.removeGpsStatusListener(mGPSStatusListener);
-                    }
-
-                    break;
-                case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-                    //                 System.out.println("TAG - GPS_EVENT_SATELLITE_STATUS");
-                    break;
-            }
-        }
-    };
+    void locationStop() {
+        locationManager.removeUpdates(locationListener);
+    }
 
     private void setLocation(Location location) {
         this.location = location;

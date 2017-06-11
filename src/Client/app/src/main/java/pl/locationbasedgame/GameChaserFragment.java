@@ -2,6 +2,7 @@ package pl.locationbasedgame;
 
 
 import android.app.Fragment;
+import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,7 +16,7 @@ import android.widget.FrameLayout;
  */
 public class GameChaserFragment extends Fragment {
 
-    OpenGLRenderer openGLRenderer = new OpenGLRenderer(getActivity());
+    private OpenGLRenderer openGLRenderer;
 
     public GameChaserFragment() {}
 
@@ -24,13 +25,41 @@ public class GameChaserFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView;
 
-        GLSurfaceView view = new GLSurfaceView(getActivity());
+        Context context = getActivity();
+        GLSurfaceView view = new GLSurfaceView(context);
+        openGLRenderer = new OpenGLRenderer(context);
         view.setRenderer(openGLRenderer);
         rootView = inflater.inflate(R.layout.fragment_game_chaser, container, false);
 
         FrameLayout layout = (FrameLayout) rootView;
         layout.addView(view, 0);
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        openGLRenderer.compassStop();
+        openGLRenderer.locationStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        openGLRenderer.compassStart();
+        openGLRenderer.locationStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        openGLRenderer.compassStop();
+        openGLRenderer.locationStop();
     }
 
     void setDestination(double latitude, double longitude) {

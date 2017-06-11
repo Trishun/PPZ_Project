@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -27,7 +28,7 @@ import static pl.locationbasedgame.LobbyActivity.ESCAPER;
 
 public class GameActivity extends Activity {
 
-    static final String TAG = "GAME";
+    private static final String TAG = "GAME";
     private static final String[] INITIAL_PERMS = {
             Manifest.permission.ACCESS_FINE_LOCATION
     };
@@ -80,6 +81,12 @@ public class GameActivity extends Activity {
         }
     }
 
+    @TargetApi(23)
+    private void setPermissions() {
+        if (Build.VERSION.SDK_INT >= 23)
+        requestPermissions(INITIAL_PERMS, 1337);
+    }
+
     private void messageListener() {
         final Single<String> message = Single.fromCallable(new Callable<String>() {
             @Override
@@ -101,10 +108,12 @@ public class GameActivity extends Activity {
                         Log.i(TAG, s);
                         try {
                             JSONObject jsonObject = new JSONObject(s);
+                            if (jsonObject.has("coords")) {
+                                ((GameChaserFragment) fragment).setDestination(jsonObject.getDouble("locx"), jsonObject.getDouble("locy"));
+                            }
 
 
                         } catch (JSONException e) {
-                            Log.i(TAG, "Zjebało się");
                             Log.i(TAG, String.valueOf(e));
                         }
                         messageListener();
@@ -138,8 +147,4 @@ public class GameActivity extends Activity {
         return fragment;
     }
 
-    @TargetApi(23)
-    private void setPermissions() {
-        requestPermissions(INITIAL_PERMS, 1337);
-    }
 }
