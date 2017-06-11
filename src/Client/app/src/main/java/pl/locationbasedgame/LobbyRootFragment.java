@@ -121,7 +121,7 @@ public class LobbyRootFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
-        ((LobbyActivity) getActivity()).setContentView(R.layout.activity_lobby);
+        getActivity().setContentView(R.layout.activity_lobby);
     }
 
 }

@@ -3,19 +3,12 @@ package pl.locationbasedgame;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
-
 import android.app.Fragment;
 import android.content.*;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
-
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -48,8 +41,6 @@ public class GameActivity extends Activity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             CommunicationService.ServerBinder binder = (CommunicationService.ServerBinder) service;
-            GameActivity.this.service = binder.getService();
-            isServiceBound = true;
             GameActivity.service = binder.getService();
             isCommunicatorBound = true;
             Log.i(TAG, "Service connected");
@@ -79,9 +70,6 @@ public class GameActivity extends Activity {
         messageListener();
 
         setContentView(R.layout.activity_game);
-
-        Intent bindIntent = new Intent(this, CommunicationService.class);
-        bindService(bindIntent, serviceConnection, Context.BIND_IMPORTANT);
 
         int team = getIntent().getIntExtra("TEAM", 2);
 
