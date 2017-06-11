@@ -1,20 +1,65 @@
 package pl.locationbasedgame;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.concurrent.Callable;
+
+import static butterknife.ButterKnife.bind;
 import static pl.locationbasedgame.LobbyActivity.CHASER;
 import static pl.locationbasedgame.LobbyActivity.ESCAPER;
 
 public class GameActivity extends Activity {
 
     static final String TAG = "GAME";
+    private static final String[] INITIAL_PERMS = {
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+    private Fragment fragment;
+    private CommunicationService service;
+    private boolean isServiceBound = false;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            CommunicationService.ServerBinder binder = (CommunicationService.ServerBinder) service;
+            GameActivity.this.service = binder.getService();
+            isServiceBound = true;
+            Log.i(TAG, "Service connected");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isServiceBound = false;
+            Log.i(TAG, "Service connection lost");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent bindIntent = new Intent(this, CommunicationService.class);
+        bindService(bindIntent, serviceConnection, BIND_IMPORTANT);
+        bind(this);
+
+        setPermissions();
+        messageListener();
 
         setContentView(R.layout.activity_game);
         int team = getIntent().getIntExtra("TEAM", 2);
@@ -27,11 +72,74 @@ public class GameActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isServiceBound) {
+            unbindService(serviceConnection);
+        }
+    }
+
+    private void messageListener() {
+        final Single<String> message = Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return service.getServerMessage();
+            }
+        });
+
+        message.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(String s) {
+                        Log.i(TAG, s);
+                        try {
+                            JSONObject jsonObject = new JSONObject(s);
+
+
+                        } catch (JSONException e) {
+                            Log.i(TAG, "Zjebało się");
+                            Log.i(TAG, String.valueOf(e));
+                        }
+                        messageListener();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
+    }
+
     private void loadFragment(int team) {
         getFragmentManager().beginTransaction()
-                .add(R.id.fl_game_module_container, team == CHASER
-                        ? new GameChaserFragment()
-                        : new GameEscaperFragment())
+                .add(R.id.fl_game_module_container, instantiateFragment(team))
                 .commit();
+    }
+
+    private Fragment instantiateFragment(int team) {
+        switch (team) {
+            case 0:
+                fragment = new GameEscaperFragment();
+                break;
+            case 1:
+                fragment = new GameChaserFragment();
+                break;
+            default:
+                break;
+        }
+        return fragment;
+    }
+
+    @TargetApi(23)
+    private void setPermissions() {
+        requestPermissions(INITIAL_PERMS, 1337);
     }
 }
