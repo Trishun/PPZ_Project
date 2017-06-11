@@ -101,6 +101,7 @@ public class LobbyActivity extends Activity {
         if (!content.isEmpty()) {
             final int lobbyId = Integer.parseInt(content);
             sendJoinRequest(lobbyId);
+
         }
     }
 
@@ -176,6 +177,9 @@ public class LobbyActivity extends Activity {
                                 startGame.putExtra("TEAM", assignedTeam);
                                 finish();
                                 startActivity(startGame);
+                            } else if (jsonObject.has("ljoin")) {
+
+                                loadLobbyRootFragment();
                             }
 
                         } catch (JSONException e) {
