@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,8 +8,12 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="YOU ARE A CHASER" />
+            android:id="@+id/meters"
+            android:layout_width="168dp"
+            android:layout_height="182dp"
+            android:layout_gravity="top|center"
+            android:textColor="#000000"
+            android:textSize="48sp"
+            android:gravity="center"/>
 
-</RelativeLayout>
+</FrameLayout>

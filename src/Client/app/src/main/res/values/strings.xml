@@ -30,6 +30,11 @@
     <string name="join_pursuit_team">Dołącz do ścigających</string>
     <string name="join_escape_team">Dołącz do uciekających</string>
     <string name="ready_start_game">Gotowy</string>
+    <string name="pursuit_team">Ścigający</string>
+    <string name="escape_team">Uciekający</string>
+    <string name="uncategorized">Nieprzydzielony</string>
+    <string name="new_task">Nowe zadanie!</string>
+    <string name="sent">Wysłane!</string>
     <string name="prefs_vibrations_only">prefs_vibrations_only</string>
     <string name="prefs_only_wifi">prefs_only_wifi</string>
     <string name="prefs_title_use_wifi_only">Używaj tylko WiFi</string>

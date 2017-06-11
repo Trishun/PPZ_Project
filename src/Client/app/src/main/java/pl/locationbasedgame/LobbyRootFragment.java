@@ -37,7 +37,6 @@ public class LobbyRootFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_lobby_root, container, false);
         try {
             setLobbyEnter(getArguments().getString("enter_code"), rootView);
@@ -58,21 +57,17 @@ public class LobbyRootFragment extends Fragment {
     private void setLobbyEnter(String text, View view) {
         TextView textView = (TextView) view.findViewById(R.id.lobbyId);
         textView.setText(text);
-}
+    }
 
     Integer getTeam() {
         return team;
-    }
-
-    void setTeam (int team) {
-        this.team = team;
     }
 
     void setMyName(String myName) {
         this.myName = myName;
     }
 
-    private ArrayList<ListViewPlayerItem> processPlayersList(JSONObject message){
+    private ArrayList<ListViewPlayerItem> processPlayersList(JSONObject message) {
         ArrayList<ListViewPlayerItem> playerList = new ArrayList<>();
         try {
             JSONArray lobbyStructure = message.getJSONArray("llist");
@@ -81,22 +76,22 @@ public class LobbyRootFragment extends Fragment {
             JSONArray uncategorized = lobbyStructure.getJSONArray(2);
             String playerName;
 
-            for (int i = 0; i < teamEscape.length(); i++){
+            for (int i = 0; i < teamEscape.length(); i++) {
                 playerName = teamEscape.get(i).toString();
-                playerList.add(new ListViewPlayerItem(playerName, "Team escape"));
+                playerList.add(new ListViewPlayerItem(playerName, getString(R.string.escape_team)));
                 if (playerName.equalsIgnoreCase(myName))
                     team = 0;
             }
 
-            for (int i = 0; i < teamPursuit.length(); i++){
+            for (int i = 0; i < teamPursuit.length(); i++) {
                 playerName = teamPursuit.get(i).toString();
-                playerList.add(new ListViewPlayerItem(playerName, "Team pursuit"));
+                playerList.add(new ListViewPlayerItem(playerName, getString(R.string.pursuit_team)));
                 if (playerName.equalsIgnoreCase(myName))
                     team = 1;
             }
 
-            for (int i = 0; i < uncategorized.length(); i++){
-                playerList.add(new ListViewPlayerItem(uncategorized.get(i).toString(), "Uncategorized"));
+            for (int i = 0; i < uncategorized.length(); i++) {
+                playerList.add(new ListViewPlayerItem(uncategorized.get(i).toString(), getString(R.string.uncategorized)));
             }
 
         } catch (JSONException e) {
@@ -105,18 +100,18 @@ public class LobbyRootFragment extends Fragment {
         return playerList;
     }
 
-
     @OnClick(R.id.btn_join_escape)
     void joinEscape() {
-        ((LobbyActivity) getActivity()).getService().sendComplexMessage("tjoin" ,"team", "0");
+        ((LobbyActivity) getActivity()).getService().sendComplexMessage("tjoin", "team", "0");
         team = 0;
     }
 
     @OnClick(R.id.btn_join_pursuit)
     void joinPursuit() {
-        ((LobbyActivity) getActivity()).getService().sendComplexMessage("tjoin" ,"team", "1");
+        ((LobbyActivity) getActivity()).getService().sendComplexMessage("tjoin", "team", "1");
         team = 1;
     }
+
     @OnClick(R.id.btn_ready_game_begin)
     void beginGame() {
         ((LobbyActivity) getActivity()).getService().sendSimpleMessage("gbegin");
@@ -157,13 +152,12 @@ class ListViewPlayerItem {
     }
 }
 
-
 class ListviewPlayerAdapter extends BaseAdapter {
     private static ArrayList<ListViewPlayerItem> listContact;
 
     private LayoutInflater mInflater;
 
-    ListviewPlayerAdapter(Context photosFragment, ArrayList<ListViewPlayerItem> results){
+    ListviewPlayerAdapter(Context photosFragment, ArrayList<ListViewPlayerItem> results) {
         listContact = results;
         mInflater = LayoutInflater.from(photosFragment);
     }
@@ -190,7 +184,7 @@ class ListviewPlayerAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
         ViewHolder holder;
-        if(convertView == null){
+        if (convertView == null) {
             convertView = mInflater.inflate(R.layout.list_view_item, null);
             holder = new ViewHolder();
             holder.txtname = (TextView) convertView.findViewById(R.id.tv_player_name);
@@ -207,7 +201,7 @@ class ListviewPlayerAdapter extends BaseAdapter {
         return convertView;
     }
 
-    static class ViewHolder{
+    static class ViewHolder {
         TextView txtname, txtteam;
     }
 }
