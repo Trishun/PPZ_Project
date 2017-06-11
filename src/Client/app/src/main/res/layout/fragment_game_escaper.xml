@@ -3,13 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="pl.locationbasedgame.GameEscaperFragment"
-    android:background="@color/backgroundColor"
->
+    android:background="@color/backgroundColor">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!--<fragment-->
+        <!--android:id="@+id/map"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:name="com.google.android.gms.maps.SupportMapFragment" />-->
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="YOU ARE AN ESCAPER" />
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/btn_leave_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible"
+        android:text="@string/leave_hint"/>
 
 </RelativeLayout>

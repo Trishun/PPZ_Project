@@ -1,6 +1,7 @@
 package pl.locationbasedgame;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -11,9 +12,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
+
+import static butterknife.ButterKnife.bind;
+import static butterknife.ButterKnife.findById;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,33 +30,31 @@ public class GameEscaperFragment extends Fragment {
     private LocationManager locationManager;
     private Location currentLocation;
     private LocationListener locationListener;
+    private boolean isLocationInitialized = false;
+    private GoogleMap map;
+    private MapView mapView;
+    private ProgressDialog progressDialog;
 
-    public GameEscaperFragment() {
-        // Required empty public constructor
+    @Override
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_game_escaper, container, false);
+
+        setLocationListening(view);
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.map_loading));
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+
+        bind(this, view);
+
+        return view;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                currentLocation = location;
-                Log.i("CURRENT LOC", currentLocation.toString());
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) { }
-
-            @Override
-            public void onProviderEnabled(String provider) { }
-
-            @Override
-            public void onProviderDisabled(String provider) { }
-        };
-
-        return inflater.inflate(R.layout.fragment_game_escaper, container, false);
+    public void onStart() {
+        super.onStart();
+        setMap();
     }
 
     @Override
@@ -67,5 +72,52 @@ public class GameEscaperFragment extends Fragment {
     public void onPause() {
         locationManager.removeUpdates(locationListener);
         super.onPause();
+    }
+
+    private void setLocationListening(final View view) {
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                if (!isLocationInitialized) {
+                    findById(view, R.id.btn_leave_hint).setVisibility(View.VISIBLE);
+                }
+
+                currentLocation = location;
+                isLocationInitialized = true;
+
+                if (map != null) {
+                    LatLng loc = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 17));
+                    progressDialog.dismiss();
+                }
+
+                Log.i("CURRENT LOC", currentLocation.toString());
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) { }
+
+            @Override
+            public void onProviderEnabled(String provider) { }
+
+            @Override
+            public void onProviderDisabled(String provider) { }
+        };
+    }
+
+    private void setMap() {
+        mapView = findById(getView(), R.id.map);
+        mapView.onCreate(null);
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                map = googleMap;
+                map.setMyLocationEnabled(true);
+                map.setBuildingsEnabled(true);
+                progressDialog.setMessage(getString(R.string.player_pinpointing));
+            }
+        });
+        mapView.onResume();
     }
 }
