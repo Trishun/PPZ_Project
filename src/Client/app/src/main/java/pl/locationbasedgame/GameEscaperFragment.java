@@ -33,7 +33,7 @@ import static butterknife.ButterKnife.findById;
 public class GameEscaperFragment extends Fragment {
 
     private LocationManager locationManager;
-    private Location currentLocation;
+    private LatLng currentLocation;
     private LocationListener locationListener;
     private boolean isLocationInitialized = false;
     private GoogleMap map;
@@ -101,7 +101,7 @@ public class GameEscaperFragment extends Fragment {
 
     private void stampHintOnMap(String hint) {
         map.addMarker(new MarkerOptions()
-                .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                .position(currentLocation)
                 .title(hint));
     }
 
@@ -114,12 +114,11 @@ public class GameEscaperFragment extends Fragment {
                     findById(view, R.id.btn_leave_hint).setVisibility(View.VISIBLE);
                 }
 
-                currentLocation = location;
+                currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 isLocationInitialized = true;
 
                 if (map != null) {
-                    LatLng loc = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 17));
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 17));
                     progressDialog.dismiss();
                 }
 
