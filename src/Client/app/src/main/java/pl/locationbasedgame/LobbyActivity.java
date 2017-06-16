@@ -178,7 +178,6 @@ public class LobbyActivity extends Activity {
                                 finish();
                                 startActivity(startGame);
                             } else if (jsonObject.has("ljoin")) {
-
                                 loadLobbyRootFragment();
                             }
 

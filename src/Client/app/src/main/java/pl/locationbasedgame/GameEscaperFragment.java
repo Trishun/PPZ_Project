@@ -13,8 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import android.widget.TableLayout;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -80,17 +83,42 @@ public class GameEscaperFragment extends Fragment {
         super.onPause();
     }
 
+
     @OnClick(R.id.btn_leave_hint)
     void onLeaveHintButtonClick() {
-        final EditText hintEditText = new EditText(getActivity());
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.leave_hint, null);
+
+        final EditText hintEditText = findById(dialogView, R.id.hint_edit_text);
+        final CheckBox last = findById(dialogView, R.id.cb_last);
+        last.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
+                    hintEditText.setEnabled(true);
+                    hintEditText.setFocusable(true);
+                } else {
+                    hintEditText.setEnabled(false);
+                    hintEditText.setFocusable(false);
+                }
+            }
+        });
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle(R.string.leave_hint);
-        builder.setView(hintEditText);
+        builder.setView(dialogView);
+
         builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String hint = hintEditText.getText().toString();
+                String hint;
+                if (last.isChecked()) {
+                    hint = "last";
+                } else {
+                    hint = hintEditText.getText().toString();
+                }
                 if (!Objects.equals(hint, "")) {
                     ((GameActivity) getActivity()).getService().sendPoint(currentLocation, hint);
                     stampHintOnMap(hint);

@@ -25,8 +25,8 @@
     <string name="passwords_dont_match">Wpisane hasła nie są identyczne!</string>
     <string name="create_lobby">Stwórz nową grę</string>
     <string name="join_existing_game">Dołącz do istniejącej gry</string>
-    <string name="creating_new_game">Tworzę nową grę...</string>
-    <string name="joining_existing_game">Dołączam do istniejącej gry...</string>
+    <string name="creating_new_game">Tworzę nową grę…</string>
+    <string name="joining_existing_game">Dołączam do istniejącej gry…</string>
     <string name="join_pursuit_team">Dołącz do ścigających</string>
     <string name="join_escape_team">Dołącz do uciekających</string>
     <string name="ready_start_game">Gotowy</string>
@@ -46,5 +46,6 @@
     <string name="leave_hint">Zostaw wskazówkę</string>
     <string name="map_loading">Ładowanie mapy</string>
     <string name="player_pinpointing">Lokalizowanie gracza</string>
+    <string name="last_hint">Ostatni</string>
     <string name="ok">OK</string>
 </resources>
