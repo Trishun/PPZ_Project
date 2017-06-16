@@ -354,6 +354,7 @@ public class Player extends Thread {
             response.put("alert", localeProvider.get("wrongCode"));
         }
         messageProvider.sendMessage(new JSONObject(response));
+        lobby.broadcastLobbyStructure();
     }
 
     private void handleLLeave() {
@@ -393,14 +394,14 @@ public class Player extends Thread {
     private void handleTJoin(JSONObject message) {
         int team = Integer.valueOf(message.get("team").toString());
         lobby.getTeamManager().addPlayerToTeam(this, team);
-        lobby.broadcastLobbyStructure();
         messageProvider.sendSimpleMessage("tjoin", true);
+        lobby.broadcastLobbyStructure();
     }
 
     private void handleTLeave() {
         lobby.getTeamManager().removePlayer(this);
-        lobby.broadcastLobbyStructure();
         messageProvider.sendSimpleMessage("tleave", true);
+        lobby.broadcastLobbyStructure();
     }
 
     private void handleGbegin() {

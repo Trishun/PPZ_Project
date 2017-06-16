@@ -56,7 +56,6 @@ class Lobby {
      */
     void addToLobby(Player newPlayer) {
         players.add(newPlayer);
-        broadcastLobbyStructure();
     }
 
     /**
