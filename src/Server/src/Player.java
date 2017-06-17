@@ -171,14 +171,14 @@ public class Player extends Thread {
             ResultSet resultSet = databaseCommunicator.executeQuery(query);
             if (!resultSet.isBeforeFirst()) {
                 response.put("login", false);
-                response.put("alert", localeProvider.get("wrongUsername"));
+                response.put("alert", "wrong_username");
                 messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
             for (Player player: playerManager.getPlayerList()) {
                 if (player.getName().equals(uName)) {
                     response.put("login", false);
-                    response.put("alert", localeProvider.get("alreadyLogged"));
+                    response.put("alert", "already_logged");
                     messageProvider.sendMessage(new JSONObject(response));
                 }
             }
@@ -191,13 +191,13 @@ public class Player extends Thread {
                 setPlayerId(resultSet.getInt("user_id"));
             } else {
                 response.put("login", false);
-                response.put("alert", localeProvider.get("wrongPassword"));
+                response.put("alert", "wrong_password");
                 messageProvider.sendMessage(new JSONObject(response));
                 Debug.Log("User " + uName + " (" + resultSet.getInt("user_id") + ") failed to login \nReason: Wrong Password.");
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             response.put("login", false);
-            response.put("alert", localeProvider.get("internalError"));
+            response.put("alert", "internal_error");
             messageProvider.sendMessage(new JSONObject(response));
         } catch (Exception e) {
             response.put("login", false);
@@ -226,7 +226,7 @@ public class Player extends Thread {
             ResultSet resultSet = databaseCommunicator.executeQuery(query);
             if (resultSet.isBeforeFirst()) {
                 response.put("register", false);
-                response.put("alert", localeProvider.get("emailExists"));
+                response.put("alert", "email_exists");
                 messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
@@ -236,7 +236,7 @@ public class Player extends Thread {
             resultSet = databaseCommunicator.executeQuery(query);
             if (resultSet.isBeforeFirst()) {
                 response.put("register", false);
-                response.put("alert", localeProvider.get("usernameTaken"));
+                response.put("alert", "username_taken");
                 messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
@@ -247,7 +247,7 @@ public class Player extends Thread {
             resultSet = databaseCommunicator.executeQuery(query);
             if (!resultSet.isBeforeFirst()) {
                 response.put("register", false);
-                response.put("alert", localeProvider.get("internalError"));
+                response.put("alert", "internal_error");
                 messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
@@ -279,7 +279,7 @@ public class Player extends Thread {
             ResultSet resultSet = databaseCommunicator.executeQuery(query);
             if (!resultSet.isBeforeFirst()) {
                 response.put("newPass", false);
-                response.put("alert", localeProvider.get("emailNotFound"));
+                response.put("alert", "email_not_found");
                 messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
@@ -287,11 +287,11 @@ public class Player extends Thread {
                 query = "UPDATE accounts SET password='" + uPasswd + "' WHERE email='" + email + "'";
                 databaseCommunicator.executeUpdate(query);
                 response.put("newPass", true);
-                response.put("alert", localeProvider.get("changed"));
+                response.put("alert", "changed");
                 messageProvider.sendMessage(new JSONObject(response));
             } else {
                 response.put("newPass", false);
-                response.put("alert", localeProvider.get("wrongCode"));
+                response.put("alert", "wrong_code");
                 messageProvider.sendMessage(new JSONObject(response));
             }
         } catch (Exception e) {
@@ -315,7 +315,7 @@ public class Player extends Thread {
             ResultSet resultSet = databaseCommunicator.executeQuery(query);
             if (!resultSet.isBeforeFirst()) {
                 response.put("changepass", false);
-                response.put("alert", localeProvider.get("emailNotFound"));
+                response.put("alert", "email_not_found");
                 messageProvider.sendMessage(new JSONObject(response));
                 return;
             }
@@ -326,7 +326,7 @@ public class Player extends Thread {
                 messageProvider.sendMessage(new JSONObject(response));
             } else {
                 response.put("changepass", false);
-                response.put("alert", localeProvider.get("wrongPassword"));
+                response.put("alert","wrong_password");
                 messageProvider.sendMessage(new JSONObject(response));
             }
         } catch (Exception e) {
@@ -351,7 +351,7 @@ public class Player extends Thread {
             response.put("ljoin", true);
         } else {
             response.put("ljoin", false);
-            response.put("alert", localeProvider.get("wrongCode"));
+            response.put("alert", "wrong_code"));
         }
         messageProvider.sendMessage(new JSONObject(response));
         lobby.broadcastLobbyStructure();

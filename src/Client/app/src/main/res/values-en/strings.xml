@@ -15,7 +15,7 @@
     <string name="name">Username</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    
+
     <!--Client-side locale strings-->
     <string name="wrong_password">Wrong password!</string>
     <string name="internal_error">Internal error</string>
