@@ -1,15 +1,11 @@
 package pl.locationbasedgame;
 
-import android.animation.TypeConverter;
 import android.app.Service;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Binder;
 import android.os.IBinder;
-
 import com.google.android.gms.maps.model.LatLng;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -84,7 +80,7 @@ public class CommunicationService extends Service {
 
     }
 
-    JSONArray joinExistingLobby(LobbyManager manager, int id) {
+    Integer joinExistingLobby(LobbyManager manager, int id) {
         return manager.joinLobby(socketHandler, id);
     }
 

@@ -95,13 +95,8 @@ public class GameEscaperFragment extends Fragment {
         last.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked) {
-                    hintEditText.setEnabled(true);
-                    hintEditText.setFocusable(true);
-                } else {
-                    hintEditText.setEnabled(false);
-                    hintEditText.setFocusable(false);
-                }
+                hintEditText.setEnabled(!isChecked);
+                hintEditText.setFocusable(!isChecked);
             }
         });
 

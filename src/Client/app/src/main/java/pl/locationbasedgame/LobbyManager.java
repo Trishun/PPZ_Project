@@ -1,6 +1,5 @@
 package pl.locationbasedgame;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,7 +21,7 @@ class LobbyManager {
         return -1;
     }
 
-    JSONArray joinLobby(SocketHandler handler, int id) {
+    Integer joinLobby(SocketHandler handler, int id) {
         JSONObject message = new JSONObject();
 
         try {
@@ -31,7 +30,7 @@ class LobbyManager {
 
             JSONObject responseJSON = new JSONObject(handler.sendMessageAndGetResponse(message.toString()));
 
-            return responseJSON.has("llist") ? responseJSON.getJSONArray("llist") : new JSONArray();
+            return responseJSON.has("ljoin") && responseJSON.getBoolean("ljoin") ? id : null;
 
         } catch (JSONException e) {
             e.printStackTrace();

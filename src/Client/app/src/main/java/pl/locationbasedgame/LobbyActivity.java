@@ -15,7 +15,6 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,7 +79,7 @@ public class LobbyActivity extends Activity {
                     public void onSuccess(Integer integer) {
                           lobbyEnterCode = integer;
                           Log.i(TAG, "OK: " + integer.toString());
-                          loadLobbyRootFragment();
+                          loadLobbyRootFragment(lobbyEnterCode);
                           listenForMessage();
 
                     }
@@ -106,23 +105,26 @@ public class LobbyActivity extends Activity {
     }
 
     private void sendJoinRequest(final int lobbyId) {
-        Single<JSONArray> getPlayerList = Single.fromCallable(new Callable<JSONArray>() {
+        Single<Integer> joinBoolean = Single.fromCallable(new Callable<Integer>() {
             @Override
-            public JSONArray call() throws Exception {
+            public Integer call() throws Exception {
                 return service.joinExistingLobby(new LobbyManager(), lobbyId);
             }
         });
 
-        getPlayerList
+        joinBoolean
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<JSONArray>() {
+                .subscribe(new SingleObserver<Integer>() {
                     @Override
                     public void onSubscribe(Disposable d) { }
 
                     @Override
-                    public void onSuccess(JSONArray jsonArray) {
-                        Log.i(TAG, jsonArray.toString());
+                    public void onSuccess(Integer joinBoolean) {
+//                        Log.i(TAG, joinBoolean.toString());
+                        if (joinBoolean != null) {
+                            loadLobbyRootFragment(joinBoolean);
+                        }
                         listenForMessage();
                     }
 
@@ -134,15 +136,15 @@ public class LobbyActivity extends Activity {
                 });
     }
 
-    private void loadLobbyRootFragment() {
+    private void loadLobbyRootFragment(int enterCode) {
         Bundle bundle = new Bundle();
-        bundle.putString("enter_code", String.valueOf(lobbyEnterCode));
+        bundle.putString("enter_code", (lobbyEnterCode != 0) ? String.valueOf(lobbyEnterCode) : String.valueOf(enterCode));
         lobbyRoot.setArguments(bundle);
         setContentView(R.layout.activity_lobby_join);
         getFragmentManager().beginTransaction().add(R.id.lobby_list_container, lobbyRoot).commit();
     }
 
-    void listenForMessage() {
+    private void listenForMessage() {
         final Single<String> getMessage = Single.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
@@ -178,7 +180,7 @@ public class LobbyActivity extends Activity {
                                 finish();
                                 startActivity(startGame);
                             } else if (jsonObject.has("ljoin")) {
-                                loadLobbyRootFragment();
+                                loadLobbyRootFragment(0);
                             }
 
                         } catch (JSONException e) {

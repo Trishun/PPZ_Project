@@ -15,7 +15,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -94,7 +93,7 @@ public class LobbyRootFragment extends Fragment {
                 playerList.add(new ListViewPlayerItem(uncategorized.get(i).toString(), getString(R.string.uncategorized)));
             }
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.i(TAG, String.valueOf(e));
         }
         return playerList;

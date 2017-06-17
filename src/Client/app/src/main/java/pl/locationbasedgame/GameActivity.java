@@ -132,8 +132,12 @@ public class GameActivity extends Activity {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i(TAG, e.getMessage());
-                        e.printStackTrace();
+                        try {
+                            Log.i(TAG, e.getMessage());
+                            e.printStackTrace();
+                        } catch (Exception ee) {
+                            Log.i(TAG, String.valueOf(ee));
+                        }
                     }
                 });
     }
