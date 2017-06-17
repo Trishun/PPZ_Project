@@ -15,6 +15,19 @@
     <string name="name">Nazwa użytkownika</string>
 
     <!-- TODO: Remove or change this placeholder text -->
+
+    <!--Client-side locale strings-->
+    <string name="wrong_password">Błędne hasło!</string>
+    <string name="internal_error">Wewnętrzny błąd</string>
+    <string name="email_not_found">Nie znaleziono adresu e-mail</string>
+    <string name="wrong_code">Błędny kod!</string>
+    <string name="wrong_username">Błędna nazwa użytkownika</string>
+    <string name="already_logged">Użytkownik już zalogowany!</string>
+    <string name="email_exists">Podany e-mail już istnieje!</string>
+    <string name="username_taken">Nazwa użytkownika w użyciu!</string>
+    <string name="changed">Zmieniono pomyślnie</string>
+
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="registrering_success">Rejestracja powiodła się!</string>
     <string name="e_mail">E-mail</string>
