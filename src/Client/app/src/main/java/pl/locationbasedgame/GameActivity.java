@@ -2,13 +2,13 @@ package pl.locationbasedgame;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.*;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -26,7 +26,7 @@ import static butterknife.ButterKnife.bind;
 import static pl.locationbasedgame.LobbyActivity.CHASER;
 import static pl.locationbasedgame.LobbyActivity.ESCAPER;
 
-public class GameActivity extends Activity {
+public class GameActivity extends AppCompatActivity {
 
     private static final String TAG = "GAME";
     private static final String[] INITIAL_PERMS = {
@@ -132,12 +132,8 @@ public class GameActivity extends Activity {
 
                     @Override
                     public void onError(Throwable e) {
-                        try {
-                            Log.i(TAG, e.getMessage());
-                            e.printStackTrace();
-                        } catch (Exception ee) {
-                            Log.i(TAG, String.valueOf(ee));
-                        }
+                        Log.i(TAG, String.valueOf(e));
+                        messageListener();
                     }
                 });
     }

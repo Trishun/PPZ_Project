@@ -162,7 +162,7 @@ public class LobbyActivity extends Activity {
 
                     @Override
                     public void onSuccess(String s) {
-                        Log.i(TAG, s);
+                        Log.i(TAG, "/Listen for message:"+s);
                         try {
                             JSONObject jsonObject = new JSONObject(s);
                             if (jsonObject.has("initiator")) {
@@ -178,7 +178,10 @@ public class LobbyActivity extends Activity {
                                 Intent startGame = new Intent(LobbyActivity.this, GameActivity.class);
                                 startGame.putExtra("TEAM", assignedTeam);
                                 finish();
+                                unbindService(serviceConnection);
+                                isServiceBound = false;
                                 startActivity(startGame);
+                                return;
                             } else if (jsonObject.has("ljoin")) {
                                 loadLobbyRootFragment(0);
                             }

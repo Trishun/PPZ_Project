@@ -1,6 +1,7 @@
 package pl.locationbasedgame;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -35,6 +36,7 @@ class OpenGLRenderer implements android.opengl.GLSurfaceView.Renderer, SensorEve
     private LocationListener locationListener;
     private Location location;
     private Location destination;
+    private ProgressDialog progressDialog;
     private final String locationGpsProvider = LocationManager.GPS_PROVIDER;
     private final String locationNetworkProvider = LocationManager.NETWORK_PROVIDER;
 
@@ -47,13 +49,12 @@ class OpenGLRenderer implements android.opengl.GLSurfaceView.Renderer, SensorEve
 
     OpenGLRenderer(Context context) {
         this.context = context;
-
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Oczekiwanie na punkt");
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
         compassInit();
         locationInit();
-
-        //TEMP
-        setDestination(50.295321, 18.932156);
-        //
     }
 
     @Override
@@ -227,11 +228,9 @@ class OpenGLRenderer implements android.opengl.GLSurfaceView.Renderer, SensorEve
         this.location = location;
     }
 
-    void setDestination(Location destination) {
-        this.destination = destination;
-    }
-
     void setDestination(double latitude, double longitude) {
+        if (destination == null)
+            progressDialog.hide();
         destination = new Location(locationGpsProvider);
         destination.setLongitude(longitude);
         destination.setLatitude(latitude);
