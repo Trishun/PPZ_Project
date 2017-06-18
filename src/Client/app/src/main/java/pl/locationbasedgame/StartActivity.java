@@ -45,7 +45,7 @@ public class StartActivity extends AppCompatActivity {
         @Override
         public void onServiceDisconnected(ComponentName name) {
             isCommunicatorBound = false;
-            Log.i(TAG, "Service connection lost");
+            Log.i(TAG, getResources().getString(R.string.service_connection_lost));
         }
     };
 
@@ -67,13 +67,13 @@ public class StartActivity extends AppCompatActivity {
 
                     @Override
                     public void onSuccess(Boolean b) {
-                        Log.i(TAG, "Service connected");
+                        Log.i(TAG, getResources().getString(R.string.service_connected));
                         performAutoLogin();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i(TAG, "ERROR");
+                        Log.i(TAG, getResources().getString(R.string.error));
                         e.printStackTrace();
                     }
                 });
@@ -115,7 +115,7 @@ public class StartActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i(TAG, "Error");
+                        Log.i(TAG, getResources().getString(R.string.error));
                         e.printStackTrace();
                     }
                 });

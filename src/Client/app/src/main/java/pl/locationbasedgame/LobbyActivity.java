@@ -39,13 +39,13 @@ public class LobbyActivity extends Activity {
             CommunicationService.ServerBinder binder = (CommunicationService.ServerBinder) service;
             LobbyActivity.this.service = binder.getService();
             isServiceBound = true;
-            Log.i(TAG, "Service connected");
+            Log.i(TAG, getResources().getString(R.string.service_connected));
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             isServiceBound = false;
-            Log.i(TAG, "Service connection lost");
+            Log.i(TAG, getResources().getString(R.string.service_connection_lost));
         }
     };
 
@@ -130,7 +130,7 @@ public class LobbyActivity extends Activity {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i(TAG, "error");
+                        Log.i(TAG, getResources().getString(R.string.error));
                         e.printStackTrace();
                     }
                 });
@@ -184,7 +184,7 @@ public class LobbyActivity extends Activity {
                             }
 
                         } catch (JSONException e) {
-                            Log.i(TAG, "Zjebało się");
+                            Log.i(TAG, getResources().getString(R.string.fuck_up));
                             Log.i(TAG, String.valueOf(e));
                         }
                         listenForMessage();

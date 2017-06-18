@@ -43,13 +43,13 @@ public class GameActivity extends Activity {
             CommunicationService.ServerBinder binder = (CommunicationService.ServerBinder) service;
             GameActivity.service = binder.getService();
             isCommunicatorBound = true;
-            Log.i(TAG, "Service connected");
+            Log.i(TAG, getResources().getString(R.string.service_connected));
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             isCommunicatorBound = false;
-            Log.i(TAG, "Service connection lost");
+            Log.i(TAG, getResources().getString(R.string.service_connection_lost));
         }
     };
 
@@ -76,8 +76,8 @@ public class GameActivity extends Activity {
         if (team == CHASER || team == ESCAPER) {
             loadFragment(team);
         } else {
-            Toast.makeText(this, "OOPS!", Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "You should have never seen that!");
+            Toast.makeText(this, getResources().getString(R.string.oops), Toast.LENGTH_SHORT).show();
+            Log.i(TAG, getResources().getString(R.string.unexpected_error));
         }
     }
 
@@ -176,7 +176,7 @@ public class GameActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         service.sendComplexMessage("csans", "ans", input.getText().toString());
-                        Toast toast = Toast.makeText(context, getText(R.string.sent), duration);
+                        Toast toast = Toast.makeText(context, getResources().getString(R.string.sent), duration);
                         toast.show();
                     }
 

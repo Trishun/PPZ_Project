@@ -26,8 +26,13 @@
     <string name="email_exists">The given e-mail address is already used!</string>
     <string name="username_taken">The given username is taken!</string>
     <string name="changed">Changed successfully</string>
+    <string name="unexpected_error">You should never have seen that!</string>
+    <string name="oops">Oops!</string>
+    <string name="service_connected">Service connected</string>
+    <string name="service_connection_lost">Service connection lost</string>
 
-
+    <string name="error">Error</string>
+    <string name="fuck_up">A fuck-up occurred</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="registrering_success">Registration success!</string>
     <string name="e_mail">E-mail</string>

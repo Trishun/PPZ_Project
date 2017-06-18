@@ -26,8 +26,15 @@
     <string name="email_exists">Podany e-mail już istnieje!</string>
     <string name="username_taken">Nazwa użytkownika w użyciu!</string>
     <string name="changed">Zmieniono pomyślnie</string>
+    <string name="unexpected_error">To nie miało być dla Twoich oczu...</string>
+    <string name="oops">Ups!</string>
+    <string name="service_connected">Usługa połączona</string>
+    <string name="service_connection_lost">Połączenie z usługą utracone</string>
 
-
+    <string name="error">Błąd</string>
+    <string name="fuck_up">Zjebało się</string>
+    <string name="socket_connected">Socket podłączony</string>
+    <string name="connection_failure">Błąd połączenia</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="registrering_success">Rejestracja powiodła się!</string>
     <string name="e_mail">E-mail</string>
