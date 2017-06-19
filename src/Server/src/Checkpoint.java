@@ -11,11 +11,11 @@ class Checkpoint {
     private Instant time_created;
     private Instant time_visited;
     private Instant time_completed;
-    private boolean visited = false;
-    private boolean completed = false;
-    private boolean checked = false;
-    private Boolean correct = null;
-    private Boolean last;
+    private boolean visited;
+    private boolean completed;
+    private boolean checked;
+    private boolean correct;
+    private boolean last;
 
     /**
      * Instantiates a new Checkpoint.
@@ -158,7 +158,7 @@ class Checkpoint {
      *
      * @return the boolean
      */
-    Boolean isChecked() {
+    boolean isChecked() {
         return checked;
     }
 
@@ -167,7 +167,7 @@ class Checkpoint {
      *
      * @param last the last
      */
-    void setLast(Boolean last) {
+    void setLast(boolean last) {
         this.last = last;
     }
 
@@ -176,7 +176,7 @@ class Checkpoint {
      *
      * @return the boolean
      */
-    Boolean isLast() {
+    boolean isLast() {
         return last;
     }
 }
