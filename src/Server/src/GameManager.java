@@ -71,8 +71,7 @@ class GameManager {
         current.setTime_visited(Instant.now());
         current.setVisited();
         if (current.isLast()) {
-            end();
-            countPoints();
+            finishGame();
         }
     }
 
@@ -81,12 +80,18 @@ class GameManager {
      *
      * @param answer the answer
      */
-    void resolveTask(String answer) {
+    boolean resolveTask(String answer) {
         Checkpoint current = checkpoints.get(currentCheckpoint);
         current.getTask().setAnswer(answer);
         current.setTime_completed(Instant.now());
         current.setCompleted();
         currentCheckpoint++;
+        try {
+            checkpoints.get(currentCheckpoint);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
@@ -94,7 +99,7 @@ class GameManager {
      *
      * @return the double [ ]
      */
-    double[] getCoords() {
+    private double[] getCoords() {
         return checkpoints.get(currentCheckpoint).getLocation();
     }
 
@@ -154,6 +159,11 @@ class GameManager {
         HashMap<String, Object> message = new HashMap<>();
         message.put("reason", reason);
         teamManager.broadcastToTeam(team, new JSONObject(message));
+    }
+
+    void finishGame() {
+        end();
+        countPoints();
     }
 
     private void countPoints() {

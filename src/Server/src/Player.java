@@ -351,7 +351,7 @@ public class Player extends Thread {
             response.put("ljoin", true);
         } else {
             response.put("ljoin", false);
-            response.put("alert", "wrong_code"));
+            response.put("alert", "wrong_code");
         }
         messageProvider.sendMessage(new JSONObject(response));
         lobby.broadcastLobbyStructure();
@@ -421,8 +421,11 @@ public class Player extends Thread {
 
     private void handleCSAns(JSONObject message) {
         GameManager gm = lobby.getGameManager();
-        gm.resolveTask(String.valueOf(message.get("ans")));
-        gm.sendCheckpointCoords();
+        if (gm.resolveTask(String.valueOf(message.get("ans")))) {
+            gm.sendCheckpointCoords();
+        } else {
+            gm.finishGame();
+        }
     }
 
     private void handleCVAns(JSONObject message) {
