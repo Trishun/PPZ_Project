@@ -17,7 +17,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
-import android.widget.TableLayout;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -43,21 +42,22 @@ public class GameEscaperFragment extends Fragment {
     private boolean isLocationInitialized = false;
     private GoogleMap map;
     private ProgressDialog progressDialog;
+    private View rootView;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_game_escaper, container, false);
+        rootView = inflater.inflate(R.layout.fragment_game_escaper, container, false);
 
-        setLocationListening(view);
+        setLocationListening(rootView);
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.map_loading));
         progressDialog.setIndeterminate(true);
         progressDialog.show();
 
-        bind(this, view);
+        bind(this, rootView);
 
-        return view;
+        return rootView;
     }
 
     @Override
@@ -173,5 +173,9 @@ public class GameEscaperFragment extends Fragment {
             }
         });
         mapView.onResume();
+    }
+
+    View getRootView() {
+        return rootView;
     }
 }

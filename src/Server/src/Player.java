@@ -423,6 +423,7 @@ public class Player extends Thread {
         GameManager gm = lobby.getGameManager();
         if (gm.resolveTask(String.valueOf(message.get("ans")))) {
             gm.sendCheckpointCoords();
+            gm.sendToVerify();
         } else {
             gm.finishGame();
         }

@@ -137,6 +137,15 @@ class GameManager {
         return (new JSONObject(message));
     }
 
+    void sendToVerify() {
+        HashMap<String, Object> message = new HashMap<>();
+        Checkpoint checkpoint = checkpoints.get(currentCheckpoint-1);
+        message.put("task", currentCheckpoint-1);
+        message.put("desc", checkpoint.getTask().getDescription());
+        message.put("ans", checkpoint.getTask().getAnswer());
+        teamManager.broadcastToTeam(0, new JSONObject(message));
+    }
+
     /**
      * Verify task.
      *

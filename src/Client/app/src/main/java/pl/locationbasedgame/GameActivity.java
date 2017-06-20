@@ -7,9 +7,11 @@ import android.content.*;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import io.reactivex.Single;
@@ -53,7 +55,7 @@ public class GameActivity extends AppCompatActivity {
         }
     };
 
-    public CommunicationService getService() {
+    CommunicationService getService() {
         return service;
     }
 
@@ -71,7 +73,7 @@ public class GameActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_game);
 
-        int team = getIntent().getIntExtra("TEAM", 2);
+        int team = getIntent().getIntExtra("TEAM", -1);
 
         if (team == CHASER || team == ESCAPER) {
             loadFragment(team);
@@ -121,9 +123,13 @@ public class GameActivity extends AppCompatActivity {
                             } else if (jsonObject.has("desc")) {
                                 String desc = jsonObject.getString("desc");
                                 showMessage(desc);
+                            } else if (jsonObject.has("task")) {
+                                verifyAnswer(jsonObject);
+                            } else if (jsonObject.has("gend")) {
+                                loadFragment(2);
+                            } else if (jsonObject.has("result")) {
+                                ((FinalFragment) fragment).showResult(jsonObject.getString("result"));
                             }
-
-
                         } catch (JSONException e) {
                             Log.i(TAG, String.valueOf(e));
                         }
@@ -152,6 +158,8 @@ public class GameActivity extends AppCompatActivity {
             case 1:
                 fragment = new GameChaserFragment();
                 break;
+            case 2:
+                fragment = new FinalFragment();
             default:
                 break;
         }
@@ -179,6 +187,68 @@ public class GameActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Dismiss", null)
                 .show();
+    }
+
+    private void showAnswer(final int taskNum, String description, String answer) {
+        final Context context = getApplicationContext();
+        final int duration = Toast.LENGTH_SHORT;
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_map)
+                .setTitle(getText(R.string.new_task))
+                .setMessage(description + '\n' + answer)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        constructVerifyAnswer(taskNum, true);
+                        Toast toast = Toast.makeText(context, getResources().getString(R.string.sent), duration);
+                        toast.show();
+                    }
+
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        constructVerifyAnswer(taskNum, false);
+                        Toast toast = Toast.makeText(context, getResources().getString(R.string.sent), duration);
+                        toast.show();
+                    }
+
+                })
+                .show();
+    }
+
+    private void constructVerifyAnswer(int tasknum, boolean var) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("header", "cvans");
+            object.put("cnum", tasknum);
+            object.put("var", var);
+            service.sendComplexMessage(object);
+        } catch (JSONException e) {
+            Log.i(TAG, "Something went wrong");
+        }
+    }
+
+    private void verifyAnswer(JSONObject jsonObject) {
+        try {
+            final int taskNum = jsonObject.getInt("task");
+            final String description = jsonObject.getString("desc");
+            final String answer = jsonObject.getString("ans");
+
+            final Snackbar mySnackbar = Snackbar.make(((GameEscaperFragment) fragment).getRootView(), "Got new task!", Snackbar.LENGTH_INDEFINITE);
+            mySnackbar.setAction("Show", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showAnswer(taskNum, description, answer);
+                }
+            });
+            mySnackbar.show();
+        } catch (Exception e) {
+            Log.i(TAG, String.valueOf(e));
+        }
+
     }
 
 }

@@ -136,6 +136,27 @@ public class CommunicationService extends Service {
         }
     }
 
+    void sendComplexMessage(final JSONObject jsonObject) {
+        Thread signalThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    socketHandler.send(jsonObject.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        signalThread.start();
+
+        try {
+            signalThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     class ServerBinder extends Binder {
         CommunicationService getService() {
             return CommunicationService.this;

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:background="@color/backgroundColor">
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_final"
+            android:layout_margin="10dp"
+            android:text="@string/end_game"
+            android:textSize="@dimen/text_size_big"
+            style="@style/StandardTextView"
+            />
+
+    <Button
+            android:id="@+id/btn_final_ok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/ok"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="#000"
+            android:textSize="24sp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            style="@style/RoundedButton"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="65dp"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_result"
+            android:text="@string/result"
+            android:textSize="@dimen/text_size_medium"
+            style="@style/StandardTextView"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="31dp"
+            android:layout_below="@+id/tv_final"
+            android:layout_alignStart="@+id/tv_final"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_final_result"
+            android:textSize="@dimen/text_size_big"
+            style="@style/StandardTextView"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="42dp"
+            android:layout_below="@+id/tv_result"
+            android:layout_alignStart="@+id/tv_result"/>
+
+</RelativeLayout>

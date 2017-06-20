@@ -1,9 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="pl.locationbasedgame.GameEscaperFragment"
-    android:background="@color/backgroundColor">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="pl.locationbasedgame.GameEscaperFragment"
+                android:background="@color/backgroundColor">
 
     <!--<fragment-->
         <!--android:id="@+id/map"-->
@@ -17,11 +18,24 @@
         android:layout_height="match_parent" />
 
     <Button
-        android:id="@+id/btn_leave_hint"
+        android:id="@+id/btn_get_tasks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:visibility="invisible"
-        android:text="@string/leave_hint"/>
+        android:text="@string/get_tasks"/>
+
+    <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:fabSize="mini"
+            app:srcCompat="@android:drawable/ic_menu_add"
+            android:id="@+id/btn_leave_hint"
+            android:layout_above="@+id/btn_get_tasks"
+            android:visibility="invisible"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="18dp"
+            android:layout_marginBottom="16dp"/>
 
 </RelativeLayout>
